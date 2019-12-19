@@ -40,22 +40,23 @@ public class DGraph implements graph{
 
 	@Override
 	public void connect(int src, int dest, double w) {
-		edge newEdge = new edge(src,dest,w,"",0);
-		if (this.edgeGraph.get(src)!=null){
-			if (this.edgeGraph.get(src).get(dest)==null) {
-				this.edgeGraph.get(src).put(dest, newEdge);
+		if (this.nodeGraph.get(src)!=null && this.nodeGraph.get(dest)!=null) {
+			edge_data newEdge = new edge(src, dest, w, "", 0);
+			if (this.edgeGraph.get(src) != null) {
+				if (this.edgeGraph.get(src).get(dest) == null) {
+					this.edgeGraph.get(src).put(dest, newEdge);
+				} else {
+					removeEdge(src, dest);
+					this.edgeGraph.get(src).put(dest, newEdge);
+				}
+			} else {
+				HashMap<Integer, edge_data> toAdd = new HashMap<>();
+				this.edgeGraph.put(src, toAdd).put(dest, newEdge);
 			}
-			else{
-				removeEdge(src, dest);
-				this.edgeGraph.get(src).put(dest,newEdge);
-			}
+			this.edgesCount++;
+			this.modeCount++;
 		}
-		else {
-			HashMap<Integer,edge_data> toAdd=new HashMap<>();
-			this.edgeGraph.put(src,toAdd).put(dest,newEdge);
-		}
-		this.edgesCount++;
-		this.modeCount++;
+		else System.out.println("Wrong Input! Missing Node...");
 	}
 
 	@Override
