@@ -7,11 +7,19 @@ import java.util.Map;
 
 public class DGraph implements graph{
 
-	private static int nodeSize = 0;
-	private static int edgeSize = 0;
-	private static int MC = 0;
-	HashMap<Integer,node_data> nodeGraph = new HashMap<>();
-	HashMap<Integer,HashMap<Integer,edge_data>> edgeGraph = new HashMap<>();
+	private int nodesCount;
+	private int edgesCount;
+	private int modeCount;
+	HashMap<Integer,node_data> nodeGraph;
+	HashMap<Integer,HashMap<Integer,edge_data>> edgeGraph;
+
+	public DGraph(){
+		HashMap<Integer,node_data> nodeGraph = new HashMap<>();
+		HashMap<Integer,HashMap<Integer,edge_data>> edgeGraph = new HashMap<>();
+		this.nodesCount =0;
+		this.edgesCount =0;
+		this.modeCount =0;
+	}
 
 	@Override
 	public node_data getNode(int key) {
@@ -26,8 +34,8 @@ public class DGraph implements graph{
 	@Override
 	public void addNode(node_data n) {
 		this.nodeGraph.put(n.getKey(),n);
-		nodeSize++;
-		MC++;
+		this.nodesCount++;
+		this.modeCount++;
 	}
 
 	@Override
@@ -46,8 +54,8 @@ public class DGraph implements graph{
 			HashMap<Integer,edge_data> toAdd=new HashMap<>();
 			this.edgeGraph.put(src,toAdd).put(dest,newEdge);
 		}
-		edgeSize++;
-		MC++;
+		this.edgesCount++;
+		this.modeCount++;
 	}
 
 	@Override
@@ -73,8 +81,8 @@ public class DGraph implements graph{
 				if (this.edgeGraph.get(currSrc).get(key) != null) ;
 				removeEdge(currSrc, key);
 			}
-			nodeSize--;
-			MC++;
+			this.nodesCount--;
+			this.modeCount++;
 		}
 		return toReturn;
 	}
@@ -84,25 +92,24 @@ public class DGraph implements graph{
 		edge_data toReturn = this.edgeGraph.get(src).get(dest);
 		if (toReturn!=null) {
 			this.edgeGraph.get(src).remove(dest);
-			edgeSize--;
-			MC++;
+			this.edgesCount--;
+			this.modeCount++;
 		}
 		return toReturn;
 	}
 
 	@Override
 	public int nodeSize() {
-		return nodeSize;
+		return this.nodesCount;
 	}
 
 	@Override
 	public int edgeSize() {
-		return edgeSize;
+		return this.edgesCount;
 	}
 
 	@Override
 	public int getMC() {
-		return MC;
+		return this.modeCount;
 	}
-
 }
