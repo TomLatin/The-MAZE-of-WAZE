@@ -2,7 +2,7 @@ package dataStructure;
 
 import utils.Point3D;
 
-public class node implements node_data {
+public class Node implements node_data {
 
     private int key;
     private Point3D point;
@@ -11,7 +11,7 @@ public class node implements node_data {
     private String info;
     //private node previos;
 
-    public node(){
+    public Node(){
         this.key=0;
         this.point=null;
         this.weight=0;
@@ -19,7 +19,7 @@ public class node implements node_data {
         this.info="";
 
     }
-    public node (int key, Point3D point,double weight,int tag,String info){
+    public Node(int key, Point3D point, double weight, int tag, String info){
         this.key=key;
         this.point=point;
         this.weight=weight;
@@ -27,7 +27,7 @@ public class node implements node_data {
         this.info=info;
     }
 
-    public node (node n){
+    public Node(Node n){
         this.key=n.key;
         this.point=new Point3D(n.point);
         this.weight=n.weight;
@@ -52,7 +52,12 @@ public class node implements node_data {
 
     @Override
     public double getWeight() {
-        return this.weight;
+        try{
+            return this.weight;
+        }
+       catch (Exception e){
+            throw new RuntimeException("nnn");
+       }
     }
 
     @Override
