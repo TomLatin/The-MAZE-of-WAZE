@@ -12,8 +12,8 @@ public class DGraph implements graph{
 	private int nodesCount;
 	private int edgesCount;
 	private int modeCount;
-	HashMap<Integer,node_data> nodeGraph;
-	HashMap<Integer,HashMap<Integer,edge_data>> edgeGraph;
+	public HashMap<Integer,node_data> nodeGraph;
+	public HashMap<Integer,HashMap<Integer,edge_data>> edgeGraph;
 
 	public DGraph(){
 		this.nodeGraph = new HashMap<Integer,node_data>();
@@ -130,6 +130,7 @@ public class DGraph implements graph{
 	public int getMC() {
 		return this.modeCount;
 	}
+
 
 	public static void main(String[] args) {
 		Point3D x = new Point3D(1,4);
