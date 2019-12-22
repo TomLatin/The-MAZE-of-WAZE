@@ -35,6 +35,9 @@ public class Node implements node_data {
         this.info=n.info;
     }
 
+    /**
+     * @return Returns the key value of the Node that sent to the function
+     */
     @Override
     public int getKey() {
         return this.key;
@@ -52,12 +55,7 @@ public class Node implements node_data {
 
     @Override
     public double getWeight() {
-        try{
             return this.weight;
-        }
-       catch (Exception e){
-            throw new RuntimeException("nnn");
-       }
     }
 
     @Override
