@@ -78,6 +78,7 @@ public class Graph_Algo implements graph_algorithms{
 				currE = (edge_data) iterE.next();
 				if(currE!=null && currE.getTag()==0)
 				{
+
 					if(ga.getEdge(currE.getDest(),currE.getSrc())!=null)
 					{
 						ga.getEdge(currE.getDest(),currE.getSrc()).setTag(1);
