@@ -9,7 +9,6 @@ public class Node implements node_data {
     private double weight;
     private int tag;
     private String info;
-    //private node previos;
 
     public Node(){
         this.key=0;
@@ -81,5 +80,10 @@ public class Node implements node_data {
     @Override
     public void setTag(int t) {
         this.tag=t;
+    }
+
+    public String toString()
+    {
+        return "key: "+this.key+",point: "+this.point+",weight: "+this.weight+",info: "+this.info+",tag: "+this.tag;
     }
 }
