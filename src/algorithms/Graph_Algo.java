@@ -76,7 +76,15 @@ public class Graph_Algo implements graph_algorithms{
 			edge_data currE;
 			while (iterE.hasNext()){
 				currE = (edge_data) iterE.next();
-				if (ga.getEdge(currE.getSrc(),currE.getDest()).getTag()==0) {
+				if(currE!=null && currE.getTag()==0)
+				{
+					if(ga.getEdge(currE.getDest(),currE.getSrc())!=null)
+					{
+						ga.getEdge(currE.getDest(),currE.getSrc()).setTag(1);
+						currE.setTag(1);
+					}
+				}
+				else {
 					ga.connect(currE.getDest(), currE.getSrc(), currE.getWeight());
 					ga.getEdge(currE.getDest(), currE.getSrc()).setTag(1);
 					ga.removeEdge(currE.getSrc(), currE.getDest());
@@ -107,10 +115,15 @@ public class Graph_Algo implements graph_algorithms{
 	@Override
 	public graph copy() {
 		graph toCopy = new DGraph();
+		for (node_data currV : this.graphAlgo.getV()) {
+			node_data n=new Node((Node)currV);
+			toCopy.addNode(n);
+		}
+
 		for (node_data currV : this.graphAlgo.getV()){
-			toCopy.addNode(currV);
 			for (edge_data currE : this.graphAlgo.getE(currV.getKey())){
-				toCopy.connect(currE.getSrc(),currE.getDest(),currE.getWeight());
+				edge_data e=new Edge((Edge)currE);
+				toCopy.connect(e.getSrc(),e.getDest(),e.getWeight());
 			}
 		}
 		return toCopy;
@@ -120,19 +133,20 @@ public class Graph_Algo implements graph_algorithms{
 		Point3D x = new Point3D(1,4);
 		Point3D y = new Point3D(2,5);
 		Point3D q = new Point3D(4,3);
-		node_data a = new Node(1, x,2,3,"asf");
-		node_data b = new Node(2,y,4,6,"ads");
-		node_data c = new Node(3,q,50,50,"sf");
+		node_data a = new Node(1, x,2,0,"asf");
+		node_data b = new Node(2,y,4,0,"ads");
+		node_data c = new Node(3,q,50,0,"sf");
 		DGraph d = new DGraph();
 		d.addNode(a);
 		d.addNode(b);
 		d.addNode(c);
 		d.connect(a.getKey(),b.getKey(),4);
-		d.connect(b.getKey(),c.getKey(),50);
+		d.connect(b.getKey(),c.getKey(),4);
 		d.connect(c.getKey(),a.getKey(),50);
+		d.connect(c.getKey(),b.getKey(),50);
 		Graph_Algo nt = new Graph_Algo();
 		nt.init(d);
-		graph copied = nt.copy();
+	  //  nt.isConnected();
 				System.out.println(nt.isConnected());
 	}
 

@@ -65,4 +65,9 @@ public class Edge implements edge_data{
     public void setTag(int t) {
         this.tag=t;
     }
+
+    public String toString()
+    {
+        return "src: "+this.src+",dest: "+this.dest+",weight: "+this.weight+",info: "+this.info+",tag: "+this.tag;
+    }
 }
