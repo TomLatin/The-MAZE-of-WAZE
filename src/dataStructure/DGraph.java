@@ -6,8 +6,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.Serializable;
 
-public class DGraph implements graph{
+
+public class DGraph implements graph,Serializable{
 
 	private int nodesCount;
 	private int edgesCount;

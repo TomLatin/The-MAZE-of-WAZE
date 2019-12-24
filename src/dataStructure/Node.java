@@ -1,8 +1,8 @@
 package dataStructure;
 
 import utils.Point3D;
-
-public class Node implements node_data {
+import java.io.Serializable;
+public class Node implements node_data,Serializable {
 
     private int key;
     private Point3D point;
