@@ -1,10 +1,16 @@
 package algorithms;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import dataStructure.*;
 import utils.Point3D;
+import java.io.Serializable;
 
 /**
  * This empty class represents the set of graph-theory algorithms
@@ -12,9 +18,9 @@ import utils.Point3D;
  * @author 
  *
  */
-public class Graph_Algo implements graph_algorithms{
+public class Graph_Algo implements graph_algorithms,Serializable{
 
-	private graph graphAlgo;
+	private graph graphAlgo=null;
 
 	public Graph_Algo(){
 		this.graphAlgo= null;
@@ -33,7 +39,23 @@ public class Graph_Algo implements graph_algorithms{
 
 	@Override
 	public void save(String file_name) {
-		
+		try
+		{
+			FileOutputStream file = new FileOutputStream(file_name);
+			ObjectOutputStream out = new ObjectOutputStream(file);
+
+			out.writeObject(this.graphAlgo);
+
+			out.close();
+			file.close();
+
+			System.out.println("Object has been serialized");
+		}
+		catch(IOException ex)
+		{
+			System.out.println("IOException is caught");
+		}
+
 	}
 
 	@Override
@@ -96,14 +118,50 @@ public class Graph_Algo implements graph_algorithms{
 
 	@Override
 	public double shortestPathDist(int src, int dest) {
-		// TODO Auto-generated method stub
-		return 0;
+		for (node_data currV : this.graphAlgo.getV()) {
+			currV.setTag(0);
+			currV.setInfo("");
+			currV.setWeight(Integer.MAX_VALUE);
+		}
+		this.graphAlgo.getNode(src).setWeight(0);
+		node_data min = findMinNode (this.graphAlgo.getV());
+		while (min!= this.graphAlgo.getNode(dest)){
+			min.setTag(1);
+			for (edge_data currE : this.graphAlgo.getE(min.getKey())){
+				if(min.getWeight()+currE.getWeight()< this.graphAlgo.getNode(currE.getDest()).getWeight()) {
+					this.graphAlgo.getNode(currE.getDest()).setWeight(min.getWeight() + currE.getWeight());
+					this.graphAlgo.getNode(currE.getDest()).setInfo(""+min.getKey());
+				}
+			}
+			min=findMinNode(this.graphAlgo.getV());
+		}
+		return this.graphAlgo.getNode(dest).getWeight();
 	}
+
+
+	private node_data findMinNode(Collection<node_data> v) {
+		Point3D p = new Point3D(0,0);
+		node_data toReturn= new Node(0,p,Integer.MAX_VALUE,0,"");
+		for (node_data currV : v){
+			if (currV.getTag()==0 && currV.getWeight()<toReturn.getWeight()){
+				toReturn = currV;
+			}
+		}
+		return toReturn;
+	}
+
 
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedList<node_data> toReturn = new LinkedList<node_data>();
+		node_data currV = this.graphAlgo.getNode(dest);
+		toReturn.add(currV);
+		while (currV!=this.graphAlgo.getNode(src)){
+			node_data toAdd = this.graphAlgo.getNode(Integer.parseInt(currV.getInfo()));
+			toReturn.addFirst(toAdd);
+			currV=toAdd;
+		}
+		return toReturn;
 	}
 
 	@Override
@@ -115,6 +173,7 @@ public class Graph_Algo implements graph_algorithms{
 	@Override
 	public graph copy() {
 		graph toCopy = new DGraph();
+
 		for (node_data currV : this.graphAlgo.getV()) {
 			node_data n=new Node((Node)currV);
 			toCopy.addNode(n);
@@ -143,11 +202,14 @@ public class Graph_Algo implements graph_algorithms{
 		d.connect(a.getKey(),b.getKey(),4);
 		d.connect(b.getKey(),c.getKey(),4);
 		d.connect(c.getKey(),a.getKey(),50);
-//		d.connect(c.getKey(),b.getKey(),50);
+		d.connect(c.getKey(),b.getKey(),50);
 		Graph_Algo nt = new Graph_Algo();
 		nt.init(d);
 	  //  nt.isConnected();
-				System.out.println(nt.isConnected());
+		//System.out.println(nt.isConnected());
+		System.out.println(nt.shortestPathDist(1,3));
+		System.out.println(nt.shortestPath(1,3));
+			//	nt.save("test1");
 	}
 
 }
