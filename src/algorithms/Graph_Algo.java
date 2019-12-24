@@ -38,18 +38,17 @@ public class Graph_Algo implements graph_algorithms{
 
 	@Override
 	public boolean isConnected() {
-		graph copy=this.graphAlgo;
-		if (copy.getV().isEmpty()) return true;
-		setZeroTag(copy);
-		int keyOfFirst = copy.getV().iterator().next().getKey();
+		if (graphAlgo.getV().isEmpty()) return true;
+		setZeroTag(graphAlgo);
+		int keyOfFirst = graphAlgo.getV().iterator().next().getKey();
 		DFSUtil(keyOfFirst);
-		for (node_data curr : copy.getV()){
+		for (node_data curr : graphAlgo.getV()){
 			if (curr.getTag()==0) return false;
 		}
-		getTranspose(copy);
-		setZeroTag(copy);
+		getTranspose(graphAlgo);
+		setZeroTag(graphAlgo);
 		DFSUtil(keyOfFirst);
-		for (node_data curr : copy.getV()){
+		for (node_data curr : graphAlgo.getV()){
 			if (curr.getTag()==0) return false;
 		}
 		return true;
@@ -77,18 +76,20 @@ public class Graph_Algo implements graph_algorithms{
 			edge_data currE;
 			while (iterE.hasNext()){
 				currE = (edge_data) iterE.next();
-				if(currE!=null && currE.getTag()==0) {
+				if(currE!=null && currE.getTag()==0)
+				{
 
-					if (ga.getEdge(currE.getDest(), currE.getSrc()) != null) {
-						ga.getEdge(currE.getDest(), currE.getSrc()).setTag(1);
+					if(ga.getEdge(currE.getDest(),currE.getSrc())!=null)
+					{
+						ga.getEdge(currE.getDest(),currE.getSrc()).setTag(1);
 						currE.setTag(1);
 					}
-					else {
-						ga.connect(currE.getDest(), currE.getSrc(), currE.getWeight());
-						ga.getEdge(currE.getDest(), currE.getSrc()).setTag(1);
-						ga.removeEdge(currE.getSrc(), currE.getDest());
-						iterE = ga.getE(currV.getKey()).iterator();
-					}
+				}
+				else {
+					ga.connect(currE.getDest(), currE.getSrc(), currE.getWeight());
+					ga.getEdge(currE.getDest(), currE.getSrc()).setTag(1);
+					ga.removeEdge(currE.getSrc(), currE.getDest());
+					iterE = ga.getE(currV.getKey()).iterator();
 				}
 			}
 		}
@@ -143,7 +144,7 @@ public class Graph_Algo implements graph_algorithms{
 		d.connect(a.getKey(),b.getKey(),4);
 		d.connect(b.getKey(),c.getKey(),4);
 		d.connect(c.getKey(),a.getKey(),50);
-//		d.connect(c.getKey(),b.getKey(),50);
+		d.connect(c.getKey(),b.getKey(),50);
 		Graph_Algo nt = new Graph_Algo();
 		nt.init(d);
 	  //  nt.isConnected();
