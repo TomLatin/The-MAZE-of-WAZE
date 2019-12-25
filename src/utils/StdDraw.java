@@ -27,16 +27,10 @@ package utils;
  *
  ******************************************************************************/
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
+import GUI.Graph_GUI;
+import dataStructure.node_data;
+
+import java.awt.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,23 +56,18 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.List;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
  *  creating drawings with your programs. It uses a simple graphics model that
- *  allows you to create drawings consisting of points, lines, squares, 
+ *  allows you to create drawings consisting of points, lines, squares,
  *  circles, and other geometric shapes in a window on your computer and
  *  to save the drawings to a file. Standard drawing also includes
  *  facilities for text, color, pictures, and animation, along with
@@ -247,7 +236,7 @@ import javax.swing.KeyStroke;
  *  <li> {@link #setScale(double min, double max)}
  *  </ul>
  *  <p>
- *  The arguments are the coordinates of the minimum and maximum 
+ *  The arguments are the coordinates of the minimum and maximum
  *  <em>x</em>- or <em>y</em>-coordinates that will appear in the canvas.
  *  For example, if you  wish to use the default coordinate system but
  *  leave a small margin, you can call {@code StdDraw.setScale(-.05, 1.05)}.
@@ -311,7 +300,7 @@ import javax.swing.KeyStroke;
  *  <p>
  *  The supported image formats are JPEG and PNG. The filename must have either the
  *  extension .jpg or .png.
- *  We recommend using PNG for drawing that consist solely of geometric shapes and JPEG 
+ *  We recommend using PNG for drawing that consist solely of geometric shapes and JPEG
  *  for drawings that contains pictures.
  *  <p>
  *  <b>Clearing the canvas.</b>
@@ -346,7 +335,7 @@ import javax.swing.KeyStroke;
  *  all drawing takes place on the <em>offscreen canvas</em>. The offscreen canvas
  *  is not displayed. Only when you call
  *  {@link #show()} does your drawing get copied from the offscreen canvas to
- *  the onscreen canvas, where it is displayed in the standard drawing window. You 
+ *  the onscreen canvas, where it is displayed in the standard drawing window. You
  *  can think of double buffering as collecting all of the lines, points, shapes,
  *  and text that you tell it to draw, and then drawing them all
  *  <em>simultaneously</em>, upon request.
@@ -604,7 +593,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static Object keyLock = new Object();
 
 	// default font
-	private static final Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 16);
+	private static final Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 14);
 
 	// current font
 	private static Font font;
@@ -630,6 +619,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// set of key codes currently pressed down
 	private static TreeSet<Integer> keysDown = new TreeSet<Integer>();
 
+	public static Graph_GUI GUI;
 	// singleton pattern: client can't instantiate
 	private StdDraw() { }
 
@@ -645,8 +635,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 * pen radius, pen color, and font back to their default values.
 	 * Ordinarly, this method is called once, at the very beginning
 	 * of a program.
+	 * @param width
+	 * @param height
+	 * @param graph_gui
 	 */
-	public static void setCanvasSize() {
+	public static void setCanvasSize(int width, int height, Graph_GUI graph_gui) {
 		setCanvasSize(DEFAULT_SIZE, DEFAULT_SIZE);
 	}
 
@@ -662,6 +655,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 * @throws IllegalArgumentException unless both {@code canvasWidth} and
 	 *         {@code canvasHeight} are positive
 	 */
+
+
 	public static void setCanvasSize(int canvasWidth, int canvasHeight) {
 		if (canvasWidth <= 0 || canvasHeight <= 0)
 			throw new IllegalArgumentException("width and height must be positive");
@@ -713,15 +708,89 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	// create the menu bar (changed to private)
+
+
+
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");
-		menuBar.add(menu);
-		JMenuItem menuItem1 = new JMenuItem(" Save...   ");
-		menuItem1.addActionListener(std);
-		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+		/**--------File---------**/
+		JMenu fileMenu = new JMenu("   File    ");
+		menuBar.add(fileMenu);
+		JMenuItem FileSave = new JMenuItem(" Save...   ");
+		FileSave.addActionListener(std);
+//		FileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		fileMenu.add(FileSave);
+
+		JMenuItem FileLoad = new JMenuItem(" Load...   ");
+		FileLoad.addActionListener(std);
+		fileMenu.add(FileLoad);
+
+		/**--------Edit---------**/
+		JMenu editMenu = new JMenu("   Edit   ");
+		menuBar.add(editMenu);
+
+		JMenu addN = new JMenu(" Add Node Options   ");
+		editMenu.add(addN);
+
+		JMenuItem addNodeF = new JMenuItem(" Add Node By Frames  ");
+		addNodeF.addActionListener(std);
+		addNodeF.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		menu.add(menuItem1);
+		addN.add(addNodeF);
+
+		JMenuItem addNodeC = new JMenuItem(" Add Node By Click  ");
+		addNodeC.addActionListener(std);
+		addNodeC.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		addN.add(addNodeC);
+
+		JMenuItem addEdge = new JMenuItem(" Add Edge   ");
+		addEdge.addActionListener(std);
+		addEdge.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		editMenu.add(addEdge);
+
+		JMenuItem removeNode = new JMenuItem(" Remove Node   ");
+		removeNode.addActionListener(std);
+		editMenu.add(removeNode);
+
+		JMenuItem removeEdge = new JMenuItem(" Remove Edge   ");
+		removeEdge.addActionListener(std);
+		editMenu.add(removeEdge);
+
+		/**--------Algorithems---------**/
+		JMenu algoMenu = new JMenu("    Algo    ");
+		menuBar.add(algoMenu);
+		JMenuItem isCon = new JMenuItem(" Is Connected   ");
+		isCon.addActionListener(std);
+		algoMenu.add(isCon);
+
+		JMenuItem shortDest = new JMenuItem(" Shortest Path Dest   ");
+		shortDest.addActionListener(std);
+		algoMenu.add(shortDest);
+
+		JMenuItem shortList = new JMenuItem(" Shortest Path List   ");
+		shortList.addActionListener(std);
+		algoMenu.add(shortList);
+
+		JMenuItem tsp = new JMenuItem(" Find TSP   ");
+		tsp.addActionListener(std);
+		algoMenu.add(tsp);
+
+		menuBar.add(Box.createHorizontalGlue());
+
+		/**--------Info---------**/
+		JMenu infoMenu = new JMenu("    Info    ");
+		menuBar.add(infoMenu);
+		JMenuItem wiki = new JMenuItem(" Wiki   ");
+		wiki.addActionListener(std);
+		infoMenu.add(wiki);
+
+		JMenuItem Dev = new JMenuItem(" Developers   ");
+		Dev.addActionListener(std);
+		infoMenu.add(Dev);
+
 		return menuBar;
 	}
 
@@ -1191,7 +1260,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 
 	/**
-	 * Draws a polygon with the vertices 
+	 * Draws a polygon with the vertices
 	 * (<em>x</em><sub>0</sub>, <em>y</em><sub>0</sub>),
 	 * (<em>x</em><sub>1</sub>, <em>y</em><sub>1</sub>), ...,
 	 * (<em>x</em><sub><em>n</em>–1</sub>, <em>y</em><sub><em>n</em>–1</sub>).
@@ -1220,7 +1289,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Draws a polygon with the vertices 
+	 * Draws a polygon with the vertices
 	 * (<em>x</em><sub>0</sub>, <em>y</em><sub>0</sub>),
 	 * (<em>x</em><sub>1</sub>, <em>y</em><sub>1</sub>), ...,
 	 * (<em>x</em><sub><em>n</em>–1</sub>, <em>y</em><sub><em>n</em>–1</sub>).
@@ -1303,7 +1372,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = new URL(filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1313,7 +1382,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = StdDraw.class.getResource(filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1323,7 +1392,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = StdDraw.class.getResource("/" + filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1577,7 +1646,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Enable double buffering. All subsequent calls to 
+	 * Enable double buffering. All subsequent calls to
 	 * drawing methods such as {@code line()}, {@code circle()},
 	 * and {@code square()} will be deffered until the next call
 	 * to show(). Useful for animations.
@@ -1587,7 +1656,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Disable double buffering. All subsequent calls to 
+	 * Disable double buffering. All subsequent calls to
 	 * drawing methods such as {@code line()}, {@code circle()},
 	 * and {@code square()} will be displayed on screen when called.
 	 * This is the default.
@@ -1608,7 +1677,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 *
 	 * @param  filename the name of the file with one of the required suffixes
 	 */
-	public static void save(String filename) {
+	public static void saved(String filename) {
 		if (filename == null) throw new IllegalArgumentException();
 		File file = new File(filename);
 		String suffix = filename.substring(filename.lastIndexOf('.') + 1);
@@ -1648,17 +1717,157 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
+	public static void save(String filename) {
+		if (filename == null) throw new IllegalArgumentException();
+		GUI.save(filename);
+	}
+
 
 	/**
 	 * This method cannot be called directly.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
-		chooser.setVisible(true);
-		String filename = chooser.getFile();
-		if (filename != null) {
-			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+
+		String s = e.getActionCommand();
+		switch (s){
+			case " Save...   ":
+			{
+				System.out.println("save");
+				FileDialog win = new FileDialog(StdDraw.frame, "save the graph", FileDialog.SAVE);
+				win.setVisible(true);
+				String filename = win.getFile();
+				if (filename != null) {
+					StdDraw.save(win.getDirectory() + File.separator + win.getFile());
+				}
+			}
+			break;
+			case " Load...   ":
+			{
+				System.out.print("load ");
+				FileDialog win = new FileDialog(StdDraw.frame, "load the graph", FileDialog.LOAD);
+				win.setVisible(true);
+				String filename = win.getDirectory()+win.getFile();
+				if (filename != null)
+					System.out.println(filename);{
+				GUI.initGraph(filename);
+				GUI.sketch();
+			}
+			}
+			break;
+			case " Add Node By Frames  ":
+			{
+				JFrame f = new JFrame();
+				String X=JOptionPane.showInputDialog(f,"Enter X");
+				String Y=JOptionPane.showInputDialog(f,"Enter Y");
+				double locX = Double.parseDouble(X);
+				double locY = Double.parseDouble(Y);
+				GUI.addNode(new Point3D(locX, locY), 0);
+				GUI.sketch();
+			}
+			break;
+
+			case " Add Node By Click  ":
+			{
+				if (isMousePressed()) {
+					double locX = mouseX,locY =mouseY;
+					GUI.addNode(new Point3D(locX, locY), 0);
+					GUI.sketch();
+				}
+			}
+			break;
+
+			case " Add Edge   ":
+			{
+				JFrame f =new JFrame();
+				String src=JOptionPane.showInputDialog(f,"Enter src");
+				String des= JOptionPane.showInputDialog(f,"Enter des");
+				String wei=JOptionPane.showInputDialog(f,"Enter weight");
+				int Isrc = Integer.parseInt(src);
+				int Idest = Integer.parseInt(des);
+				double weight = Double.parseDouble(wei);
+				GUI.addEdge(Isrc,Idest,weight);
+				GUI.sketch();
+			}
+			break;
+			case " Remove Node   ":
+			{
+				System.out.println("Node Removed");
+				JFrame f=new JFrame();
+				String pKey=JOptionPane.showInputDialog(f,"Enter Key");
+				int key = Integer.parseInt(pKey);
+				GUI.deleteNode(key);
+				GUI.sketch();
+			}
+			break;
+			case " Remove Edge   ":
+			{
+				System.out.println("Edge Removed");
+				JFrame f=new JFrame();
+				String src=JOptionPane.showInputDialog(f,"Enter src");
+				String des=JOptionPane.showInputDialog(f,"Enter des");
+				int sorce = Integer.parseInt(src);
+				int destenation = Integer.parseInt(des);
+				GUI.deleteEdge(sorce,destenation);
+				GUI.sketch();
+			}
+			break;
+			case " Is Connected   ":
+			{
+				System.out.println("Check Connected");
+				JFrame f=new JFrame();
+				boolean b = GUI.isConected();
+				if (b)
+				{
+					JOptionPane.showMessageDialog(f,"The graph is connected");
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(f,"The graph is not connected");
+				}
+			}
+			break;
+			case " Shortest Path Dest   ":
+			{
+				System.out.println("Shorted Path Dest");
+				JFrame f=new JFrame();
+				String sorce=JOptionPane.showInputDialog(f,"Enter src");
+				String destenation=JOptionPane.showInputDialog(f,"Enter dest");
+				int src = Integer.parseInt(sorce);
+				int dest = Integer.parseInt(destenation);
+				double temp = GUI.shortestPathDist(src,dest);
+				JOptionPane.showMessageDialog(f,"Te shortest Path Dist is "+temp);
+			}
+			break;
+			case " Shortest Path List   ":
+			{
+				System.out.println("Shortest Path List");
+				JFrame f=new JFrame();
+				String sorce=JOptionPane.showInputDialog(f,"Enter src");
+				String destenation=JOptionPane.showInputDialog(f,"Enter dest");
+				int src = Integer.parseInt(sorce);
+				int dest = Integer.parseInt(destenation);
+				List<node_data> pathList = GUI.shortestPath(src,dest);
+				if (pathList!=null&&!pathList.isEmpty()){
+					node_data nodeA = pathList.get(0);
+					node_data nodeB = null;
+					setPenColor(GREEN);
+					setPenRadius(0.01);
+					String path = ""+nodeA.getKey();
+					for (int i = 1 ; i< pathList.size(); i++){
+						nodeB = pathList.get(i);
+						line(nodeA.getLocation().x(),nodeA.getLocation().y(),nodeB.getLocation().x(),nodeB.getLocation().y());
+						nodeA = nodeB;
+						path+=(" , "+nodeA.getKey());
+					}
+					JOptionPane.showMessageDialog(f,"Te shortest Path Dist is : <"+path+" >");
+				}
+			}
+			break;
+			case " Find TSP   ":{
+				System.out.println("Find TSP ");
+			}
+			break;
 		}
 	}
 

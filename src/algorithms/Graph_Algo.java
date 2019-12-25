@@ -1,6 +1,8 @@
 package algorithms;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -8,52 +10,31 @@ import java.util.List;
 
 import dataStructure.*;
 import utils.Point3D;
+import java.io.Serializable;
 
 /**
- * This class represents the set of graph-theory algorithms
- * which should be implemented as part of Ex2
+ * This empty class represents the set of graph-theory algorithms
+ * which should be implemented as part of Ex2 - Do edit this class.
+ * @author 
+ *
  */
-
 public class Graph_Algo implements graph_algorithms,Serializable{
 
-	private graph graphAlgo=new DGraph();
+	public graph GA;
 
 	public Graph_Algo(){
-		this.graphAlgo= null;
+		this.GA = new DGraph();
 	}
 
 	@Override
 	public void init(graph g) {
-		this.graphAlgo = g;
+		this.GA = g;
 
 	}
 
 	@Override
 	public void init(String file_name) {
-		try
-		{
-			FileInputStream file = new FileInputStream( file_name);
-			ObjectInputStream in = new ObjectInputStream(file);
-
-			this.graphAlgo = (graph)in.readObject();
-
-			in.close();
-			file.close();
-
-			System.out.println("Object has been deserialized");
-
-		}
-
-		catch(IOException ex)
-		{
-			System.out.println("IOException is caught");
-		}
-
-		catch(ClassNotFoundException ex)
-		{
-			System.out.println("ClassNotFoundException is caught");
-		}
-
+		
 	}
 
 	@Override
@@ -63,7 +44,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 			FileOutputStream file = new FileOutputStream(file_name);
 			ObjectOutputStream out = new ObjectOutputStream(file);
 
-			out.writeObject(this.graphAlgo);
+			out.writeObject(this.GA);
 
 			out.close();
 			file.close();
@@ -79,17 +60,17 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	@Override
 	public boolean isConnected() {
-		if (graphAlgo.getV().isEmpty()) return true;
-		setZeroTag(graphAlgo);
-		int keyOfFirst = graphAlgo.getV().iterator().next().getKey();
+		if (GA.getV().isEmpty()) return true;
+		setZeroTag(GA);
+		int keyOfFirst = GA.getV().iterator().next().getKey();
 		DFSUtil(keyOfFirst);
-		for (node_data curr : graphAlgo.getV()){
+		for (node_data curr : GA.getV()){
 			if (curr.getTag()==0) return false;
 		}
-		getTranspose(graphAlgo);
-		setZeroTag(graphAlgo);
+		getTranspose(GA);
+		setZeroTag(GA);
 		DFSUtil(keyOfFirst);
-		for (node_data curr : graphAlgo.getV()){
+		for (node_data curr : GA.getV()){
 			if (curr.getTag()==0) return false;
 		}
 		return true;
@@ -103,10 +84,10 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	void DFSUtil(int key)
 	{
-		graphAlgo.getNode(key).setTag(1);
-		graphAlgo.connect(key,key,0);
-		for (edge_data curr : graphAlgo.getE(key)){
-			if(graphAlgo.getNode(curr.getDest()).getTag()==0) DFSUtil(curr.getDest());
+		GA.getNode(key).setTag(1);
+		GA.connect(key,key,0);
+		for (edge_data curr : GA.getE(key)){
+			if(GA.getNode(curr.getDest()).getTag()==0) DFSUtil(curr.getDest());
 		}
 	}
 
@@ -125,12 +106,13 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 						ga.getEdge(currE.getDest(),currE.getSrc()).setTag(1);
 						currE.setTag(1);
 					}
-				}
-				else {
-					ga.connect(currE.getDest(), currE.getSrc(), currE.getWeight());
-					ga.getEdge(currE.getDest(), currE.getSrc()).setTag(1);
-					ga.removeEdge(currE.getSrc(), currE.getDest());
-					iterE = ga.getE(currV.getKey()).iterator();
+					else
+					{
+						ga.connect(currE.getDest(), currE.getSrc(), currE.getWeight());
+						ga.getEdge(currE.getDest(), currE.getSrc()).setTag(1);
+						ga.removeEdge(currE.getSrc(), currE.getDest());
+						iterE = ga.getE(currV.getKey()).iterator();
+					}
 				}
 			}
 		}
@@ -138,24 +120,24 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	@Override
 	public double shortestPathDist(int src, int dest) {
-		for (node_data currV : this.graphAlgo.getV()) {
+		for (node_data currV : this.GA.getV()) {
 			currV.setTag(0);
 			currV.setInfo("");
 			currV.setWeight(Integer.MAX_VALUE);
 		}
-		this.graphAlgo.getNode(src).setWeight(0);
-		node_data min = findMinNode (this.graphAlgo.getV());
-		while (min!= this.graphAlgo.getNode(dest)){
+		this.GA.getNode(src).setWeight(0);
+		node_data min = findMinNode (this.GA.getV());
+		while (min!= this.GA.getNode(dest)){
 			min.setTag(1);
-			for (edge_data currE : this.graphAlgo.getE(min.getKey())){
-				if(min.getWeight()+currE.getWeight()< this.graphAlgo.getNode(currE.getDest()).getWeight()) {
-					this.graphAlgo.getNode(currE.getDest()).setWeight(min.getWeight() + currE.getWeight());
-					this.graphAlgo.getNode(currE.getDest()).setInfo(""+min.getKey());
+			for (edge_data currE : this.GA.getE(min.getKey())){
+				if(min.getWeight()+currE.getWeight()< this.GA.getNode(currE.getDest()).getWeight()) {
+					this.GA.getNode(currE.getDest()).setWeight(min.getWeight() + currE.getWeight());
+					this.GA.getNode(currE.getDest()).setInfo(""+min.getKey());
 				}
 			}
-			min=findMinNode(this.graphAlgo.getV());
+			min=findMinNode(this.GA.getV());
 		}
-		return this.graphAlgo.getNode(dest).getWeight();
+		return this.GA.getNode(dest).getWeight();
 	}
 
 
@@ -174,10 +156,10 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
 		LinkedList<node_data> toReturn = new LinkedList<node_data>();
-		node_data currV = this.graphAlgo.getNode(dest);
+		node_data currV = this.GA.getNode(dest);
 		toReturn.add(currV);
-		while (currV!=this.graphAlgo.getNode(src)){
-			node_data toAdd = this.graphAlgo.getNode(Integer.parseInt(currV.getInfo()));
+		while (currV!=this.GA.getNode(src)){
+			node_data toAdd = this.GA.getNode(Integer.parseInt(currV.getInfo()));
 			toReturn.addFirst(toAdd);
 			currV=toAdd;
 		}
@@ -194,13 +176,13 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	public graph copy() {
 		graph toCopy = new DGraph();
 
-		for (node_data currV : this.graphAlgo.getV()) {
+		for (node_data currV : this.GA.getV()) {
 			node_data n=new Node((Node)currV);
 			toCopy.addNode(n);
 		}
 
-		for (node_data currV : this.graphAlgo.getV()){
-			for (edge_data currE : this.graphAlgo.getE(currV.getKey())){
+		for (node_data currV : this.GA.getV()){
+			for (edge_data currE : this.GA.getE(currV.getKey())){
 				edge_data e=new Edge((Edge)currE);
 				toCopy.connect(e.getSrc(),e.getDest(),e.getWeight());
 			}
@@ -230,7 +212,6 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		System.out.println(nt.shortestPathDist(1,3));
 		System.out.println(nt.shortestPath(1,3));
 			//	nt.save("test1");
-		nt.init("test1");
 	}
 
 }

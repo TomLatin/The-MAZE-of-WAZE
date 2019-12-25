@@ -16,6 +16,7 @@ public class DGraph implements graph,Serializable{
 	private int modeCount;
 	public HashMap<Integer,node_data> nodeGraph;
 	public HashMap<Integer,HashMap<Integer,edge_data>> edgeGraph;
+	int nextKey = 0;
 
 	public DGraph(){
 		this.nodeGraph = new HashMap<Integer,node_data>();
@@ -93,8 +94,8 @@ public class DGraph implements graph,Serializable{
 		node_data toReturn = this.nodeGraph.get(key);
 		if (toReturn!=null) {
 			this.nodeGraph.remove(key);
-			Iterator iter = this.edgeGraph.entrySet().iterator();
 			if (this.edgeGraph.get(key) != null) this.edgeGraph.remove(key);
+			Iterator iter = this.edgeGraph.entrySet().iterator();
 			while (iter.hasNext()) {
 				Map.Entry mapElement = (Map.Entry) iter.next();
 				int currSrc = ((int) mapElement.getKey());
@@ -131,6 +132,14 @@ public class DGraph implements graph,Serializable{
 	@Override
 	public int getMC() {
 		return this.modeCount;
+	}
+
+	public int findNextKey(){
+		int i = 1;
+		while (this.nodeGraph.get(i)!=null){
+			i++;
+		}
+		return i;
 	}
 
 
