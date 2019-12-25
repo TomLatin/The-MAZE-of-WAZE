@@ -128,7 +128,7 @@ public class NodeTest {
     }
 
     /**
-     * Checks whether the function determines the Tag properly
+     * Checks whether the function returns the tag correctly
      */
     @Test
     public void getTag() {
@@ -149,6 +149,23 @@ public class NodeTest {
             assertEquals(100, arrNodes[i].getTag());
             assertNotEquals(0,arrNodes[i].getTag());
             assertNotNull(arrNodes[i].getTag());
+        }
+    }
+
+    /**
+     * Checks whether the function prints according to the print format
+     */
+    @Test
+    public void toStringTest()
+    {
+        String [] expected ={"key: 0,point: 0.0,0.0,0.0,weight: 2.0,info: ,tag: 0","key: 1,point: 1.0,0.0,0.0,weight: 2.0,info: ,tag: 0",
+                "key: 2,point: 1.0,2.0,0.0,weight: 2.0,info: ,tag: 0","key: 3,point: 2.0,1.0,0.0,weight: 2.0,info: ,tag: 0",
+               "key: 4,point: 5.0,4.0,0.0,weight: 2.0,info: ,tag: 0" ,"key: 5,point: 5.0,7.0,0.0,weight: 2.0,info: ,tag: 0",
+                "key: 6,point: 8.0,9.0,0.0,weight: 2.0,info: ,tag: 0","key: 7,point: 10.0,10.0,0.0,weight: 2.0,info: ,tag: 0",
+               "key: 8,point: 9.0,10.0,0.0,weight: 2.0,info: ,tag: 0","key: 9,point: 14.0,90.0,0.0,weight: 2.0,info: ,tag: 0"};
+        for (int i = 0; i <arrNodes.length ; i++) {
+            assertEquals(expected[i],arrNodes[i].toString());
+            assertNotEquals("100",arrNodes[i].toString());
         }
     }
 }
