@@ -25,6 +25,9 @@ public class EdgeTest {
 
     }
 
+    /**
+     * Checks whether the function returns the src correctly
+     */
     @Test
     public void getSrc() {
         int [] expected ={0,1,8,10,10,11,4,9,22,2};
@@ -35,6 +38,9 @@ public class EdgeTest {
         }
     }
 
+    /**
+     * Checks whether the function returns the dest correctly
+     */
     @Test
     public void getDest() {
         int [] expected ={0,2,17,10,20,22,2,1,11,10};
@@ -45,6 +51,9 @@ public class EdgeTest {
         }
     }
 
+    /**
+     * Checks whether the function returns the Weight correctly
+     */
     @Test
     public void getWeight() {
         double [] expected ={0,7.6,3,7,9.8,30,1,4,5,8};
@@ -55,6 +64,9 @@ public class EdgeTest {
         }
     }
 
+    /**
+     * Checks whether the function returns the Info correctly
+     */
     @Test
     public void getInfo() {
 
@@ -65,6 +77,9 @@ public class EdgeTest {
         }
     }
 
+    /**
+     * Checks whether the function determines the Info properly
+     */
     @Test
     public void setInfo() {
 
@@ -76,6 +91,9 @@ public class EdgeTest {
         }
     }
 
+    /**
+     * Checks whether the function returns the tag correctly
+     */
     @Test
     public void getTag() {
         
@@ -86,6 +104,9 @@ public class EdgeTest {
         }
     }
 
+    /**
+     * Checks whether the function determines the Tag properly
+     */
     @Test
     public void setTag() {
         for (int i = 0; i <arrEdges.length ; i++) {
@@ -96,14 +117,19 @@ public class EdgeTest {
         }
     }
 
+    /**
+     * Checks whether the function prints according to the print format
+     */
     @Test
     public void toStringTest() {
-//        String [] expected ={" src: 0,dst: 0,weight: 0,info: "" tag: 0"};
-//        for (int i = 0; i <arrEdges.length ; i++) {
-//            assertEquals(expected[i],arrEdges[i].);
-//            assertNotEquals("100",arrEdges[i].);
-//            assertNotNull(arrEdges[i].getWeight());
-//        }
-
+        String [] expected ={"src: 0,dest: 0,weight: 0.0,info: ,tag: 0","src: 1,dest: 2,weight: 7.6,info: ,tag: 0",
+                             "src: 8,dest: 17,weight: 3.0,info: ,tag: 0","src: 10,dest: 10,weight: 7.0,info: ,tag: 0",
+                             "src: 10,dest: 20,weight: 9.8,info: ,tag: 0","src: 11,dest: 22,weight: 30.0,info: ,tag: 0",
+                             "src: 4,dest: 2,weight: 1.0,info: ,tag: 0","src: 9,dest: 1,weight: 4.0,info: ,tag: 0",
+                             "src: 22,dest: 11,weight: 5.0,info: ,tag: 0","src: 2,dest: 10,weight: 8.0,info: ,tag: 0"};
+        for (int i = 0; i <arrEdges.length ; i++) {
+            assertEquals(expected[i],arrEdges[i].toString());
+            assertNotEquals("100",arrEdges[i].toString());
+        }
     }
 }

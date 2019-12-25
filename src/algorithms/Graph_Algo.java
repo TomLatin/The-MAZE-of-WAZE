@@ -1,8 +1,6 @@
 package algorithms;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,17 +8,15 @@ import java.util.List;
 
 import dataStructure.*;
 import utils.Point3D;
-import java.io.Serializable;
 
 /**
- * This empty class represents the set of graph-theory algorithms
- * which should be implemented as part of Ex2 - Do edit this class.
- * @author 
- *
+ * This class represents the set of graph-theory algorithms
+ * which should be implemented as part of Ex2
  */
+
 public class Graph_Algo implements graph_algorithms,Serializable{
 
-	private graph graphAlgo=null;
+	private graph graphAlgo=new DGraph();
 
 	public Graph_Algo(){
 		this.graphAlgo= null;
@@ -34,7 +30,30 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	@Override
 	public void init(String file_name) {
-		
+		try
+		{
+			FileInputStream file = new FileInputStream( file_name);
+			ObjectInputStream in = new ObjectInputStream(file);
+
+			this.graphAlgo = (graph)in.readObject();
+
+			in.close();
+			file.close();
+
+			System.out.println("Object has been deserialized");
+
+		}
+
+		catch(IOException ex)
+		{
+			System.out.println("IOException is caught");
+		}
+
+		catch(ClassNotFoundException ex)
+		{
+			System.out.println("ClassNotFoundException is caught");
+		}
+
 	}
 
 	@Override
@@ -211,6 +230,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		System.out.println(nt.shortestPathDist(1,3));
 		System.out.println(nt.shortestPath(1,3));
 			//	nt.save("test1");
+		nt.init("test1");
 	}
 
 }
