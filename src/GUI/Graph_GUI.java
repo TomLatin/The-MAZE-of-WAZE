@@ -10,15 +10,22 @@ import java.util.List;
 
 public class Graph_GUI {
 
-
-
     private DGraph dGraph = new DGraph();
     private Graph_Algo graphAlgo = new Graph_Algo();
     public static int keyEmpty = 1;
 
     public Graph_GUI(){
-        StdDraw.GUI=this;
+        StdDraw.GUI = this;
         draw(1000,1000,new Range(-100,100),new Range(-100,100));
+    }
+
+    public node_data getNeerNode (double x, double y){
+        for (node_data curr : dGraph.getV()){
+            double currX = curr.getLocation().x();
+            double currY = curr.getLocation().y();
+            if ((x < currX+3.5) && (x > currX-3.5) && (y < currY+3.5) && (y > currY-3.5)) return curr;
+        }
+        return null;
     }
 
     public void addNode(Point3D p,double weight){
@@ -85,10 +92,10 @@ public class Graph_GUI {
                     StdDraw.setPenColor(Color.BLACK);
                     StdDraw.setPenRadius(0.01);
                     StdDraw.line(srcP.x(), srcP.y(), dstP.x(), dstP.y());
-                    StdDraw.setPenColor(Color.BLUE);
+                    StdDraw.setPenColor(Color.MAGENTA);
                     double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
-                    StdDraw.text(tX, tY + 2, "" + weight);
-                    StdDraw.filledRectangle(tX, tY, 1, 1);
+                    StdDraw.text(tX, tY + 5, "" + weight);
+                    StdDraw.filledRectangle(tX, tY, 1.5, 1.5);
                 }
             }
         }

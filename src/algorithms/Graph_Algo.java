@@ -1,8 +1,6 @@
 package algorithms;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,7 +8,6 @@ import java.util.List;
 
 import dataStructure.*;
 import utils.Point3D;
-import java.io.Serializable;
 
 /**
  * This empty class represents the set of graph-theory algorithms
@@ -34,7 +31,15 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	@Override
 	public void init(String file_name) {
-		
+		try {
+			FileInputStream file = new FileInputStream(file_name);
+			ObjectInputStream objectInputStream = new ObjectInputStream(file);
+			graph g = (graph)objectInputStream.readObject();
+			init(g);
+		}
+		catch (Exception e) {
+			System.out.println("Exception is caught");
+		}
 	}
 
 	@Override
@@ -155,11 +160,12 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
+		Double dst = shortestPathDist(src,dest);
 		LinkedList<node_data> toReturn = new LinkedList<node_data>();
 		node_data currV = this.GA.getNode(dest);
 		toReturn.add(currV);
 		while (currV!=this.GA.getNode(src)){
-			node_data toAdd = this.GA.getNode(Integer.parseInt(currV.getInfo()));
+			node_data toAdd = this.GA.getNode(  Integer.parseInt(currV.getInfo()));
 			toReturn.addFirst(toAdd);
 			currV=toAdd;
 		}
