@@ -132,7 +132,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		}
 		this.GA.getNode(src).setWeight(0);
 		node_data min = findMinNode (this.GA.getV());
-		while (min!= this.GA.getNode(dest)){
+		while (min!= this.GA.getNode(dest) && min.getInfo()!="empty"){
 			min.setTag(1);
 			for (edge_data currE : this.GA.getE(min.getKey())){
 				if(min.getWeight()+currE.getWeight()< this.GA.getNode(currE.getDest()).getWeight()) {
@@ -148,7 +148,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	private node_data findMinNode(Collection<node_data> v) {
 		Point3D p = new Point3D(0,0);
-		node_data toReturn= new Node(0,p,Integer.MAX_VALUE,0,"");
+		node_data toReturn= new Node(0,p,Integer.MAX_VALUE,1,"empty");
 		for (node_data currV : v){
 			if (currV.getTag()==0 && currV.getWeight()<toReturn.getWeight()){
 				toReturn = currV;

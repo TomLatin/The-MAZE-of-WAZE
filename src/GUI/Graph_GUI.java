@@ -94,7 +94,18 @@ public class Graph_GUI {
                     StdDraw.line(srcP.x(), srcP.y(), dstP.x(), dstP.y());
                     StdDraw.setPenColor(Color.MAGENTA);
                     double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
-                    StdDraw.text(tX, tY + 5, "" + weight);
+
+
+                    double rx=0 , gy=0;
+                    if (srcP.y()==dstP.y())  rx=6;
+                    else {
+                        double m = (dstP.y()-srcP.y())/(dstP.x()-srcP.x());
+                        if (Math.abs(m)>1) rx=6;
+                        else gy=5;
+                    }
+
+
+                    StdDraw.text(tX + rx, tY + gy, "" + weight);
                     StdDraw.filledRectangle(tX, tY, 1.5, 1.5);
                 }
             }

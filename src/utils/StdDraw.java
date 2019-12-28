@@ -623,8 +623,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// singleton pattern: client can't instantiate
 	private StdDraw() { }
 
-	public static boolean toAddNode = false, toRemoveNode = false, toAddEdge = false, toRemoveEdge = false;
-	private node_data first=null;
+	public static boolean toAddNode = false, toRemoveNode = false, toAddEdge = false, toRemoveEdge = false , destSF=false, destSC=false;
+	private node_data first=null , end=null;
 	// static initializer
 	static {
 		init();
@@ -806,13 +806,27 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		JMenu sp = new JMenu(" Shortest Path   ");
 		algoMenu.add(sp);
 
-		JMenuItem shortDest = new JMenuItem(" Shortest Path Dest   ");
-		shortDest.addActionListener(std);
-		sp.add(shortDest);
+		JMenu dest = new JMenu(" Dest   ");
+		sp.add(dest);
 
-		JMenuItem shortList = new JMenuItem(" Shortest Path List   ");
-		shortList.addActionListener(std);
-		sp.add(shortList);
+		JMenuItem shortDestF = new JMenuItem(" Dest By Frames   ");
+		shortDestF.addActionListener(std);
+		dest.add(shortDestF);
+
+		JMenuItem shortDestC = new JMenuItem(" Dest By Click   ");
+		shortDestC.addActionListener(std);
+		dest.add(shortDestC);
+
+		JMenu list = new JMenu(" List   ");
+		sp.add(list);
+
+		JMenuItem shortListF = new JMenuItem(" List By Frames   ");
+		shortListF.addActionListener(std);
+		list.add(shortListF);
+
+		JMenuItem shortListC = new JMenuItem(" List By Click   ");
+		shortListC.addActionListener(std);
+		list.add(shortListC);
 
 		JMenuItem tsp = new JMenuItem(" Find TSP   ");
 		tsp.addActionListener(std);
@@ -1873,7 +1887,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					JOptionPane.showMessageDialog(f6,"The graph is not connected");
 				}
 				break;
-			case " Shortest Path Dest   ":
+
+			case " Dest By Frames   ":
 				System.out.println("Shorted Path Dest");
 				JFrame f4=new JFrame();
 				String sorce4=JOptionPane.showInputDialog(f4,"Enter src");
@@ -1883,7 +1898,15 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				double temp = GUI.shortestPathDist(src4,dest);
 				JOptionPane.showMessageDialog(f4,"Te shortest Path Dist is "+temp);
 				break;
-			case " Shortest Path List   ":
+
+			case " Dest By Click   ":
+				System.out.println("Shorted Path Dest");
+				frame.addMouseListener(this);
+				destSF=true;
+				break;
+
+
+			case " List By Frames   ":
 				System.out.println("Shortest Path List");
 				JFrame f5=new JFrame();
 				String sorce5=JOptionPane.showInputDialog(f5,"Enter src");
@@ -1907,6 +1930,14 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					GUI.sketch();
 				}
 				break;
+
+			case " List By Click   ":
+				System.out.println("Shortest Path List");
+				frame.addMouseListener(this);
+				destSC=true;
+				break;
+
+
 			case " Find TSP   ":
 				System.out.println("Find TSP ");
 				break;
@@ -1976,7 +2007,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			GUI.sketch();
 			toAddNode = false;
 		}
-		if (toRemoveNode){
+		else if (toRemoveNode){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
 			if (temp!=null){
@@ -1985,18 +2016,21 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			}
 			toRemoveNode = false;
 		}
-		if(toAddEdge){
+		else if(toAddEdge){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
 			if (temp==null) toAddEdge=false;
 			else if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.01);
+				StdDraw.setPenRadius(0.008);
 				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),4);
 			}
 			else if (temp!=null && first!=null){
 				JFrame f1 =new JFrame();
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(temp.getLocation().x(),temp.getLocation().y(),4);
 				String wei=JOptionPane.showInputDialog(f1,"Enter weight");
 				double weight = Double.parseDouble(wei);
 				GUI.addEdge(first.getKey(),temp.getKey(),weight);
@@ -2005,21 +2039,91 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				toAddEdge=false;
 			}
 		}
-		if (toRemoveEdge){
+		else if (toRemoveEdge){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
 			if (temp==null) toAddEdge=false;
 			else if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.01);
+				StdDraw.setPenRadius(0.008);
 				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),4);
 			}
 			else if (temp!=null && first!=null){
-				GUI.deleteEdge(first.getKey(),temp.getKey());
+				end=temp;
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),4);
+				GUI.deleteEdge(first.getKey(),end.getKey());
 				GUI.sketch();
 				first=null;
 				toRemoveEdge=false;
+				first=null;
+				end=null;
+			}
+		}
+		else if (destSF){
+			double locX = mouseX, locY = mouseY;
+			node_data temp = GUI.getNeerNode(locX,locY);
+			if (temp==null) toAddEdge=false;
+			else if (temp!=null && first==null){
+				first = temp;
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),4);
+			}
+			else if (temp!=null && first!=null){
+				end=temp;
+				double dd = GUI.shortestPathDist(first.getKey(), end.getKey());
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),4);
+				JFrame f7 = new JFrame();
+				JOptionPane.showMessageDialog(f7, "Te shortest Path Dist is " + dd);
+				first = null;
+				end = null;
+				end=temp;
+				destSF=false;
+				GUI.sketch();
+			}
+		}
+
+		else if (destSC){
+			double locX = mouseX, locY = mouseY;
+			node_data temp = GUI.getNeerNode(locX,locY);
+			if (temp==null) toAddEdge=false;
+			else if (temp!=null && first==null){
+				first = temp;
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),4);
+			}
+			else if (temp!=null && first!=null){
+				end=temp;
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),4);
+				List<node_data> pathList2 = GUI.shortestPath(first.getKey(),end.getKey());
+				if (pathList2!=null&&!pathList2.isEmpty()) {
+					node_data nodeA = pathList2.get(0);
+					node_data nodeB = null;
+					setPenColor(GREEN);
+					setPenRadius(0.006);
+					String path = "" + nodeA.getKey();
+					for (int i = 1; i < pathList2.size(); i++) {
+						nodeB = pathList2.get(i);
+						line(nodeA.getLocation().x(), nodeA.getLocation().y(), nodeB.getLocation().x(), nodeB.getLocation().y());
+						nodeA = nodeB;
+						path += (" -> " + nodeA.getKey());
+					}
+					JFrame f10 = new JFrame();
+					JOptionPane.showMessageDialog(f10, "Te shortest Path Dist from " + first.getKey() + " to " + end.getKey() + " is : { " + path + " }");
+					GUI.sketch();
+				}
+				first = null;
+				end = null;
+				end=temp;
+				destSC=false;
 			}
 		}
 	}
