@@ -15,16 +15,16 @@ public class NodeTest {
 
     @Before
     public void BeforeEach(){
-        arrNodes[0]=new Node(0,new Point3D(0, 0,0),2.0,0,"");
-        arrNodes[1]=new Node(1,new Point3D(1, 0,0),2.0,0,"");
-        arrNodes[2]=new Node(2,new Point3D(1, 2,0),2.0,0,"");
-        arrNodes[3]=new Node(3,new Point3D(2, 1,0),2.0,0,"");
-        arrNodes[4]=new Node(4,new Point3D(5, 4,0),2.0,0,"");
-        arrNodes[5]=new Node(5,new Point3D(5, 7,0),2.0,0,"");
-        arrNodes[6]=new Node(6,new Point3D(8, 9,0),2.0,0,"");
-        arrNodes[7]=new Node(7,new Point3D(10, 10,0),2.0,0,"");
-        arrNodes[8]=new Node(8,new Point3D(9, 10,0),2.0,0,"");
-        arrNodes[9]=new Node(9,new Point3D(14, 90,0),2.0,0,"");
+        arrNodes[0]=new Node(new Point3D(0, 0,0),2.0);
+        arrNodes[1]=new Node(new Point3D(1, 0,0),2.0);
+        arrNodes[2]=new Node(new Point3D(1, 2,0),2.0);
+        arrNodes[3]=new Node(new Point3D(2, 1,0),2.0);
+        arrNodes[4]=new Node(new Point3D(5, 4,0),2.0);
+        arrNodes[5]=new Node(new Point3D(5, 7,0),2.0);
+        arrNodes[6]=new Node(new Point3D(8, 9,0),2.0);
+        arrNodes[7]=new Node(new Point3D(10, 10,0),2.0);
+        arrNodes[8]=new Node(new Point3D(9, 10,0),2.0);
+        arrNodes[9]=new Node(new Point3D(14, 90,0),2.0);
     }
 
     /**
@@ -33,7 +33,7 @@ public class NodeTest {
     @Test
     public void getKey() {
         for (int i = 0; i < arrNodes.length; i++) {
-            assertEquals(i,arrNodes[i].getKey());
+            assertEquals(i+1,arrNodes[i].getKey());
             assertNotEquals(100,arrNodes[i].getKey());
             assertNotNull(arrNodes[i].getKey());
         }
@@ -153,16 +153,18 @@ public class NodeTest {
     }
 
     /**
-     * Checks whether the function prints according to the print format
+     * Checks whether the function prints according to the print formatץ
+     * Because the tests we have BeforeEach the Node are created 60 times before and so when we run everything together
+     * the Nodes keys will start from 61.Note (!) that if we run it alone the test will NOT work because the key starts from 1
      */
     @Test
     public void toStringTest()
     {
-        String [] expected ={"key: 0,point: 0.0,0.0,0.0,weight: 2.0,info: ,tag: 0","key: 1,point: 1.0,0.0,0.0,weight: 2.0,info: ,tag: 0",
-                "key: 2,point: 1.0,2.0,0.0,weight: 2.0,info: ,tag: 0","key: 3,point: 2.0,1.0,0.0,weight: 2.0,info: ,tag: 0",
-               "key: 4,point: 5.0,4.0,0.0,weight: 2.0,info: ,tag: 0" ,"key: 5,point: 5.0,7.0,0.0,weight: 2.0,info: ,tag: 0",
-                "key: 6,point: 8.0,9.0,0.0,weight: 2.0,info: ,tag: 0","key: 7,point: 10.0,10.0,0.0,weight: 2.0,info: ,tag: 0",
-               "key: 8,point: 9.0,10.0,0.0,weight: 2.0,info: ,tag: 0","key: 9,point: 14.0,90.0,0.0,weight: 2.0,info: ,tag: 0"};
+        String [] expected ={"key: 61,point: 0.0,0.0,0.0,weight: 2.0,info: ,tag: 0","key: 62,point: 1.0,0.0,0.0,weight: 2.0,info: ,tag: 0",
+                "key: 63,point: 1.0,2.0,0.0,weight: 2.0,info: ,tag: 0","key: 64,point: 2.0,1.0,0.0,weight: 2.0,info: ,tag: 0",
+               "key: 65,point: 5.0,4.0,0.0,weight: 2.0,info: ,tag: 0" ,"key: 66,point: 5.0,7.0,0.0,weight: 2.0,info: ,tag: 0",
+                "key: 67,point: 8.0,9.0,0.0,weight: 2.0,info: ,tag: 0","key: 68,point: 10.0,10.0,0.0,weight: 2.0,info: ,tag: 0",
+               "key: 69,point: 9.0,10.0,0.0,weight: 2.0,info: ,tag: 0","key: 70,point: 14.0,90.0,0.0,weight: 2.0,info: ,tag: 0"};
         for (int i = 0; i <arrNodes.length ; i++) {
             assertEquals(expected[i],arrNodes[i].toString());
             assertNotEquals("100",arrNodes[i].toString());

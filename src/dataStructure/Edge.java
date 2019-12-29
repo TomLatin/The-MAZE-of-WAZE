@@ -24,12 +24,12 @@ public class Edge implements edge_data,Serializable{
     /**
      *A constructor that accepts parameters
      */
-    public Edge(int s, int d, double w, String i, int t){
+    public Edge(int s, int d, double w){
         this.src=s;
         this.dest=d;
         this.weight=w;
-        this.info=i;
-        this.tag=t;
+        this.info="";
+        this.tag=0;
     }
 
     /**

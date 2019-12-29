@@ -12,7 +12,6 @@ public class Graph_GUI {
 
     private DGraph dGraph = new DGraph();
     private Graph_Algo graphAlgo = new Graph_Algo();
-    public static int keyEmpty = 1;
 
     public Graph_GUI(){
         StdDraw.GUI = this;
@@ -29,8 +28,7 @@ public class Graph_GUI {
     }
 
     public void addNode(Point3D p,double weight){
-        keyEmpty=this.dGraph.findNextKey();
-        Node temp = new Node(keyEmpty,p,weight,0,"");
+        Node temp = new Node(p,weight);
         dGraph.addNode(temp);
     }
 
@@ -68,7 +66,6 @@ public class Graph_GUI {
     public void initGraph(String filename){
         graphAlgo.init(filename);
         dGraph=(DGraph)graphAlgo.copy();
-        keyEmpty=dGraph.findNextKey();
     }
 
     public void draw(int width, int height, Range x, Range y){

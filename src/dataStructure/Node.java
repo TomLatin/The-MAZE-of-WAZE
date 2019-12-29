@@ -10,12 +10,13 @@ public class Node implements node_data,Serializable {
     private double weight;
     private int tag;
     private String info;
+    private static int nextKey = 1;
 
     /**
      *The default constructor
      */
     public Node(){
-        this.key=0;
+        this.key=nextKey++;
         this.point=null;
         this.weight=0;
         this.tag=0;
@@ -26,12 +27,12 @@ public class Node implements node_data,Serializable {
     /**
      *A constructor that accepts parameters
      */
-    public Node(int key, Point3D point, double weight, int tag, String info){
-        this.key=key;
+    public Node( Point3D point, double weight){
+        this.key=nextKey++;
         this.point=point;
         this.weight=weight;
-        this.tag=tag;
-        this.info=info;
+        this.tag=0;
+        this.info="";
     }
 
     /**
@@ -127,4 +128,5 @@ public class Node implements node_data,Serializable {
     {
         return "key: "+this.key+",point: "+this.point+",weight: "+this.weight+",info: "+this.info+",tag: "+this.tag;
     }
+
 }

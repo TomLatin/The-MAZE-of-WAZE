@@ -148,7 +148,9 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	private node_data findMinNode(Collection<node_data> v) {
 		Point3D p = new Point3D(0,0);
-		node_data toReturn= new Node(0,p,Integer.MAX_VALUE,1,"empty");
+		node_data toReturn= new Node(p,Integer.MAX_VALUE);
+		toReturn.setInfo("empty");
+		toReturn.setTag(1);
 		for (node_data currV : v){
 			if (currV.getTag()==0 && currV.getWeight()<toReturn.getWeight()){
 				toReturn = currV;
@@ -200,9 +202,9 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		Point3D x = new Point3D(1,4);
 		Point3D y = new Point3D(2,5);
 		Point3D q = new Point3D(4,3);
-		node_data a = new Node(1, x,2,0,"asf");
-		node_data b = new Node(2,y,4,0,"ads");
-		node_data c = new Node(3,q,50,0,"sf");
+		node_data a = new Node( x,2);
+		node_data b = new Node(y,4);
+		node_data c = new Node(q,50);
 		DGraph d = new DGraph();
 		d.addNode(a);
 		d.addNode(b);

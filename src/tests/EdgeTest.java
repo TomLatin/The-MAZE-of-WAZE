@@ -13,15 +13,15 @@ public class EdgeTest {
     @Before
     public void BeforeEach() {
         arrEdges[0]=new Edge();
-        arrEdges[1]=new Edge(1,2,7.6,"",0);
-        arrEdges[2]=new Edge(8,17,3,"",0);
-        arrEdges[3]=new Edge(10,10,7,"",0);
-        arrEdges[4]=new Edge(10,20,9.8,"",0);
-        arrEdges[5]=new Edge(11,22,30,"",0);
-        arrEdges[6]=new Edge(4,2,1,"",0);
-        arrEdges[7]=new Edge(9,1,4,"",0);
-        arrEdges[8]=new Edge(22,11,5,"",0);
-        arrEdges[9]=new Edge(2,10,8,"",0);
+        arrEdges[1]=new Edge(1,2,7.6);
+        arrEdges[2]=new Edge(8,17,3);
+        arrEdges[3]=new Edge(10,10,7);
+        arrEdges[4]=new Edge(10,20,9.8);
+        arrEdges[5]=new Edge(11,22,30);
+        arrEdges[6]=new Edge(4,2,1);
+        arrEdges[7]=new Edge(9,1,4);
+        arrEdges[8]=new Edge(22,11,5);
+        arrEdges[9]=new Edge(2,10,8);
 
     }
 
