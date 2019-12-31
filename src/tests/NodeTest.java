@@ -15,16 +15,15 @@ public class NodeTest {
 
     @Before
     public void BeforeEach(){
-        arrNodes[0]=new Node(new Point3D(0, 0,0),2.0);
-        arrNodes[1]=new Node(new Point3D(1, 0,0),2.0);
-        arrNodes[2]=new Node(new Point3D(1, 2,0),2.0);
-        arrNodes[3]=new Node(new Point3D(2, 1,0),2.0);
-        arrNodes[4]=new Node(new Point3D(5, 4,0),2.0);
-        arrNodes[5]=new Node(new Point3D(5, 7,0),2.0);
-        arrNodes[6]=new Node(new Point3D(8, 9,0),2.0);
-        arrNodes[7]=new Node(new Point3D(10, 10,0),2.0);
-        arrNodes[8]=new Node(new Point3D(9, 10,0),2.0);
-        arrNodes[9]=new Node(new Point3D(14, 90,0),2.0);
+        arrNodes[0]=new Node(1,new Point3D(0, 0,0));
+        arrNodes[1]=new Node(2,new Point3D(1, 0,0));
+        arrNodes[2]=new Node(3,new Point3D(1, 2,0));
+        arrNodes[3]=new Node(4,new Point3D(2, 1,0));
+        arrNodes[4]=new Node(5,new Point3D(5, 4,0));
+        arrNodes[5]=new Node(6,new Point3D(5, 7,0));
+        arrNodes[6]=new Node(7,new Point3D(8, 9,0));
+        arrNodes[8]=new Node(8,new Point3D(9, 10,0));
+        arrNodes[9]=new Node(9,new Point3D(14, 90,0));
     }
 
     /**

@@ -31,9 +31,10 @@ public class DGraphTest {
     @Before
     public void BeforeEach() {
         //Create Dgraph: a0 -> b0
-        Node a0 = new Node( x,2);
-        Node b0 = new Node(y,4);
         DGraph g0 = new DGraph();
+        Node a0 = new Node(g0.findNextKey(), x);
+        Node b0 = new Node(g0.findNextKey(), y);
+
         g0.addNode(a0);
         g0.addNode(b0);
         g0.connect(a0.getKey(),b0.getKey(),4);
@@ -47,10 +48,10 @@ public class DGraphTest {
 
         //---------------------------------------------------------//
         //Create Dgraph: a1,b1 (standalone)
-
-        Node a1 = new Node( x,2);
-        Node b1 = new Node(y,4);
         DGraph g1 = new DGraph();
+        Node a1 = new Node(g1.findNextKey(), x);
+        Node b1 = new Node(g1.findNextKey(),y);
+
         g1.addNode(a1);
         g1.addNode(b1);
 
@@ -64,11 +65,11 @@ public class DGraphTest {
                          c2 -> a2
                          a2 -> c2
          */
-
-        Node a2 = new Node( x,15);
-        Node b2 = new Node(y,4);
-        Node c2 = new Node(z,5);
         DGraph g2 = new DGraph();
+        Node a2 = new Node(g2.findNextKey(), x);
+        Node b2 = new Node(g2.findNextKey(),y);
+        Node c2 = new Node(g2.findNextKey(),z);
+
         g2.addNode(a2);
         g2.addNode(b2);
         g2.addNode(c2);
@@ -98,13 +99,13 @@ public class DGraphTest {
                          d3 -> e3
                          e3 -> b3
          */
-
-        Node a3 = new Node( x,15);
-        Node b3 = new Node(y,4);
-        Node c3 = new Node(z,5);
-        Node d3 = new Node(t,4);
-        Node e3 = new Node(r,5);
         DGraph g3 = new DGraph();
+        Node a3 = new Node(g3.findNextKey(), x);
+        Node b3 = new Node(g3.findNextKey(), y);
+        Node c3 = new Node(g3.findNextKey(), z);
+        Node d3 = new Node(g3.findNextKey(), t);
+        Node e3 = new Node(g3.findNextKey(), r);
+
         g3.addNode(a3);
         g3.addNode(b3);
         g3.addNode(c3);

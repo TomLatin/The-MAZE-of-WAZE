@@ -623,8 +623,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// singleton pattern: client can't instantiate
 	private StdDraw() { }
 
-	public static boolean toAddNode = false, toRemoveNode = false, toAddEdge = false, toRemoveEdge = false , destSF=false, destSC=false;
+	public static boolean toAddNode = false, toRemoveNode = false, toAddEdge = false, toRemoveEdge = false , destSF=false, destSC=false, TSPsel=false;
 	private node_data first=null , end=null;
+	private List <Integer>selected = new LinkedList<>();
 	// static initializer
 	static {
 		init();
@@ -1814,32 +1815,70 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 			case " Add Node By Frames  ":
 				JFrame f = new JFrame();
-				String X=JOptionPane.showInputDialog(f,"Enter X");
-				String Y=JOptionPane.showInputDialog(f,"Enter Y");
-				double locX = Double.parseDouble(X);
-				double locY = Double.parseDouble(Y);
-				GUI.addNode(new Point3D(locX, locY), 0);
+				double locX = 101;
+				double locY = 101;
+				while (locX>100 || locX<-100) {
+					String X = JOptionPane.showInputDialog(f, "Enter X [-100,100]");
+					try {
+						locX = Double.parseDouble(X);
+					}catch(Exception e1) {
+						locX=101;
+					}
+				}
+				while (locY>100 || locY<-100) {
+					String Y = JOptionPane.showInputDialog(f, "Enter Y [-100,100]");
+					try {
+						locY = Double.parseDouble(Y);
+					}catch(Exception e1) {
+						locY=101;
+					}
+				}
+				GUI.addNode(new Point3D(locX, locY));
 				GUI.sketch();
 				break;
 
 			case " Add Node By Click  ":
+				setPenColor(GREEN);
+				StdDraw.filledRectangle(90,-90,4,4);
 				frame.addMouseListener(this);
 				toAddNode=true;
 				break;
 
 			case " Add Edge By Frames  ":
 				JFrame f1 =new JFrame();
-				String src=JOptionPane.showInputDialog(f1,"Enter src");
-				String des= JOptionPane.showInputDialog(f1,"Enter des");
-				String wei=JOptionPane.showInputDialog(f1,"Enter weight");
-				int Isrc = Integer.parseInt(src);
-				int Idest = Integer.parseInt(des);
-				double weight = Double.parseDouble(wei);
+				int Isrc = 0, Idest = 0;
+				while (Isrc < 1) {
+					String src = JOptionPane.showInputDialog(f1, "Enter src (KEY)");
+					try {
+						Isrc = Integer.parseInt(src);
+					} catch (Exception e1) {
+						Isrc=0;
+					}
+				}
+				while (Idest < 1) {
+					String dest = JOptionPane.showInputDialog(f1, "Enter dest (KEY)");
+					try {
+						Idest = Integer.parseInt(dest);
+					} catch (Exception e1) {
+						Idest=0;
+					}
+				}
+				double weight = -1;
+				while (weight < 0) {
+					String wei = JOptionPane.showInputDialog(f1, "Enter weight (+)");
+					try {
+						weight = Double.parseDouble(wei);
+					} catch (Exception e1) {
+						weight = -1;
+					}
+				}
 				GUI.addEdge(Isrc,Idest,weight);
 				GUI.sketch();
 				break;
 
 			case " Add Edge By Click  ":
+				setPenColor(GREEN);
+				StdDraw.filledRectangle(90,-90,4,4);
 				frame.addMouseListener(this);
 				toAddEdge=true;
 				break;
@@ -1847,8 +1886,15 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			case " Remove Node By Frames  ":
 				System.out.println("Node Removed");
 				JFrame f2=new JFrame();
-				String pKey=JOptionPane.showInputDialog(f2,"Enter Key");
-				int key = Integer.parseInt(pKey);
+				int key =0;
+				while (key <1) {
+					String pKey = JOptionPane.showInputDialog(f2, "Enter Key");
+					try {
+						key = Integer.parseInt(pKey);
+					} catch (Exception e1) {
+						key = 0;
+					}
+				}
 				GUI.deleteNode(key);
 				GUI.sketch();
 				break;
@@ -1861,10 +1907,23 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			case " Remove Edge By Frames  ":
 				System.out.println("Edge Removed");
 				JFrame f3=new JFrame();
-				String src3=JOptionPane.showInputDialog(f3,"Enter src");
-				String des3=JOptionPane.showInputDialog(f3,"Enter des");
-				int sorce = Integer.parseInt(src3);
-				int destenation = Integer.parseInt(des3);
+				int sorce =0, destenation=0;
+				while (sorce < 1) {
+					String src3 = JOptionPane.showInputDialog(f3, "Enter src (KEY)");
+					try {
+						sorce = Integer.parseInt(src3);
+					} catch (Exception e1) {
+						sorce = 0;
+					}
+				}
+				while (destenation < 1) {
+					String des3 = JOptionPane.showInputDialog(f3, "Enter des (KEY)");
+					try {
+						destenation = Integer.parseInt(des3);
+					} catch (Exception e1) {
+						destenation = 0;
+					}
+				}
 				GUI.deleteEdge(sorce,destenation);
 				GUI.sketch();
 				break;
@@ -1891,11 +1950,24 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			case " Dest By Frames   ":
 				System.out.println("Shorted Path Dest");
 				JFrame f4=new JFrame();
-				String sorce4=JOptionPane.showInputDialog(f4,"Enter src");
-				String destenation4=JOptionPane.showInputDialog(f4,"Enter dest");
-				int src4 = Integer.parseInt(sorce4);
-				int dest = Integer.parseInt(destenation4);
-				double temp = GUI.shortestPathDist(src4,dest);
+				int sorce1 =0, destenation1=0;
+				while (sorce1 < 1) {
+					String src4 = JOptionPane.showInputDialog(f4, "Enter src (KEY)");
+					try {
+						sorce1 = Integer.parseInt(src4);
+					} catch (Exception e1) {
+						sorce1 = 0;
+					}
+				}
+				while (destenation1 < 1) {
+					String des4 = JOptionPane.showInputDialog(f4, "Enter des (KEY)");
+					try {
+						destenation1 = Integer.parseInt(des4);
+					} catch (Exception e1) {
+						destenation1 = 0;
+					}
+				}
+				double temp = GUI.shortestPathDist(sorce1,destenation1);
 				JOptionPane.showMessageDialog(f4,"Te shortest Path Dist is "+temp);
 				break;
 
@@ -1909,11 +1981,24 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			case " List By Frames   ":
 				System.out.println("Shortest Path List");
 				JFrame f5=new JFrame();
-				String sorce5=JOptionPane.showInputDialog(f5,"Enter src");
-				String destenation5=JOptionPane.showInputDialog(f5,"Enter dest");
-				int src5 = Integer.parseInt(sorce5);
-				int dest5 = Integer.parseInt(destenation5);
-				List<node_data> pathList = GUI.shortestPath(src5,dest5);
+				int sorce2 =0, destenation2=0;
+				while (sorce2 < 1) {
+					String src5 = JOptionPane.showInputDialog(f5, "Enter src (KEY)");
+					try {
+						sorce2 = Integer.parseInt(src5);
+					} catch (Exception e1) {
+						sorce2 = 0;
+					}
+				}
+				while (destenation2 < 1) {
+					String des5 = JOptionPane.showInputDialog(f5, "Enter des (KEY)");
+					try {
+						destenation2 = Integer.parseInt(des5);
+					} catch (Exception e1) {
+						destenation2 = 0;
+					}
+				}
+				List<node_data> pathList = GUI.shortestPath(sorce2,destenation2);
 				if (pathList!=null&&!pathList.isEmpty()){
 					node_data nodeA = pathList.get(0);
 					node_data nodeB = null;
@@ -1926,7 +2011,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 						nodeA = nodeB;
 						path+=(" -> "+nodeA.getKey());
 					}
-					JOptionPane.showMessageDialog(f5,"Te shortest Path Dist from "+src5+" to "+dest5+" is : { "+path+" }");
+					JOptionPane.showMessageDialog(f5,"Te shortest Path Dist from "+sorce2+" to "+destenation2+" is : { "+path+" }");
 					GUI.sketch();
 				}
 				break;
@@ -1940,6 +2025,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 			case " Find TSP   ":
 				System.out.println("Find TSP ");
+				setPenColor(GREEN);
+				StdDraw.filledRectangle(90,-90,4,4);
+				frame.addMouseListener(this);
+				TSPsel=true;
 				break;
 		}
 	}
@@ -2001,12 +2090,22 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
+
 		if (toAddNode) {
 			double locX = mouseX, locY = mouseY;
-			GUI.addNode(new Point3D(locX, locY), 0);
-			GUI.sketch();
-			toAddNode = false;
+			if(locX<92 && locX>88 && locY<-88 && locY>-92){
+				toAddNode = false;
+				GUI.sketch();
+			}
+			else {
+				GUI.addNode(new Point3D(locX, locY));
+				GUI.sketch();
+				setPenColor(GREEN);
+				StdDraw.filledRectangle(90,-90,4,4);
+			}
 		}
+
+
 		else if (toRemoveNode){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
@@ -2016,8 +2115,14 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			}
 			toRemoveNode = false;
 		}
-		else if(toAddEdge){
+
+
+		else if (toAddEdge){
 			double locX = mouseX, locY = mouseY;
+			if(locX<92 && locX>88 && locY<-88 && locY>-92){
+				toAddEdge = false;
+				GUI.sketch();
+			}
 			node_data temp = GUI.getNeerNode(locX,locY);
 			if (temp==null) toAddEdge=false;
 			else if (temp!=null && first==null){
@@ -2036,13 +2141,16 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				GUI.addEdge(first.getKey(),temp.getKey(),weight);
 				GUI.sketch();
 				first=null;
-				toAddEdge=false;
+				setPenColor(GREEN);
+				StdDraw.filledRectangle(90,-90,4,4);
 			}
 		}
+
+
 		else if (toRemoveEdge){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
-			if (temp==null) toAddEdge=false;
+			if (temp==null) toRemoveEdge=false;
 			else if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
@@ -2062,6 +2170,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				end=null;
 			}
 		}
+
+
 		else if (destSF){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
@@ -2087,6 +2197,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				GUI.sketch();
 			}
 		}
+
 
 		else if (destSC){
 			double locX = mouseX, locY = mouseY;
@@ -2125,6 +2236,36 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				end=temp;
 				destSC=false;
 			}
+		}
+
+
+		else if (TSPsel){
+			double locX = mouseX, locY = mouseY;
+			node_data temp = GUI.getNeerNode(locX,locY);
+			if(locX<92 && locX>88 && locY<-88 && locY>-92){
+				List<node_data> TspSel = GUI.TSP(selected);
+				String path = "";
+				node_data nodeA = TspSel.get(0);
+				for (node_data curr : TspSel){
+					node_data nodeB = curr;
+					line(nodeA.getLocation().x(), nodeA.getLocation().y(), nodeB.getLocation().x(), nodeB.getLocation().y());
+					nodeA = nodeB;
+					path+=(" -> "+curr.getKey());
+				}
+				path=path.substring(4);
+				JFrame f11 = new JFrame();
+				JOptionPane.showMessageDialog(f11, "Te shortest Path is : { " + path + " }");
+				GUI.sketch();
+				TSPsel=false;
+			}
+			else if (temp==null) TSPsel=false;
+			else if(temp!=null){
+				this.selected.add(temp.getKey());
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(temp.getLocation().x(),temp.getLocation().y(),4);
+			}
+
 		}
 	}
 

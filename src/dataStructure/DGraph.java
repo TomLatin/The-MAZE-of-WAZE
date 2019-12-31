@@ -65,22 +65,38 @@ public class DGraph implements graph,Serializable{
 
 	/**
 	 * @param n The Node we want added to the Dgraph
-	 * We will try to add the Node to the graph, if this is not possible because
-	 * this node already exists in the graph we will print an error to the user.
+	 * We add the Node to the graph, if this node already exists in the graph we will replace him with the new node.
 	 * we advance nodesCount and modeCount
 	 */
 	@Override
 	public void addNode(node_data n) {
-		try {
+		if (this.nodeGraph.get(n.getKey())!=null){
+			HashMap<Integer,edge_data> src = new HashMap<Integer, edge_data>();
+			if (this.edgeGraph.get(n.getKey())!=null) {
+				src = this.edgeGraph.get(n.getKey());
+			}
+			HashMap <Integer,Double> dest =new HashMap<Integer, Double>();
+			Iterator iter = this.edgeGraph.entrySet().iterator();
+			while (iter.hasNext()) { //add all the edge that look like x -> node
+				Map.Entry mapElement = (Map.Entry) iter.next();
+				int currSrc = ((int) mapElement.getKey());
+				if (this.edgeGraph.get(currSrc).get(n.getKey()) != null) ;
+				dest.put(currSrc,this.edgeGraph.get(currSrc).get(n.getKey()).getWeight());
+			}
+			removeNode(n.getKey());
 			this.nodeGraph.put(n.getKey(),n);
+			this.edgeGraph.put(n.getKey(),src);
+			if (dest!= null){
+				for (Integer i : dest.keySet()){
+					connect(i,n.getKey(),dest.get(i));
+				}
+			}
+		}
+		else{
 			this.nodesCount++;
-			this.modeCount++;
-
+			this.nodeGraph.put(n.getKey(),n);
 		}
-		catch (Exception e)
-		{
-			System.out.println("ERR: The Node already exists in the graph");
-		}
+		this.modeCount++;
 	}
 
 	/**
@@ -99,7 +115,8 @@ public class DGraph implements graph,Serializable{
 				if (this.edgeGraph.get(src).get(dest) == null) { //the edge not exists
 					this.edgeGraph.get(src).put(dest, newEdge);
 				} else {
-					System.out.println("ERR: The Edge exists");
+					removeEdge(src, dest);
+					this.edgeGraph.get(src).put(dest, newEdge);
 				}
 			} else { // no hash map meaning src has no neighbors
 				HashMap<Integer, edge_data> toAdd = new HashMap<Integer, edge_data>();
@@ -126,10 +143,14 @@ public class DGraph implements graph,Serializable{
 	 * @param node_id
 	 * @return Collection that representing the edges in the graph
 	 */
-	//try..catch
 	@Override
 	public Collection<edge_data> getE(int node_id) {
-		return this.edgeGraph.get(node_id).values();
+		try{
+			return this.edgeGraph.get(node_id).values();
+		}
+		catch (NullPointerException e){
+			return null;
+		}
 	}
 
 	/**
@@ -148,8 +169,7 @@ public class DGraph implements graph,Serializable{
 			while (iter.hasNext()) { //remove all the edge that look like x -> node
 				Map.Entry mapElement = (Map.Entry) iter.next();
 				int currSrc = ((int) mapElement.getKey());
-				if (this.edgeGraph.get(currSrc).get(key) != null) ;
-				removeEdge(currSrc, key);
+				if (this.edgeGraph.get(currSrc).get(key) != null) removeEdge(currSrc, key);
 			}
 			this.nodesCount--;
 			this.modeCount++;
@@ -197,4 +217,14 @@ public class DGraph implements graph,Serializable{
 		return this.modeCount;
 	}
 
+	/**
+	 * @return next valid key number that not used in this graph
+	 */
+	public int findNextKey(){
+		int i = 1;
+		while (this.nodeGraph.get(i)!=null){
+			i++;
+		}
+		return i;
+	}
 }
