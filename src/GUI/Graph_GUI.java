@@ -124,15 +124,15 @@ public class Graph_GUI {
                         double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
 
                         double rx = 0, gy = 0;
-                        if (srcP.y() == dstP.y()) rx = 6;
-                        else if (srcP.x() == dstP.x()) gy = 5;
+                        if (srcP.y() == dstP.y()) gy = 5;
+                        else if (srcP.x() == dstP.x()) rx = 6 ;
                         else {
                             double m = (dstP.y() - srcP.y()) / (dstP.x() - srcP.x());
                             if (Math.abs(m) > 1) rx = 6;
                             else gy = 5;
                         }
 
-                        StdDraw.text(tX + rx, tY + gy, "" + weight);
+                        StdDraw.text(tX + rx, tY + gy, "" + (int)weight);
                         StdDraw.filledRectangle(tX, tY, 1.5, 1.5);
                     }
                 }
@@ -149,43 +149,18 @@ public class Graph_GUI {
     }
 
     public static void main(String[] args) {
-        Point3D x = new Point3D(14,4,0);
-        Point3D x2 = new Point3D(-75,14,0);
-        Point3D x3 = new Point3D(80,5,0);
-        Point3D x4 = new Point3D(1,4,0);
-        Point3D x5 = new Point3D(-5,1,0);
-        Point3D x6 = new Point3D(8,3,0);
-        Point3D x7 = new Point3D(4,1,0);
-        Point3D x8 = new Point3D(75,14,0);
-        node_data a1 = new Node(1,x);
-        node_data a2 = new Node(2,x2);
-        node_data a3 = new Node(3,x3);
-        node_data a4 = new Node(4,x4);
-        node_data a5 = new Node(5,x5);
-        node_data a6 = new Node(6,x6);
-        node_data a7 = new Node(7,x7);
-        node_data a8 = new Node(8,x8);
         DGraph d = new DGraph();
-        d.addNode(a1);
-        d.addNode(a2);
-        d.addNode(a3);
-        d.addNode(a4);
-        d.addNode(a5);
-        d.addNode(a6);
-        d.addNode(a7);
-        d.addNode(a8);
-        d.connect(a1.getKey(),a2.getKey(),5);
-        d.connect(a1.getKey(),a5.getKey(),2);
-        d.connect(a1.getKey(),a3.getKey(),6);
-        d.connect(a1.getKey(),a6.getKey(),5);
-        d.connect(a3.getKey(),a4.getKey(),7);
-        d.connect(a2.getKey(),a8.getKey(),8);
-        d.connect(a2.getKey(),a7.getKey(),3);
-        d.connect(a5.getKey(),a1.getKey(),5);
-        d.connect(a5.getKey(),a6.getKey(),2);
-        d.connect(a6.getKey(),a1.getKey(),3);
-        d.connect(a6.getKey(),a5.getKey(),3);
-        d.connect(a6.getKey(),a7.getKey(),3);
+        for (int i = 0; i <=8; i++) {
+            for (int j = 1; j <= 9; j++) {
+                int key = (i*9)+(j);
+                Point3D  p = new Point3D(((j-1)*20)-80,(i*20)-80);
+                node_data curr = new Node(key,p);
+                d.addNode(curr);
+                if (((key-1)%9)!=0) d.connect(key-1,key,1+((int)(Math.random()*20)));
+                if (key>9) d.connect(key-9,key,1+(int)(Math.random()*20));
+            }
+        }
+        d.connect(81,1,9999999);
         Graph_GUI g = new Graph_GUI(d);
     }
 }

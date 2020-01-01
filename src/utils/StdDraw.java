@@ -623,7 +623,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// singleton pattern: client can't instantiate
 	private StdDraw() { }
 
-	public static boolean toAddNode = false, toRemoveNode = false, toAddEdge = false, toRemoveEdge = false , destSF=false, destSC=false, TSPsel=false;
+	public static boolean toAddNode = false, toRemoveNode = false, toAddEdge = false, toAddREdge = false, toRemoveEdge = false , destSF=false, destSC=false, TSPsel=false;
 	private node_data first=null , end=null;
 	private List <Integer>selected = new LinkedList<>();
 	// static initializer
@@ -788,6 +788,12 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		addEdgeC.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		addE.add(addEdgeC);
+
+		JMenuItem addEdgeR = new JMenuItem(" Add By Click Real Weight ");
+		addEdgeR.addActionListener(std);
+		addEdgeR.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		addE.add(addEdgeR);
 
 		JMenuItem removeEdgeF = new JMenuItem(" Remove Edge By Frames  ");
 		removeEdgeF.addActionListener(std);
@@ -1883,6 +1889,15 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				toAddEdge=true;
 				break;
 
+
+			case " Add By Click Real Weight ":
+				setPenColor(GREEN);
+				StdDraw.filledRectangle(90,-90,4,4);
+				frame.addMouseListener(this);
+				toAddREdge=true;
+				break;
+
+
 			case " Remove Node By Frames  ":
 				System.out.println("Node Removed");
 				JFrame f2=new JFrame();
@@ -2124,8 +2139,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				GUI.sketch();
 			}
 			node_data temp = GUI.getNeerNode(locX,locY);
-			if (temp==null) toAddEdge=false;
-			else if (temp!=null && first==null){
+			//if (temp==null) toAddEdge=false;
+			 if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
 				StdDraw.setPenRadius(0.008);
@@ -2136,8 +2151,15 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				StdDraw.setPenColor(Color.GREEN);
 				StdDraw.setPenRadius(0.008);
 				StdDraw.circle(temp.getLocation().x(),temp.getLocation().y(),4);
-				String wei=JOptionPane.showInputDialog(f1,"Enter weight");
-				double weight = Double.parseDouble(wei);
+				double weight = 0;
+				while (weight<1) {
+					String wei = JOptionPane.showInputDialog(f1, "Enter weight");
+					try {
+						weight = Double.parseDouble(wei);
+					}catch (Exception e1){
+						weight=0;
+					}
+				}
 				GUI.addEdge(first.getKey(),temp.getKey(),weight);
 				GUI.sketch();
 				first=null;
@@ -2146,12 +2168,38 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			}
 		}
 
+		else if (toAddREdge) {
+			double locX = mouseX, locY = mouseY;
+			if (locX < 92 && locX > 88 && locY < -88 && locY > -92) {
+				toAddREdge = false;
+				GUI.sketch();
+			}
+			node_data temp = GUI.getNeerNode(locX, locY);
+			//if (temp==null) toAddEdge=false;
+			if (temp != null && first == null) {
+				first = temp;
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(first.getLocation().x(), first.getLocation().y(), 4);
+			} else if (temp != null && first != null) {
+				JFrame f1 = new JFrame();
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.008);
+				StdDraw.circle(temp.getLocation().x(), temp.getLocation().y(), 4);
+				double weight = Math.sqrt(((first.getLocation().x()-temp.getLocation().x())*(first.getLocation().x()-temp.getLocation().x()))+((first.getLocation().y()-temp.getLocation().y())*(first.getLocation().y()-temp.getLocation().y())));
+				GUI.addEdge(first.getKey(), temp.getKey(), (int)weight/10);
+				GUI.sketch();
+				first = null;
+				setPenColor(GREEN);
+				StdDraw.filledRectangle(90, -90, 4, 4);
+			}
+		}
 
 		else if (toRemoveEdge){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
-			if (temp==null) toRemoveEdge=false;
-			else if (temp!=null && first==null){
+			//if (temp==null) toRemoveEdge=false;
+			if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
 				StdDraw.setPenRadius(0.008);
@@ -2175,8 +2223,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		else if (destSF){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
-			if (temp==null) toAddEdge=false;
-			else if (temp!=null && first==null){
+			//if (temp==null) toAddEdge=false;
+			if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
 				StdDraw.setPenRadius(0.008);
@@ -2202,8 +2250,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		else if (destSC){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
-			if (temp==null) toAddEdge=false;
-			else if (temp!=null && first==null){
+			//if (temp==null) toAddEdge=false;
+			if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
 				StdDraw.setPenRadius(0.008);
@@ -2244,21 +2292,27 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			node_data temp = GUI.getNeerNode(locX,locY);
 			if(locX<92 && locX>88 && locY<-88 && locY>-92){
 				List<node_data> TspSel = GUI.TSP(selected);
-				String path = "";
-				node_data nodeA = TspSel.get(0);
-				for (node_data curr : TspSel){
-					node_data nodeB = curr;
-					line(nodeA.getLocation().x(), nodeA.getLocation().y(), nodeB.getLocation().x(), nodeB.getLocation().y());
-					nodeA = nodeB;
-					path+=(" -> "+curr.getKey());
+				if (TspSel!=null) {
+					String path = "";
+					node_data nodeA = TspSel.get(0);
+					for (node_data curr : TspSel) {
+						node_data nodeB = curr;
+						line(nodeA.getLocation().x(), nodeA.getLocation().y(), nodeB.getLocation().x(), nodeB.getLocation().y());
+						nodeA = nodeB;
+						path += (" -> " + curr.getKey());
+					}
+					path = path.substring(4);
+					JFrame f11 = new JFrame();
+					JOptionPane.showMessageDialog(f11, "Te shortest Path is : { " + path + " }");
+				}else{
+					JFrame f11 = new JFrame();
+					JOptionPane.showMessageDialog(f11, "this point isn't connected");
 				}
-				path=path.substring(4);
-				JFrame f11 = new JFrame();
-				JOptionPane.showMessageDialog(f11, "Te shortest Path is : { " + path + " }");
 				GUI.sketch();
+				selected=new LinkedList<>();
 				TSPsel=false;
 			}
-			else if (temp==null) TSPsel=false;
+			//else if (temp==null) TSPsel=false;
 			else if(temp!=null){
 				this.selected.add(temp.getKey());
 				StdDraw.setPenColor(Color.GREEN);

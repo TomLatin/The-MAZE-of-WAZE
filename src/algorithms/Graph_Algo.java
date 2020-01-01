@@ -10,24 +10,24 @@ import dataStructure.*;
 import utils.Point3D;
 
 /**
- * This empty class represents the set of graph-theory algorithms
- * which should be implemented as part of Ex2 - Do edit this class.
+ * This class represents the set of graph-theory algorithms
+ * which should be implemented as part of Ex2
  * @author 
  *
  */
 public class Graph_Algo implements graph_algorithms,Serializable{
 
-	public graph GraphAlgo;
+	public graph Greph;
 
 	public Graph_Algo(){
-		this.GraphAlgo = new DGraph();
+		this.Greph = new DGraph();
 	}
+
 
 
 	@Override
 	public void init(graph g) {
-		this.GraphAlgo = g;
-
+		this.Greph = g;
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 			FileOutputStream file = new FileOutputStream(file_name);
 			ObjectOutputStream out = new ObjectOutputStream(file);
 
-			out.writeObject(this.GraphAlgo);
+			out.writeObject(this.Greph);
 
 			out.close();
 			file.close();
@@ -66,17 +66,18 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	@Override
 	public boolean isConnected() {
-		if (GraphAlgo.getV().isEmpty()) return true;
-		setZeroTag(GraphAlgo);
-		int keyOfFirst = GraphAlgo.getV().iterator().next().getKey();
-		DFSUtil(keyOfFirst);
-		for (node_data curr : GraphAlgo.getV()){
+		graph copied = copy();
+		if (copied.getV().isEmpty()) return true;
+		setZeroTag(copied);
+		int keyOfFirst = copied.getV().iterator().next().getKey();
+		DFSUtil(copied, keyOfFirst);
+		for (node_data curr : copied.getV()){
 			if (curr.getTag()==0) return false;
 		}
-		getTranspose(GraphAlgo);
-		setZeroTag(GraphAlgo);
-		DFSUtil(keyOfFirst);
-		for (node_data curr : GraphAlgo.getV()){
+		getTranspose(copied);
+		setZeroTag(copied);
+		DFSUtil(copied, keyOfFirst);
+		for (node_data curr : copied.getV()){
 			if (curr.getTag()==0) return false;
 		}
 		return true;
@@ -88,12 +89,12 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		}
 	}
 
-	void DFSUtil(int key)
+	void DFSUtil(graph copied , int key)
 	{
-		GraphAlgo.getNode(key).setTag(1);
-		if (GraphAlgo.getE(key)!=null) {
-			for (edge_data curr : GraphAlgo.getE(key)) {
-				if (GraphAlgo.getNode(curr.getDest()).getTag() == 0) DFSUtil(curr.getDest());
+		copied.getNode(key).setTag(1);
+		if (copied.getE(key)!=null) {
+			for (edge_data curr : copied.getE(key)) {
+				if (copied.getNode(curr.getDest()).getTag() == 0) DFSUtil(copied,curr.getDest());
 			}
 		}
 	}
@@ -124,26 +125,26 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	@Override
 	public double shortestPathDist(int src, int dest) {
-		for (node_data currV : this.GraphAlgo.getV()) {
+		for (node_data currV : this.Greph.getV()) {
 			currV.setTag(0);
 			currV.setInfo("");
 			currV.setWeight(Integer.MAX_VALUE);
 		}
-		this.GraphAlgo.getNode(src).setWeight(0);
-		node_data min = this.GraphAlgo.getNode(src);
-		while (min!= this.GraphAlgo.getNode(dest) && min.getInfo()!="empty"){
+		this.Greph.getNode(src).setWeight(0);
+		node_data min = this.Greph.getNode(src);
+		while (min!= this.Greph.getNode(dest) && min.getInfo()!="empty"){
 			min.setTag(1);
-			if (this.GraphAlgo.getE(min.getKey())!=null) {
-				for (edge_data currE : this.GraphAlgo.getE(min.getKey())) {
-					if (min.getWeight() + currE.getWeight() < this.GraphAlgo.getNode(currE.getDest()).getWeight()) {
-						this.GraphAlgo.getNode(currE.getDest()).setWeight(min.getWeight() + currE.getWeight());
-						this.GraphAlgo.getNode(currE.getDest()).setInfo("" + min.getKey());
+			if (this.Greph.getE(min.getKey())!=null) {
+				for (edge_data currE : this.Greph.getE(min.getKey())) {
+					if (min.getWeight() + currE.getWeight() < this.Greph.getNode(currE.getDest()).getWeight()) {
+						this.Greph.getNode(currE.getDest()).setWeight(min.getWeight() + currE.getWeight());
+						this.Greph.getNode(currE.getDest()).setInfo("" + min.getKey());
 					}
 				}
 			}
-			min = findMinNode(this.GraphAlgo.getV());
+			min = findMinNode(this.Greph.getV());
 		}
-		return this.GraphAlgo.getNode(dest).getWeight();
+		return this.Greph.getNode(dest).getWeight();
 	}
 
 
@@ -166,10 +167,10 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	public List<node_data> shortestPath(int src, int dest) {
 		Double dst = shortestPathDist(src,dest);
 		LinkedList<node_data> toReturn = new LinkedList<node_data>();
-		node_data currV = this.GraphAlgo.getNode(dest);
+		node_data currV = this.Greph.getNode(dest);
 		toReturn.add(currV);
-		while (currV!=this.GraphAlgo.getNode(src)){
-			node_data toAdd = this.GraphAlgo.getNode(  Integer.parseInt(currV.getInfo()));
+		while (currV!=this.Greph.getNode(src)){
+			node_data toAdd = this.Greph.getNode(  Integer.parseInt(currV.getInfo()));
 			toReturn.addFirst(toAdd);
 			currV=toAdd;
 		}
@@ -179,26 +180,57 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	@Override
 	public List<node_data> TSP (List<Integer> targets) {
 		List<node_data> path = new LinkedList<node_data>();
-		node_data curr = this.GraphAlgo.getNode(targets.get(0));
-		path.add(curr);
-		targets.remove((Integer) curr.getKey());
-		int size = targets.size();
-		for (int i = 0; i < size; i++) {
-			List <node_data> currPath = findNextStep(curr,targets);
-			if (currPath==null) return null;
-			curr=currPath.get(currPath.size()-1);
-			path.addAll(currPath);
-			targets.remove((Integer) curr.getKey());
+		double w=Double.MAX_VALUE;
+		for (int i = 0; i < targets.size(); i++) {
+			double currW=0;
+			List<node_data> currpath = new LinkedList<node_data>();
+			List<Integer> currTarget = new LinkedList<Integer>();
+			for (Integer k : targets){
+				currTarget.add(k);
+			}
+			node_data curr = this.Greph.getNode(currTarget.get(i));
+			currpath.add(curr);
+			currTarget.remove((Integer) curr.getKey());
+			int size = currTarget.size();
+			for (int j = 0; j < size; j++) {
+				List <node_data> nextPath = findNextStep(curr,currTarget);
+				if (nextPath==null) return null;
+				currW += shortestPathDist(curr.getKey(),nextPath.get(nextPath.size()-1).getKey());
+				curr = nextPath.get(nextPath.size()-1);
+				currpath.addAll(nextPath);
+				currTarget.remove((Integer) curr.getKey());
+			}
+			if (currW < w){
+				path=currpath;
+				w=currW;
+			}
 		}
-		return path;
+		return  path;
 	}
 
+//	//@Override
+//	public List<node_data> TSPs (List<Integer> targets) {
+//		List<node_data> path = new LinkedList<node_data>();
+//		node_data curr = this.GraphAlgo.getNode(targets.get(0));
+//		path.add(curr);
+//		targets.remove((Integer) curr.getKey());
+//		int size = targets.size();
+//		for (int i = 0; i < size; i++) {
+//			List <node_data> currPath = findNextStep(curr,targets);
+//			if (currPath==null) return null;
+//			curr=currPath.get(currPath.size()-1);
+//			path.addAll(currPath);
+//			targets.remove((Integer) curr.getKey());
+//		}
+//		return path;
+//	}
+
 	private List<node_data> findNextStep(node_data curr, List<Integer> targets) {
-		node_data next= this.GraphAlgo.getNode(targets.get(0));
+		node_data next= this.Greph.getNode(targets.get(0));
 		for (Integer n : targets){
 			if(shortestPathDist(curr.getKey(),n)==Integer.MAX_VALUE) return null;
 			else if(shortestPathDist(curr.getKey(),n) < shortestPathDist(curr.getKey(),next.getKey())){
-				next = GraphAlgo.getNode(n);
+				next = Greph.getNode(n);
 			}
 		}
 		List<node_data>tempPath = this.shortestPath(curr.getKey(),next.getKey());
@@ -210,15 +242,17 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	public graph copy() {
 		graph toCopy = new DGraph();
 
-		for (node_data currV : this.GraphAlgo.getV()) {
+		for (node_data currV : this.Greph.getV()) {
 			node_data n=new Node((Node)currV);
 			toCopy.addNode(n);
 		}
 
-		for (node_data currV : this.GraphAlgo.getV()){
-			for (edge_data currE : this.GraphAlgo.getE(currV.getKey())){
-				edge_data e=new Edge((Edge)currE);
-				toCopy.connect(e.getSrc(),e.getDest(),e.getWeight());
+		for (node_data currV : this.Greph.getV()){
+			if (this.Greph.getE(currV.getKey())!=null) {
+				for (edge_data currE : this.Greph.getE(currV.getKey())) {
+					edge_data e = new Edge((Edge) currE);
+					toCopy.connect(e.getSrc(), e.getDest(), e.getWeight());
+				}
 			}
 		}
 		return toCopy;
@@ -264,7 +298,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		d.connect(a6.getKey(),a7.getKey(),3);
 		//d.connect(a7.getKey(),a6.getKey(),3);
 		Graph_Algo p = new Graph_Algo();
-		p.GraphAlgo=d;
+		p.Greph=d;
 		List<Integer> r = new LinkedList<>();
 		r.add(a1.getKey());
 		r.add(a6.getKey());

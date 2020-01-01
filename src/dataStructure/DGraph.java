@@ -59,7 +59,8 @@ public class DGraph implements graph,Serializable{
 			return this.edgeGraph.get(src).get(dest);
 		}
 		catch (Exception e){
-			throw new RuntimeException ("The Edge " + src + " - " + dest + " NOT exist");
+			System.out.println("The Edge " + src + " - " + dest + " NOT exist");
+			return null;
 		}
 	}
 
