@@ -165,12 +165,12 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
-		Double dst = shortestPathDist(src,dest);
+		shortestPathDist(src,dest);
 		LinkedList<node_data> toReturn = new LinkedList<node_data>();
 		node_data currV = this.Greph.getNode(dest);
 		toReturn.add(currV);
 		while (currV!=this.Greph.getNode(src)){
-			node_data toAdd = this.Greph.getNode(  Integer.parseInt(currV.getInfo()));
+			node_data toAdd = this.Greph.getNode(Integer.parseInt(currV.getInfo()));
 			toReturn.addFirst(toAdd);
 			currV=toAdd;
 		}

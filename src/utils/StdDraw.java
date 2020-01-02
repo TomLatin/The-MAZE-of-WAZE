@@ -593,7 +593,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static Object keyLock = new Object();
 
 	// default font
-	private static final Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 14);
+	private static final Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 13);
 
 	// current font
 	private static Font font;
@@ -1793,13 +1793,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		String command = e.getActionCommand();
 		switch (command){
 			case " New   ":
-				System.out.println("New");
+				System.out.println("New File");
 				GUI= new Graph_GUI();
 				GUI.sketch();
 
 				break;
 			case " Save...   ":
-				System.out.println("save");
+				System.out.println("Save File");
 				FileDialog win = new FileDialog(StdDraw.frame, "save the Graph", FileDialog.SAVE);
 				win.setVisible(true);
 				String filename = win.getFile();
@@ -1808,7 +1808,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				}
 				break;
 			case " Load...   ":
-				System.out.print("load ");
+				System.out.print("Load File");
 				FileDialog win1 = new FileDialog(StdDraw.frame, "load the Graph", FileDialog.LOAD);
 				win1.setVisible(true);
 				String filename1 = win1.getDirectory()+win1.getFile();
@@ -1820,6 +1820,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				break;
 
 			case " Add Node By Frames  ":
+				System.out.println("Add Node");
 				JFrame f = new JFrame();
 				double locX = 101;
 				double locY = 101;
@@ -1844,13 +1845,17 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				break;
 
 			case " Add Node By Click  ":
-				setPenColor(GREEN);
-				StdDraw.filledRectangle(90,-90,4,4);
+				System.out.println("Add Node");
+				setPenColor(RED);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.rectangle(85,-90,10,4);
+				StdDraw.text(85,-91,"STOP");
 				frame.addMouseListener(this);
 				toAddNode=true;
 				break;
 
 			case " Add Edge By Frames  ":
+				System.out.println("Add Edge");
 				JFrame f1 =new JFrame();
 				int Isrc = 0, Idest = 0;
 				while (Isrc < 1) {
@@ -1883,22 +1888,29 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				break;
 
 			case " Add Edge By Click  ":
-				setPenColor(GREEN);
-				StdDraw.filledRectangle(90,-90,4,4);
+				System.out.println("Add Edge");
+				setPenColor(RED);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.rectangle(85,-90,10,4);
+				StdDraw.text(85,-91,"STOP");
 				frame.addMouseListener(this);
 				toAddEdge=true;
 				break;
 
 
 			case " Add By Click Real Weight ":
-				setPenColor(GREEN);
-				StdDraw.filledRectangle(90,-90,4,4);
+				System.out.println("Add Edge");
+				setPenColor(RED);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.rectangle(85,-90,10,4);
+				StdDraw.text(85,-91,"STOP");
 				frame.addMouseListener(this);
 				toAddREdge=true;
 				break;
 
 
 			case " Remove Node By Frames  ":
+				System.out.println("Remove Node");
 				System.out.println("Node Removed");
 				JFrame f2=new JFrame();
 				int key =0;
@@ -1915,12 +1927,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				break;
 
 			case " Remove Node By Click  ":
+				System.out.println("Remove Node");
 				frame.addMouseListener(this);
 				toRemoveNode=true;
 				break;
 
 			case " Remove Edge By Frames  ":
-				System.out.println("Edge Removed");
+				System.out.println("Remove Edge");
 				JFrame f3=new JFrame();
 				int sorce =0, destenation=0;
 				while (sorce < 1) {
@@ -1944,6 +1957,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				break;
 
 			case " Remove Edge By Click  ":
+				System.out.println("Remove Edge");
 				frame.addMouseListener(this);
 				toRemoveEdge=true;
 				break;
@@ -2040,8 +2054,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 			case " Find TSP   ":
 				System.out.println("Find TSP ");
-				setPenColor(GREEN);
-				StdDraw.filledRectangle(90,-90,4,4);
+				setPenColor(RED);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.rectangle(85,-90,10,4);
+				StdDraw.text(85,-91,"STOP");
 				frame.addMouseListener(this);
 				TSPsel=true;
 				break;
@@ -2108,15 +2124,17 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 		if (toAddNode) {
 			double locX = mouseX, locY = mouseY;
-			if(locX<92 && locX>88 && locY<-88 && locY>-92){
+			if(locX<90 && locX>80 && locY<-88 && locY>-92){
 				toAddNode = false;
 				GUI.sketch();
 			}
 			else {
 				GUI.addNode(new Point3D(locX, locY));
 				GUI.sketch();
-				setPenColor(GREEN);
-				StdDraw.filledRectangle(90,-90,4,4);
+				setPenColor(RED);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.rectangle(85,-90,10,4);
+				StdDraw.text(85,-91,"STOP");
 			}
 		}
 
@@ -2134,7 +2152,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 		else if (toAddEdge){
 			double locX = mouseX, locY = mouseY;
-			if(locX<92 && locX>88 && locY<-88 && locY>-92){
+			if(locX<90 && locX>80 && locY<-88 && locY>-92){
 				toAddEdge = false;
 				GUI.sketch();
 			}
@@ -2143,14 +2161,14 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			 if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),3.5);
 			}
 			else if (temp!=null && first!=null){
 				JFrame f1 =new JFrame();
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(temp.getLocation().x(),temp.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(temp.getLocation().x(),temp.getLocation().y(),3.5);
 				double weight = 0;
 				while (weight<1) {
 					String wei = JOptionPane.showInputDialog(f1, "Enter weight");
@@ -2163,14 +2181,16 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				GUI.addEdge(first.getKey(),temp.getKey(),weight);
 				GUI.sketch();
 				first=null;
-				setPenColor(GREEN);
-				StdDraw.filledRectangle(90,-90,4,4);
-			}
+				 setPenColor(RED);
+				 StdDraw.setPenRadius(0.006);
+				 StdDraw.rectangle(85,-90,10,4);
+				 StdDraw.text(85,-91,"STOP");
+			 }
 		}
 
 		else if (toAddREdge) {
 			double locX = mouseX, locY = mouseY;
-			if (locX < 92 && locX > 88 && locY < -88 && locY > -92) {
+			if (locX<90 && locX>80 && locY<-88 && locY>-92) {
 				toAddREdge = false;
 				GUI.sketch();
 			}
@@ -2179,19 +2199,21 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			if (temp != null && first == null) {
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(first.getLocation().x(), first.getLocation().y(), 4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(first.getLocation().x(), first.getLocation().y(), 3.5);
 			} else if (temp != null && first != null) {
 				JFrame f1 = new JFrame();
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(temp.getLocation().x(), temp.getLocation().y(), 4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(temp.getLocation().x(), temp.getLocation().y(), 3.5);
 				double weight = Math.sqrt(((first.getLocation().x()-temp.getLocation().x())*(first.getLocation().x()-temp.getLocation().x()))+((first.getLocation().y()-temp.getLocation().y())*(first.getLocation().y()-temp.getLocation().y())));
 				GUI.addEdge(first.getKey(), temp.getKey(), (int)weight/10);
 				GUI.sketch();
 				first = null;
-				setPenColor(GREEN);
-				StdDraw.filledRectangle(90, -90, 4, 4);
+				setPenColor(RED);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.rectangle(85,-90,10,4);
+				StdDraw.text(85,-91,"STOP");
 			}
 		}
 
@@ -2202,14 +2224,14 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),3.5);
 			}
 			else if (temp!=null && first!=null){
 				end=temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),3.5);
 				GUI.deleteEdge(first.getKey(),end.getKey());
 				GUI.sketch();
 				first=null;
@@ -2227,15 +2249,15 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),3.5);
 			}
 			else if (temp!=null && first!=null){
 				end=temp;
 				double dd = GUI.shortestPathDist(first.getKey(), end.getKey());
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),3.5);
 				JFrame f7 = new JFrame();
 				JOptionPane.showMessageDialog(f7, "Te shortest Path Dist is " + dd);
 				first = null;
@@ -2254,20 +2276,20 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			if (temp!=null && first==null){
 				first = temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(first.getLocation().x(),first.getLocation().y(),3.5);
 			}
 			else if (temp!=null && first!=null){
 				end=temp;
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(end.getLocation().x(),end.getLocation().y(),3.5);
 				List<node_data> pathList2 = GUI.shortestPath(first.getKey(),end.getKey());
 				if (pathList2!=null&&!pathList2.isEmpty()) {
 					node_data nodeA = pathList2.get(0);
 					node_data nodeB = null;
 					setPenColor(GREEN);
-					setPenRadius(0.006);
+					setPenRadius(0.004);
 					String path = "" + nodeA.getKey();
 					for (int i = 1; i < pathList2.size(); i++) {
 						nodeB = pathList2.get(i);
@@ -2290,9 +2312,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		else if (TSPsel){
 			double locX = mouseX, locY = mouseY;
 			node_data temp = GUI.getNeerNode(locX,locY);
-			if(locX<92 && locX>88 && locY<-88 && locY>-92){
+			if(locX<90 && locX>80 && locY<-88 && locY>-92){
 				List<node_data> TspSel = GUI.TSP(selected);
 				if (TspSel!=null) {
+					setPenColor(GREEN);
+					setPenRadius(0.004);
 					String path = "";
 					node_data nodeA = TspSel.get(0);
 					for (node_data curr : TspSel) {
@@ -2316,8 +2340,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			else if(temp!=null){
 				this.selected.add(temp.getKey());
 				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.008);
-				StdDraw.circle(temp.getLocation().x(),temp.getLocation().y(),4);
+				StdDraw.setPenRadius(0.006);
+				StdDraw.circle(temp.getLocation().x(),temp.getLocation().y(),3.5);
 			}
 
 		}

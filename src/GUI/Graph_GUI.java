@@ -96,6 +96,7 @@ public class Graph_GUI {
 
     public void sketch() {
         StdDraw.clear();
+       // StdDraw.picture(0,0, "GUI/Screenshot_8.png",200,200);
         for (node_data currV : dGraph.getV()) {
             if (dGraph.getE(currV.getKey()) != null) {
                 for (edge_data currE : dGraph.getE(currV.getKey())) {
@@ -105,7 +106,7 @@ public class Graph_GUI {
                         Point3D srcP = srcN.getLocation();
                         Point3D dstP = dstN.getLocation();
                         StdDraw.setPenColor(Color.BLACK);
-                        StdDraw.setPenRadius(0.01);
+                        StdDraw.setPenRadius(0.006);
                         StdDraw.line(srcP.x(), srcP.y(), dstP.x(), dstP.y());
                     }
                 }
@@ -124,16 +125,16 @@ public class Graph_GUI {
                         double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
 
                         double rx = 0, gy = 0;
-                        if (srcP.y() == dstP.y()) gy = 5;
-                        else if (srcP.x() == dstP.x()) rx = 6 ;
+                        if (srcP.y() == dstP.y()) gy = 3;
+                        else if (srcP.x() == dstP.x()) rx = 3 ;
                         else {
                             double m = (dstP.y() - srcP.y()) / (dstP.x() - srcP.x());
-                            if (Math.abs(m) > 1) rx = 6;
-                            else gy = 5;
+                            if (Math.abs(m) > 1) rx = 4;
+                            else gy = 3;
                         }
 
                         StdDraw.text(tX + rx, tY + gy, "" + (int)weight);
-                        StdDraw.filledRectangle(tX, tY, 1.5, 1.5);
+                        StdDraw.filledRectangle(tX, tY, 1.3, 1.3);
                     }
                 }
             }
@@ -141,9 +142,9 @@ public class Graph_GUI {
                 StdDraw.setPenColor(Color.RED);
                 StdDraw.setPenRadius(0.1);
                 Point3D p = curr.getLocation();
-                StdDraw.filledCircle(p.x(), p.y(), 3.5);
+                StdDraw.filledCircle(p.x(), p.y(), 3);
                 StdDraw.setPenColor(Color.YELLOW);
-                StdDraw.text(p.x(), p.y(), "" + curr.getKey());
+                StdDraw.text(p.x(), p.y()-0.5, "" + curr.getKey());
             }
         }
     }
@@ -161,6 +162,6 @@ public class Graph_GUI {
             }
         }
         d.connect(81,1,9999999);
-        Graph_GUI g = new Graph_GUI(d);
+        Graph_GUI g = new Graph_GUI();
     }
 }
