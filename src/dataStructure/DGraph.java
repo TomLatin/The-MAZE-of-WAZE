@@ -18,7 +18,6 @@ public class DGraph implements graph,Serializable{
 	public HashMap<Integer,node_data> nodeGraph;
 	public HashMap<Integer,HashMap<Integer,edge_data>> edgeGraph;
 
-
 	/**
 	 * Default constructor
 	 */
@@ -220,6 +219,9 @@ public class DGraph implements graph,Serializable{
 
 	/**
 	 * @return next valid key number that not used in this graph
+	 * Proper use of the function will be done by immediate adding the node to the graph after it is created,
+	 * otherwise a situation where double use of the function without instant adding will return the same value to
+	 * 2 different nodes that override each other which can cause the entire graph to be disrupted
 	 */
 	public int findNextKey(){
 		int i = 1;
@@ -228,4 +230,5 @@ public class DGraph implements graph,Serializable{
 		}
 		return i;
 	}
+
 }
