@@ -1815,7 +1815,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				if (filename1 != null){
 					System.out.println(filename1);
 					GUI.initGraph(filename1);
-					GUI.sketch();
 				}
 				break;
 

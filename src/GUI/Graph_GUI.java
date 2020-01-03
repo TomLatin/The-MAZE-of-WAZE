@@ -8,27 +8,46 @@ import java.awt.*;
 import java.util.List;
 
 
-public class Graph_GUI {
+public class Graph_GUI extends Thread {
 
+    //Fields
     private DGraph dGraph;
     private Graph_Algo graphAlgo;
     public static int keyEmpty = 1;
+    public int expectedModCount = 0;
+    protected Thread t1;
 
+    /**
+     * Default constructor
+     */
     public Graph_GUI(){
         this.dGraph = new DGraph();
         this.graphAlgo = new Graph_Algo();
         StdDraw.GUI = this;
         draw(1000,1000,new Range(-100,100),new Range(-100,100));
+        t1 = new Thread(this);
+        t1.start();
     }
 
+    /**
+     * A constructor that accepts DGraph to work on
+     */
     public Graph_GUI(DGraph g){
         this.dGraph=g;
         this.graphAlgo=new Graph_Algo();
         this.graphAlgo.init(g);
         StdDraw.GUI = this;
         draw(1000,1000,new Range(-100,100),new Range(-100,100));
+        this.start();
     }
 
+    /**
+     * we will return the node that the location (X, Y) is at that node,
+     * We will loop through the nodes of the graph until we find a node that corresponds to the desired location
+     * @param x - The location on the X axis that is sent to find the node
+     * @param y - The location on the Y axis that is sent to find the node
+     * @return the node that the location (X, Y) is at that node
+     */
     public node_data getNeerNode (double x, double y){
         for (node_data curr : dGraph.getV()){
             double currX = curr.getLocation().x();
@@ -38,22 +57,44 @@ public class Graph_GUI {
         return null;
     }
 
+    /**
+     * We add a new Node to the graph
+     * @param p - the location in the graph to add the new node
+     */
     public void addNode(Point3D p){
         keyEmpty = this.dGraph.findNextKey();
         Node temp = new Node(keyEmpty,p);
         dGraph.addNode(temp);
     }
 
+    /**
+     * We connect a new Edge to the graph
+     * @param src - the source of the edge.
+     * @param dest - the destination of the edge.
+     * @param weight - positive weight representing the cost (aka time, price, etc) between src-->dest.
+     */
     public void addEdge(int src,int dest, double weight){
         dGraph.connect(src,dest,weight);
     }
 
+    /**
+     * Deleting a node from the graph,
+     * note that When the node is deleted, all the edge containing the node are also deleted.
+     * @param key - the key of the Node we need to delete.
+     */
     public void deleteNode(int key) {
         dGraph.removeNode(key);
     }
+
+    /**
+     * Deleting a edge from the graph.
+     * @param src - the source of the edge.
+     * @param des - the destination of the edge.
+     */
     public void deleteEdge(int src,int des) {
         dGraph.removeEdge(src,des);
     }
+
 
     public boolean isConected(){
         graphAlgo.init(dGraph);
@@ -85,6 +126,7 @@ public class Graph_GUI {
         graphAlgo.init(filename);
         dGraph=(DGraph)graphAlgo.copy();
         keyEmpty=dGraph.findNextKey();
+        sketch();
     }
 
     public void draw(int width, int height, Range x, Range y){
@@ -96,7 +138,6 @@ public class Graph_GUI {
 
     public void sketch() {
         StdDraw.clear();
-       // StdDraw.picture(0,0, "GUI/Screenshot_8.png",200,200);
         for (node_data currV : dGraph.getV()) {
             if (dGraph.getE(currV.getKey()) != null) {
                 for (edge_data currE : dGraph.getE(currV.getKey())) {
@@ -132,7 +173,6 @@ public class Graph_GUI {
                             if (Math.abs(m) > 1) rx = 4;
                             else gy = 3;
                         }
-
                         StdDraw.text(tX + rx, tY + gy, "" + (int)weight);
                         StdDraw.filledRectangle(tX, tY, 1.3, 1.3);
                     }
@@ -149,9 +189,21 @@ public class Graph_GUI {
         }
     }
 
+    public void run(){
+        while (this.dGraph.getMC()==expectedModCount){
+//            try {
+//                t1.wait();
+//            }catch (Exception e){}
+        }
+        sketch();
+        this.expectedModCount=this.dGraph.getMC();
+        run();
+    }
+
     public static void main(String[] args) {
         DGraph d = new DGraph();
-        for (int i = 0; i <=8; i++) {
+        Graph_GUI g = new Graph_GUI(d);
+        for (int i = 0; i < 9; i++) {
             for (int j = 1; j <= 9; j++) {
                 int key = (i*9)+(j);
                 Point3D  p = new Point3D(((j-1)*20)-80,(i*20)-80);
@@ -162,6 +214,6 @@ public class Graph_GUI {
             }
         }
         d.connect(81,1,9999999);
-        Graph_GUI g = new Graph_GUI();
+        //Graph_GUI g = new Graph_GUI(d);
     }
 }
