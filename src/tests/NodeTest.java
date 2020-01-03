@@ -22,8 +22,9 @@ public class NodeTest {
         arrNodes[4]=new Node(5,new Point3D(5, 4,0));
         arrNodes[5]=new Node(6,new Point3D(5, 7,0));
         arrNodes[6]=new Node(7,new Point3D(8, 9,0));
-        arrNodes[8]=new Node(8,new Point3D(9, 10,0));
-        arrNodes[9]=new Node(9,new Point3D(14, 90,0));
+        arrNodes[7]=new Node(8,new Point3D(9, 10,0));
+        arrNodes[8]=new Node(9,new Point3D(10, 10,0));
+        arrNodes[9]=new Node(10,new Point3D(14, 90,0));
     }
 
     /**
@@ -32,7 +33,7 @@ public class NodeTest {
     @Test
     public void getKey() {
         for (int i = 0; i < arrNodes.length; i++) {
-            assertEquals(i+1,arrNodes[i].getKey());
+           assertEquals(i+1,arrNodes[i].getKey());
             assertNotEquals(100,arrNodes[i].getKey());
             assertNotNull(arrNodes[i].getKey());
         }
@@ -45,7 +46,7 @@ public class NodeTest {
     public void getLocation() {
         Point3D [] arrPointsExpected={new Point3D(0, 0,0),new Point3D(1, 0,0),new Point3D(1, 2,0),
                               new Point3D(2, 1,0),new Point3D(5, 4,0),new Point3D(5, 7,0),
-                              new Point3D(8, 9,0),new Point3D(10, 10,0),new Point3D(9, 10,0),
+                              new Point3D(8, 9,0),new Point3D(9, 10,0),new Point3D(10, 10,0),
                               new Point3D(14, 90,0)};
 
         for (int i = 0; i <arrNodes.length ; i++) {
@@ -80,7 +81,7 @@ public class NodeTest {
     public void getWeight() {
 
         for (int i = 0; i <arrNodes.length ; i++) {
-            assertEquals(2.0,arrNodes[i].getWeight(),EPSILON);
+            assertEquals(0.0,arrNodes[i].getWeight(),EPSILON);
             assertNotEquals(100.0,arrNodes[i].getWeight(),EPSILON);
             assertNotNull(arrNodes[i].getWeight());
         }
@@ -159,11 +160,11 @@ public class NodeTest {
     @Test
     public void toStringTest()
     {
-        String [] expected ={"key: 61,point: 0.0,0.0,0.0,weight: 2.0,info: ,tag: 0","key: 62,point: 1.0,0.0,0.0,weight: 2.0,info: ,tag: 0",
-                "key: 63,point: 1.0,2.0,0.0,weight: 2.0,info: ,tag: 0","key: 64,point: 2.0,1.0,0.0,weight: 2.0,info: ,tag: 0",
-               "key: 65,point: 5.0,4.0,0.0,weight: 2.0,info: ,tag: 0" ,"key: 66,point: 5.0,7.0,0.0,weight: 2.0,info: ,tag: 0",
-                "key: 67,point: 8.0,9.0,0.0,weight: 2.0,info: ,tag: 0","key: 68,point: 10.0,10.0,0.0,weight: 2.0,info: ,tag: 0",
-               "key: 69,point: 9.0,10.0,0.0,weight: 2.0,info: ,tag: 0","key: 70,point: 14.0,90.0,0.0,weight: 2.0,info: ,tag: 0"};
+        String [] expected ={"key: 1,point: 0.0,0.0,0.0,weight: 0.0,info: ,tag: 0","key: 2,point: 1.0,0.0,0.0,weight: 0.0,info: ,tag: 0",
+                "key: 3,point: 1.0,2.0,0.0,weight: 0.0,info: ,tag: 0","key: 4,point: 2.0,1.0,0.0,weight: 0.0,info: ,tag: 0",
+               "key: 5,point: 5.0,4.0,0.0,weight: 0.0,info: ,tag: 0" ,"key: 6,point: 5.0,7.0,0.0,weight: 0.0,info: ,tag: 0",
+                "key: 7,point: 8.0,9.0,0.0,weight: 0.0,info: ,tag: 0","key: 8,point: 9.0,10.0,0.0,weight: 0.0,info: ,tag: 0",
+               "key: 9,point: 10.0,10.0,0.0,weight: 0.0,info: ,tag: 0","key: 10,point: 14.0,90.0,0.0,weight: 0.0,info: ,tag: 0"};
         for (int i = 0; i <arrNodes.length ; i++) {
             assertEquals(expected[i],arrNodes[i].toString());
             assertNotEquals("100",arrNodes[i].toString());
