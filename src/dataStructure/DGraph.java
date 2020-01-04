@@ -107,7 +107,10 @@ public class DGraph implements graph,Serializable{
 	 */
 	@Override
 	public void connect(int src, int dest, double w) {
-
+		if(w<0)
+		{
+			throw new RuntimeException("ERR: The weight is negative");
+		}
 		//Checks that both vertices exist
 		if (this.nodeGraph.get(src)!=null && this.nodeGraph.get(dest)!=null) {
 			edge_data newEdge = new Edge(src, dest, w);
