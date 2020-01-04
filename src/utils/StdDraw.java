@@ -1821,26 +1821,36 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			case " Add Node By Frames  ":
 				System.out.println("Add Node");
 				JFrame f = new JFrame();
-				double locX = 101;
-				double locY = 101;
-				while (locX>100 || locX<-100) {
-					String X = JOptionPane.showInputDialog(f, "Enter X [-100,100]");
-					try {
-						locX = Double.parseDouble(X);
-					}catch(Exception e1) {
-						locX=101;
+				double locX=0;
+				double locY=0;
+				boolean toadd = true;
+
+				String X = JOptionPane.showInputDialog(f, "Enter X");
+				try {
+					locX = Double.parseDouble(X);
+				}catch(Exception e1) {
+					JFrame f13 = new JFrame();
+					JOptionPane.showMessageDialog(f13,"Wrong input!");
+					toadd=false;
+				}
+				String Y = JOptionPane.showInputDialog(f, "Enter Y");
+				try {
+					locY = Double.parseDouble(Y);
+				}catch(Exception e1) {
+					JFrame f13 = new JFrame();
+					JOptionPane.showMessageDialog(f13,"Wrong input!");
+					toadd=false;
+				}
+				if (toadd) {
+					if (locX > GUI.findRangeX().get_min() && locX < GUI.findRangeX().get_max() && locY > GUI.findRangeY().get_min() && locY < GUI.findRangeY().get_max()) {
+						GUI.addNode(new Point3D(locX, locY));
+						GUI.sketch();
+					}
+					else{
+						GUI.addNode(new Point3D(locX, locY));
+						GUI.draw();
 					}
 				}
-				while (locY>100 || locY<-100) {
-					String Y = JOptionPane.showInputDialog(f, "Enter Y [-100,100]");
-					try {
-						locY = Double.parseDouble(Y);
-					}catch(Exception e1) {
-						locY=101;
-					}
-				}
-				GUI.addNode(new Point3D(locX, locY));
-				GUI.sketch();
 				break;
 
 			case " Add Node By Click  ":

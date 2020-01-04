@@ -15,7 +15,8 @@ public class Graph_GUI extends Thread {
     private Graph_Algo graphAlgo;
     public static int keyEmpty = 1;
     public int expectedModCount = 0;
-    protected Thread t1;
+    private Range rangeX;
+    private Range rangeY;
 
     /**
      * Default constructor
@@ -24,9 +25,8 @@ public class Graph_GUI extends Thread {
         this.dGraph = new DGraph();
         this.graphAlgo = new Graph_Algo();
         StdDraw.GUI = this;
-        draw(1000,1000,new Range(-100,100),new Range(-100,100));
-        t1 = new Thread(this);
-        t1.start();
+        draw();
+        this.start();
     }
 
     /**
@@ -37,7 +37,7 @@ public class Graph_GUI extends Thread {
         this.graphAlgo=new Graph_Algo();
         this.graphAlgo.init(g);
         StdDraw.GUI = this;
-        draw(1000,1000,new Range(-100,100),new Range(-100,100));
+        draw();
         this.start();
     }
 
@@ -83,7 +83,12 @@ public class Graph_GUI extends Thread {
      * @param key - the key of the Node we need to delete.
      */
     public void deleteNode(int key) {
-        dGraph.removeNode(key);
+        Point3D loc = dGraph.getNode(key).getLocation();
+        if (loc.x()==findRangeX().get_min() || loc.x()==findRangeX().get_max() ||loc.y()==findRangeY().get_min() || loc.y()==findRangeY().get_max()) {
+            dGraph.removeNode(key);
+            draw();
+        }
+        else dGraph.removeNode(key);
     }
 
     /**
@@ -95,33 +100,63 @@ public class Graph_GUI extends Thread {
         dGraph.removeEdge(src,des);
     }
 
-
+    /**
+     * we returns true if and only if (iff) there is a valid path from EVREY node to each other node.
+     * we used the method isConnected from Gragh_Algo.
+     */
     public boolean isConected(){
         graphAlgo.init(dGraph);
         return graphAlgo.isConnected();
     }
 
+    /**
+     * returns the length of the shortest path between src to dest in the graph
+     * @param src - start node
+     * @param dest - end (target) node
+     * we used the method shortestPathDist from Gragh_Algo.
+     */
     public double shortestPathDist(int src, int dest) {
         graphAlgo.init(dGraph);
         return graphAlgo.shortestPathDist(src,dest);
     }
 
+    /**
+     * returns the the shortest path between src to dest - as an ordered List of nodes:
+     * src -> n1 ->n2 ->...-> dest
+     * see: https://en.wikipedia.org/wiki/Shortest_path_problem
+     * @param src - start node
+     * @param dest - end (target) node
+     * we used the method shortestPath from Gragh_Algo.
+     */
     public List<node_data> shortestPath(int src, int dest) {
         graphAlgo.init(dGraph);
         return graphAlgo.shortestPath(src,dest);
     }
 
+    /**
+     * computes a relatively short path which visit each node in the targets List.
+     * @param chosen - the list of Nodes we need to pass in this path
+     * we used the method TSP from Gragh_Algo.
+     */
     public List<node_data> TSP (List<Integer> chosen){
         graphAlgo.init(dGraph);
         return graphAlgo.TSP(chosen);
     }
 
+    /**
+     * Saves the graph to a file.
+     * @param filename - the name we give to the file we saving
+     */
     public void save(String filename){
         graphAlgo.init(dGraph);
         graphAlgo.save(filename);
 
     }
 
+    /**
+     * Init a graph from file
+     * @param filename the name of the file we loading
+     */
     public void initGraph(String filename){
         graphAlgo.init(filename);
         dGraph=(DGraph)graphAlgo.copy();
@@ -129,13 +164,69 @@ public class Graph_GUI extends Thread {
         sketch();
     }
 
-    public void draw(int width, int height, Range x, Range y){
+    /**
+     * We will find the range in the X axis where the graph is
+     * @return toReturn/Default - the range X we give
+     */
+    public Range findRangeX(){
+        if (dGraph.nodeSize()!=0){
+            double min = -80;
+            double max = 80;
+            for (node_data curr : dGraph.getV()){
+                if (curr.getLocation().x() > max) max = curr.getLocation().x();
+                if (curr.getLocation().x() < min) min = curr.getLocation().x();
+            }
+            Range toReturn = new Range(min,max);
+            rangeX = toReturn;
+            return toReturn;
+        }
+        else {
+            Range Default = new Range(-80,80);
+            rangeX = Default;
+            return Default;
+        }
+    }
+
+    /**
+     * We will find the range in the Y axis where the graph is
+     * @return toReturn/Default - the range Y we give
+     */
+    public Range findRangeY(){
+        if (dGraph.nodeSize()!=0){
+            double min = -80;
+            double max = 80;
+            for (node_data curr : dGraph.getV()){
+                if (curr.getLocation().x() > max) max = curr.getLocation().x();
+                if (curr.getLocation().x() < min) min = curr.getLocation().x();
+            }
+            Range toReturn = new Range(min,max);
+            rangeY = toReturn;
+            return toReturn;
+        }
+        else {
+            Range Default = new Range(-80,80);
+            rangeY = Default;
+            return Default;
+        }
+    }
+
+    /**
+     * this method open the frame that shows the gui of the graph.
+     */
+    public void draw(){
+        Range x = findRangeX();
+        Range y = findRangeY();
+        int width = (int)(x.get_max()-x.get_min()+100);
+        int height = (int)(y.get_max()-y.get_min()+100);
         StdDraw.setCanvasSize(width,height,this);
-        StdDraw.setXscale(x.get_min(),x.get_max());
-        StdDraw.setYscale(y.get_min(),y.get_max());
+        StdDraw.setXscale(x.get_min()-20,x.get_max()+20);
+        StdDraw.setYscale(y.get_min()-20,y.get_max()+20);
         sketch();
     }
 
+    /**
+     * this method sketch of the graph on the opened window of the gui.
+     */
     public void sketch() {
         StdDraw.clear();
         for (node_data currV : dGraph.getV()) {
@@ -189,30 +280,33 @@ public class Graph_GUI extends Thread {
         }
     }
 
+    /**
+     * this method make sure thet changes in the graph will show in the gui.
+     */
     public void run(){
-        while (this.dGraph.getMC()==expectedModCount){
-//            try {
-//                t1.wait();
-//            }catch (Exception e){}
+        while (true){
+            if (this.dGraph.getMC()!=expectedModCount){
+                sketch();
+                this.expectedModCount=this.dGraph.getMC();
+            }
         }
-        sketch();
-        this.expectedModCount=this.dGraph.getMC();
-        run();
     }
 
     public static void main(String[] args) {
         DGraph d = new DGraph();
+        node_data t = new Node(88,new Point3D(120,120));
+        d.addNode(t);
         Graph_GUI g = new Graph_GUI(d);
-        for (int i = 0; i < 9; i++) {
-            for (int j = 1; j <= 9; j++) {
-                int key = (i*9)+(j);
-                Point3D  p = new Point3D(((j-1)*20)-80,(i*20)-80);
-                node_data curr = new Node(key,p);
-                d.addNode(curr);
-                if (((key-1)%9)!=0) d.connect(key-1,key,1+((int)(Math.random()*20)));
-                if (key>9) d.connect(key-9,key,1+(int)(Math.random()*20));
-            }
-        }
+//        for (int i = 0; i < 9; i++) {
+//            for (int j = 1; j <= 9; j++) {
+//                int key = (i*9)+(j);
+//                Point3D  p = new Point3D(((j-1)*20)-80,(i*20)-80);
+//                node_data curr = new Node(key,p);
+//                d.addNode(curr);
+//                if (((key-1)%9)!=0) d.connect(key-1,key,1+((int)(Math.random()*20)));
+//                if (key>9) d.connect(key-9,key,1+(int)(Math.random()*20));
+//            }
+//        }
         d.connect(81,1,9999999);
         //Graph_GUI g = new Graph_GUI(d);
     }

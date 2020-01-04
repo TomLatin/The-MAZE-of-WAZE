@@ -70,9 +70,9 @@ public class DGraph implements graph,Serializable{
 	 */
 	@Override
 	public void addNode(node_data n) {
-		if (this.nodeGraph.get(n.getKey())!=null){
+		if (this.nodeGraph.get(n.getKey())!=null){ // if Node n exsist in the graph
 			HashMap<Integer,edge_data> src = new HashMap<Integer, edge_data>();
-			if (this.edgeGraph.get(n.getKey())!=null) {
+			if (this.edgeGraph.get(n.getKey())!=null) { // if there is edge that start at Node n
 				src = this.edgeGraph.get(n.getKey());
 			}
 			HashMap <Integer,Double> dest =new HashMap<Integer, Double>();
@@ -80,8 +80,8 @@ public class DGraph implements graph,Serializable{
 			while (iter.hasNext()) { //add all the edge that look like x -> node
 				Map.Entry mapElement = (Map.Entry) iter.next();
 				int currSrc = ((int) mapElement.getKey());
-				if (this.edgeGraph.get(currSrc).get(n.getKey()) != null) ;
-				dest.put(currSrc,this.edgeGraph.get(currSrc).get(n.getKey()).getWeight());
+				if (this.edgeGraph.get(currSrc).get(n.getKey()) != null)
+					dest.put(currSrc,this.edgeGraph.get(currSrc).get(n.getKey()).getWeight());
 			}
 			removeNode(n.getKey());
 			this.nodeGraph.put(n.getKey(),n);

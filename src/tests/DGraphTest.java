@@ -44,6 +44,11 @@ public class DGraphTest {
 
     @Before
     public void BeforeEach() {
+        g0 = new DGraph();
+        g1 = new DGraph();
+        g2 = new DGraph();
+        g3 = new DGraph();
+
         //Create Dgraph: a0 -> b0
         Node a0 = new Node(1, x);
         Node b0 = new Node(2, y);

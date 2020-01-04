@@ -142,6 +142,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 					}
 				}
 			}
+			this.Greph.getNode(dest).setInfo(""+ min.getKey());
 			min = findMinNode(this.Greph.getV());
 		}
 		return this.Greph.getNode(dest).getWeight();
