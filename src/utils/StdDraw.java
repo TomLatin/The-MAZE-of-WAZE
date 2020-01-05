@@ -702,7 +702,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
 		// frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
-		frame.setTitle("Standard Draw");
+		frame.setTitle("Welcome to The Maze Of Waze!!");
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.requestFocusInWindow();
@@ -2069,6 +2069,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				StdDraw.text(85,-91,"STOP");
 				frame.addMouseListener(this);
 				TSPsel=true;
+				break;
+
+			case " Developers   ":
+				JFrame f55=new JFrame();
+				JOptionPane.showMessageDialog(f55,"    The MAZE of WAZE    \n        Developed by    \n TOM latin & ARIEL Duek");
 				break;
 		}
 	}

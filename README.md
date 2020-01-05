@@ -45,6 +45,7 @@ An integer representing the key of the destination vertex
 * Weight:
 Actual number representing the cost of moving from one vertex of the edge to the other vertex of the edge.
 The only way to reset the weight is by an connect function in class DGraph, where if the edge we received is already exists we delete it and instead determine the new edge -the edge we received, so it is the only way to update the edge's weight because there is no set in the weight field
+Note that the weight of the edges can only be greater than 0
 
 * Tag:
 An integer to indicate that something happened or did not happen.

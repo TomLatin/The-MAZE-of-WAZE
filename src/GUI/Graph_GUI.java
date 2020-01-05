@@ -84,7 +84,7 @@ public class Graph_GUI extends Thread {
      */
     public void deleteNode(int key) {
         Point3D loc = dGraph.getNode(key).getLocation();
-        if (loc.x()==findRangeX().get_min() || loc.x()==findRangeX().get_max() ||loc.y()==findRangeY().get_min() || loc.y()==findRangeY().get_max()) {
+        if (loc.x()==rangeX.get_min() || loc.x()==rangeX.get_max() ||loc.y()==rangeY.get_min() || loc.y()==rangeY.get_max()) {
             dGraph.removeNode(key);
             draw();
         }
@@ -216,9 +216,7 @@ public class Graph_GUI extends Thread {
     public void draw(){
         Range x = findRangeX();
         Range y = findRangeY();
-        int width = (int)(x.get_max()-x.get_min()+100);
-        int height = (int)(y.get_max()-y.get_min()+100);
-        StdDraw.setCanvasSize(15000,15000,this);
+        StdDraw.setCanvasSize(1000,1000,this);
         StdDraw.setXscale(x.get_min()-20,x.get_max()+20);
         StdDraw.setYscale(y.get_min()-20,y.get_max()+20);
         sketch();
@@ -257,8 +255,8 @@ public class Graph_GUI extends Thread {
                         double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
 
                         double rx = 0, gy = 0;
-                        if (srcP.y() == dstP.y()) gy = 3;
-                        else if (srcP.x() == dstP.x()) rx = 3 ;
+                        if (srcP.y() == dstP.y()) gy = 4;
+                        else if (srcP.x() == dstP.x()) rx = 5 ;
                         else {
                             double m = (dstP.y() - srcP.y()) / (dstP.x() - srcP.x());
                             if (Math.abs(m) > 1) rx = 4;
@@ -294,7 +292,9 @@ public class Graph_GUI extends Thread {
 
     public static void main(String[] args) {
         DGraph d = new DGraph();
-     //   Graph_GUI g = new Graph_GUI(d);
+        node_data t = new Node(88,new Point3D(120,120));
+        d.addNode(t);
+        Graph_GUI g = new Graph_GUI(d);
         for (int i = 0; i < 9; i++) {
             for (int j = 1; j <= 9; j++) {
                 int key = (i*9)+(j);
@@ -305,7 +305,7 @@ public class Graph_GUI extends Thread {
                 if (key>9) d.connect(key-9,key,1+(int)(Math.random()*20));
             }
         }
-       d.connect(81,1,9999999);
-       Graph_GUI g = new Graph_GUI(d);
+        //d.connect(81,1,9999999);
+        //Graph_GUI g = new Graph_GUI(d);
     }
 }
