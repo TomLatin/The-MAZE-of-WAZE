@@ -2071,6 +2071,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				TSPsel=true;
 				break;
 
+			case " Wiki   ":
+				JFrame f56=new JFrame();
+				JOptionPane.showMessageDialog(f56,"https://github.com/TomLatin/Object-Oriented-Project-2/wiki");
+				break;
+
 			case " Developers   ":
 				JFrame f55=new JFrame();
 				JOptionPane.showMessageDialog(f55,"    The MAZE of WAZE    \n        Developed by    \n TOM latin & ARIEL Duek");
