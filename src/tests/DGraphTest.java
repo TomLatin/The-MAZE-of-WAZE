@@ -1,15 +1,13 @@
 package tests;
 
 import algorithms.Graph_Algo;
-import dataStructure.DGraph;
-import dataStructure.Edge;
-import dataStructure.Node;
-import dataStructure.node_data;
+import dataStructure.*;
 import org.junit.Before;
 import org.junit.Test;
 import utils.Point3D;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -154,8 +152,16 @@ public class DGraphTest {
 
     }
 
+    /**
+     * Checks whether the Default constructor is working properly
+     */
     @Test
     public void DGraph() {
+        DGraph d=new DGraph();
+        assertEquals(new HashMap<>(),d.nodeGraph);
+        assertEquals(new HashMap<Integer,HashMap<Integer, edge_data>>(),d.nodeGraph);
+        assertEquals(0, d.nodeSize());
+        assertEquals(0, d.edgeSize());
 
     }
 
@@ -229,6 +235,8 @@ public class DGraphTest {
         }
         assertEquals(16,counter);
 
+
+
     }
 
     /**
@@ -253,65 +261,243 @@ public class DGraphTest {
         }
     }
 
+    /**
+     * Checks whether the addNode function is working properly,That is, adds a new node and if it exists the node is
+     * replaced with the new node
+     */
     @Test
     public void addNode() {
+        Node toAdd0 = new Node(9, x);
+        Node toAdd1 = new Node(10, x);
+        Node toAdd2 = new Node(11, x);
+        Node toAdd3 = new Node(12, x);
+        Node toAdd4 = new Node(13, x);
 
-    }
+        //Adds the node toAdd0 to all graphs
+        g0.addNode(toAdd0);
+        g1.addNode(toAdd0);
+        g2.addNode(toAdd0);
+        g3.addNode(toAdd0);
 
-    @Test
-    public void connect() {
+        //Adds the node toAdd1 to all graphs
+        g0.addNode(toAdd1);
+        g1.addNode(toAdd1);
+        g2.addNode(toAdd1);
+        g3.addNode(toAdd1);
+
+        //Adds the node toAdd2 to all graphs
+        g0.addNode(toAdd2);
+        g1.addNode(toAdd2);
+        g2.addNode(toAdd2);
+        g3.addNode(toAdd2);
+
+        //Adds the node toAdd3 to all graphs
+        g0.addNode(toAdd3);
+        g1.addNode(toAdd3);
+        g2.addNode(toAdd3);
+        g3.addNode(toAdd3);
+
+        //Adds the node toAdd4 to all graphs
+        g0.addNode(toAdd4);
+        g1.addNode(toAdd4);
+        g2.addNode(toAdd4);
+        g3.addNode(toAdd4);
+
+        //Checks that in all graphs all vertices are not null
+        for (int i = 9; i <13 ; i++) {
+            assertNotNull(g0.getNode(i));
+            assertNotNull(g1.getNode(i));
+            assertNotNull(g2.getNode(i));
+            assertNotNull(g3.getNode(i));
+        }
+
+        //Compares the objects
+        assertEquals(toAdd0,g0.getNode(9));
+        assertEquals(toAdd0,g1.getNode(9));
+        assertEquals(toAdd0,g2.getNode(9));
+        assertEquals(toAdd0,g3.getNode(9));
+
+        assertEquals(toAdd1,g0.getNode(10));
+        assertEquals(toAdd1,g1.getNode(10));
+        assertEquals(toAdd1,g2.getNode(10));
+        assertEquals(toAdd1,g3.getNode(10));
+
+        assertEquals(toAdd2,g0.getNode(11));
+        assertEquals(toAdd2,g1.getNode(11));
+        assertEquals(toAdd2,g2.getNode(11));
+        assertEquals(toAdd2,g3.getNode(11));
+
+        assertEquals(toAdd3,g0.getNode(12));
+        assertEquals(toAdd3,g1.getNode(12));
+        assertEquals(toAdd3,g2.getNode(12));
+        assertEquals(toAdd3,g3.getNode(12));
+
+        assertEquals(toAdd4,g0.getNode(13));
+        assertEquals(toAdd4,g1.getNode(13));
+        assertEquals(toAdd4,g2.getNode(13));
+        assertEquals(toAdd4,g3.getNode(13));
+
+        //Checks that the switching of node with the same key is performed properly
+        Node toAdd5 = new Node(9, y);
+        g0.addNode(toAdd5);
+        g0.connect(9,1,9);
+        assertEquals(toAdd5,g0.getNode(9));
+        assertNotNull(g0.getNode(9));
+        assertNotNull(g0.getE(9));
     }
 
     /**
-     * Checks whether the getV function works correctly, which means that it returns the collection of node data
+     * hecks whether the connect function is working properly, That is, adds a new edge and if it exists the edge is
+     * replaced with the new edge.If the weight is negative the function throws an exception
      */
     @Test
-    public void getV() {
-        //create the collection of the node's
-        Collection <node_data> c0= g0.getV();
-        Collection <node_data> c1= g1.getV();
-        Collection <node_data> c2= g2.getV();
-        Collection <node_data> c3= g3.getV();
-        //-----------------------------------------//
-
-        int i=1;
-            for (node_data currV : c0) {
-                assertEquals(currV, g0.getNode(i));
-                i++;
-            }
-
-        i=1;
-        for (node_data currV : c1){
-            assertEquals(currV,g1.getNode(i));
-            i++;
+    public void connect() {
+        //Checks all graphs that if you put a negative weight in the connect function, an exception is thrown
+        int count=0;
+        try{
+            g0.connect(arrN0[0].getKey(),arrN0[1].getKey(),-4);
+        }
+        catch (Exception e)
+        {
+            count++;
         }
 
-        i=1;
-        for (node_data currV : c2){
-            assertEquals(currV,g2.getNode(i));
-            i++;
+        try{
+            g1.connect(arrN0[0].getKey(),arrN0[1].getKey(),-4);
+        }
+        catch (Exception e)
+        {
+            count++;
         }
 
-        i=1;
-        for (node_data currV :c3){
-            assertEquals(currV,g3.getNode(i));
-            i++;
+        try{
+            g2.connect(arrN0[0].getKey(),arrN0[1].getKey(),-4);
         }
+        catch (Exception e)
+        {
+            count++;
+        }
+        try{
+            g3.connect(arrN0[0].getKey(),arrN0[1].getKey(),-4);
+        }
+        catch (Exception e)
+        {
+            count++;
+        }
+
+        assertEquals(4,count);
+
+        //inserting new edges into graphs
+        g0.connect(arrN0[1].getKey(),arrN0[0].getKey(),6);
+        g1.connect(arrN1[0].getKey(),arrN1[1].getKey(),6);
+        g2.connect(arrN2[0].getKey(),arrN2[1].getKey(),6);
+        g3.connect(arrN3[0].getKey(),arrN3[1].getKey(),6);
+
+        //Checks that the new edges are present
+        assertNotNull(g0.getEdge(arrN0[1].getKey(),arrN0[0].getKey()));
+        assertNotNull(g1.getEdge(arrN1[0].getKey(),arrN1[1].getKey()));
+        assertNotNull(g2.getEdge(arrN2[0].getKey(),arrN2[1].getKey()));
+        assertNotNull(g3.getEdge(arrN3[0].getKey(),arrN3[1].getKey()));
+
+        //Checks that the new edges have the right weight
+        assertEquals(6,g0.getEdge(arrN0[1].getKey(),arrN0[0].getKey()).getWeight(),0);
+        assertEquals(6,g1.getEdge(arrN1[0].getKey(),arrN1[1].getKey()).getWeight(),0);
+        assertEquals(6,g2.getEdge(arrN2[0].getKey(),arrN2[1].getKey()).getWeight(),0);
+        assertEquals(6,g3.getEdge(arrN3[0].getKey(),arrN3[1].getKey()).getWeight(),0);
+
+        //change the Weight in exist edges
+        g0.connect(arrN0[1].getKey(),arrN0[0].getKey(),9);
+        g1.connect(arrN1[0].getKey(),arrN1[1].getKey(),9);
+        g2.connect(arrN2[0].getKey(),arrN2[1].getKey(),9);
+        g3.connect(arrN3[0].getKey(),arrN3[1].getKey(),9);
+
+        //Checks that the change is made
+        assertNotNull(g0.getEdge(arrN0[1].getKey(),arrN0[0].getKey()));
+        assertNotNull(g1.getEdge(arrN1[0].getKey(),arrN1[1].getKey()));
+        assertNotNull(g2.getEdge(arrN2[0].getKey(),arrN2[1].getKey()));
+        assertNotNull(g3.getEdge(arrN3[0].getKey(),arrN3[1].getKey()));
+
+        assertEquals(9,g0.getEdge(arrN0[1].getKey(),arrN0[0].getKey()).getWeight(),0);
+        assertEquals(9,g1.getEdge(arrN1[0].getKey(),arrN1[1].getKey()).getWeight(),0);
+        assertEquals(9,g2.getEdge(arrN2[0].getKey(),arrN2[1].getKey()).getWeight(),0);
+        assertEquals(9,g3.getEdge(arrN3[0].getKey(),arrN3[1].getKey()).getWeight(),0);
 
     }
 
-    @Test
-    public void getE() {
-    }
-
+    /**
+     * Checks whether the removeNode function is working properly
+     */
     @Test
     public void removeNode() {
+        //remove node from all graphs
+        g0.removeNode(1);
+        g1.removeNode(1);
+        g2.removeNode(1);
+        g3.removeNode(1);
+
+        int counter=0;
+
+         if( g0.getNode(1)==null) counter++;
+         if( g1.getNode(1)==null) counter++;
+         if( g2.getNode(1)==null) counter++;
+         if( g3.getNode(1)==null) counter++;
+
+        assertEquals(4,counter);
+
+
+        //Checks whether the DGraph g0 returns the correct nodes keys
+        for (int i = 1; i <arrN0.length ; i++) {
+            assertEquals(arrN0[i],g0.getNode(i+1));
+            assertNotEquals(notEqual,g0.getNode(i+1));
+            assertNotNull(g0.getNode(i+1));
+        }
+
+        //Checks whether the DGraph g1 returns the correct nodes keys
+        for (int i = 1; i <arrN1.length ; i++) {
+            assertEquals(arrN1[i],g1.getNode(i+1));
+            assertNotEquals(notEqual,g1.getNode(i+1));
+            assertNotNull(g1.getNode(i+1));
+        }
+
+        //Checks whether the DGraph g2 returns the correct nodes keys
+        for (int i = 1; i <arrN2.length ; i++) {
+            assertEquals(arrN2[i],g2.getNode(i+1));
+            assertNotEquals(notEqual,g2.getNode(i+1));
+            assertNotNull(g2.getNode(i+1));
+        }
+
+        //Checks whether the DGraph g3 returns the correct nodes keys
+        for (int i = 1; i <arrN3.length ; i++) {
+            assertEquals(arrN3[i],g3.getNode(i+1));
+            assertNotEquals(notEqual,g3.getNode(i+1));
+            assertNotNull(g3.getNode(i+1));
+        }
     }
 
+    /**
+     * Checks whether the removeEdge function is working properly
+     */
     @Test
     public void removeEdge() {
+
+        //remove edge from all graphs
+        g0.removeEdge(1,2);
+        g2.removeEdge(2,3);
+        g3.removeEdge(2,3);
+
+        int counter=0;
+
+        if( g0.getEdge(1,2)==null) counter++;
+        if( g2.getEdge(2,3)==null) counter++;
+        if( g3.getEdge(2,3)==null) counter++;
+
+        assertEquals(3,counter);
+
     }
 
+    /**
+     * Checks whether the nodeSize function is working properly
+     */
     @Test
     public void nodeSize() {
         assertEquals(arrN0.length,g0.nodeSize());
@@ -320,6 +506,9 @@ public class DGraphTest {
         assertEquals(arrN3.length,g3.nodeSize());
     }
 
+    /**
+     * Checks whether the edgeSize function is working properly
+     */
     @Test
     public void edgeSize() {
         assertEquals(arrE0.length,g0.edgeSize());
@@ -374,96 +563,5 @@ public class DGraphTest {
         assertEquals(beforeChange0+beforeChange1+beforeChange2+beforeChange3+24,g0.getMC()+g1.getMC()+g2.getMC()+g3.getMC());
 
     }
-
-    @Test
-    public void Test(){
-        Graph_Algo G = new Graph_Algo();
-        Point3D p00 = new Point3D(1, 6, 0);
-        Point3D p11 = new Point3D(0, 2, 3);
-        Point3D p22 = new Point3D(1, 4, 0);
-        Point3D p33 = new Point3D(5, 2, 0);
-        Point3D p44 = new Point3D(6,5, 0);
-        Point3D p55 = new Point3D(4,6, 0);
-        Point3D p66 = new Point3D(3,5, 0);
-        Point3D p77 = new Point3D(4,10,0);
-        Point3D p88 = new Point3D(4.10,0);
-        Point3D p99 = new Point3D(1,30);
-        Point3D p10 = new Point3D(10,40);
-        node_data node1 = new Node(1,p00);
-        node_data node2 = new Node(2,p11);
-        node_data node3 = new Node(3,p22);
-        node_data node4 = new Node(4,p33);
-        node_data node5 = new Node(5,p44);
-        node_data node6 = new Node(6,p55);
-        node_data node7 = new Node(7,p66);
-        node_data node8 = new Node(8,p77);
-        node_data node9 =new Node(9,p88);
-        node_data node10 = new Node(10,p99);
-        node_data node11 = new Node(11,p10);
-
-        DGraph Dg = new DGraph();
-        Dg.addNode(node1);
-        Dg.addNode(node2);
-        Dg.addNode(node3);
-        Dg.addNode(node4);
-        Dg.addNode(node5);
-        Dg.addNode(node6);
-        Dg.addNode(node7);
-        Dg.addNode(node8);
-        Dg.addNode(node9);
-        Dg.addNode(node10);
-        Dg.addNode(node11);
-
-
-        Dg.connect(node1.getKey(), node2.getKey(), 5);
-        Dg.connect(node1.getKey(), node3.getKey(), 3);
-        Dg.connect(node1.getKey(), node4.getKey(), 2);
-        Dg.connect(node2.getKey(), node5.getKey(), 2);
-        Dg.connect(node3.getKey(), node6.getKey(), 4);
-        Dg.connect(node3.getKey(),node1.getKey(),2);
-        Dg.connect(node4.getKey(), node6.getKey(), 4);
-        Dg.connect(node4.getKey(), node7.getKey(), 2);
-        Dg.connect(node5.getKey(), node8.getKey(), 6);
-        Dg.connect(node5.getKey(), node7.getKey(), 1);
-        Dg.connect(node5.getKey(),node2.getKey(),4);
-        Dg.connect(node6.getKey(),node11.getKey(),3);
-        Dg.connect(node7.getKey(),node8.getKey(),4);
-        Dg.connect(node7.getKey(),node6.getKey(),1);
-        Dg.connect(node7.getKey(),node11.getKey(),9);
-        Dg.connect(node8.getKey(),node7.getKey(),1);
-        Dg.connect(node8.getKey(),node9.getKey(),9);
-        Dg.connect(node9.getKey(),node8.getKey(),3);
-        Dg.connect(node9.getKey(),node10.getKey(),5);
-        Dg.connect(node10.getKey(),node9.getKey(),2);
-        Dg.connect(node10.getKey(),node11.getKey(),1);
-        Dg.connect(node11.getKey(),node10.getKey(),2);
-
-        G.init(Dg);
-        System.out.println("Distance betwenn 1-6 is :" + G.shortestPathDist(node1.getKey(),node6.getKey()));
-        System.out.println("Distance between 6-7 is : " + G.shortestPathDist(node6.getKey(),node7.getKey()));
-        System.out.println("Distance between 4-1 is : " + G.shortestPathDist(node4.getKey(),node1.getKey()));
-        System.out.println("Distance between 7-9 is : " + G.shortestPathDist(node7.getKey(),node9.getKey()));
-        System.out.println("Distance between 3-2 is : " + G.shortestPathDist(node3.getKey(),node2.getKey()));
-
-        System.out.println("The graph is Connected :" + G.isConnected());
-        System.out.println("The shortest path between 5-10 is :" + G.shortestPath(node5.getKey(),node10.getKey()));
-        System.out.println("The shortest path between 10-1 is :" + G.shortestPath(node10.getKey(),node1.getKey()));
-        System.out.println("The shortest path between 7-2 is :" + G.shortestPath(node7.getKey(),node2.getKey()));
-        System.out.println("The shortest path between 1-9 is :" + G.shortestPath(node1.getKey(),node9.getKey()));
-
-        List<Integer> ans = new LinkedList<>();
-        ans.add(1);
-        ans.add(7);
-        ans.add(3);
-        ans.add(10);
-        List<Integer> ans2 = new LinkedList<>();
-        ans2.add(1);
-        ans2.add(10);
-        ans2.add(4);
-        ans2.add(5);
-        System.out.println("TSP[1,7,3,10] is: " +  G.TSP(ans));
-        System.out.println("TSP[10,1,4,5] is : " + G.TSP(ans2));
-    }
-
 
 }

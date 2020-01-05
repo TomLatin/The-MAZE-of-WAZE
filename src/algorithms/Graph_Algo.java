@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import GUI.Graph_GUI;
 import dataStructure.*;
 import utils.Point3D;
 
@@ -236,6 +237,14 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	 */
 	@Override
 	public List<node_data> TSP (List<Integer> targets) {
+		List<Integer> chek = new LinkedList<>();
+		for (Integer n : targets) {
+			if(!chek.contains(n))
+			{
+				chek.add(n);
+			}
+		}
+		targets=chek;
 		List<node_data> path = new LinkedList<node_data>(); //the path we return
 		double w=Double.MAX_VALUE; //the weight of the current full shortest path
 		for (int i = 0; i < targets.size(); i++) { // for all the targets nodes we start from..
@@ -326,22 +335,70 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	}
 
 	public static void main(String[] args) {
-		Point3D x = new Point3D(14,4,0);
-		Point3D x2 = new Point3D(-75,14,0);
-		Point3D x3 = new Point3D(80,5,0);
-		Point3D x4 = new Point3D(1,4,0);
-		Point3D x5 = new Point3D(-5,1,0);
-		Point3D x6 = new Point3D(8,3,0);
-		Point3D x7 = new Point3D(4,1,0);
-		Point3D x8 = new Point3D(75,14,0);
-		node_data a1 = new Node(1,x);
-		node_data a2 = new Node(2,x2);
-		node_data a3 = new Node(3,x3);
-		node_data a4 = new Node(4,x4);
-		node_data a5 = new Node(5,x5);
-		node_data a6 = new Node(6,x6);
-		node_data a7 = new Node(7,x7);
-		node_data a8 = new Node(8,x8);
+//		Point3D x = new Point3D(14,4,0);
+//		Point3D x2 = new Point3D(-75,14,0);
+//		Point3D x3 = new Point3D(80,5,0);
+//		Point3D x4 = new Point3D(1,4,0);
+//		Point3D x5 = new Point3D(-5,1,0);
+//		Point3D x6 = new Point3D(8,3,0);
+//		Point3D x7 = new Point3D(4,1,0);
+//		Point3D x8 = new Point3D(75,14,0);
+//		node_data a1 = new Node(1,x);
+//		node_data a2 = new Node(2,x2);
+//		node_data a3 = new Node(3,x3);
+//		node_data a4 = new Node(4,x4);
+//		node_data a5 = new Node(5,x5);
+//		node_data a6 = new Node(6,x6);
+//		node_data a7 = new Node(7,x7);
+//		node_data a8 = new Node(8,x8);
+//		DGraph d = new DGraph();
+//		d.addNode(a1);
+//		d.addNode(a2);
+//		d.addNode(a3);
+//		d.addNode(a4);
+//		d.addNode(a5);
+//		d.addNode(a6);
+//		d.addNode(a7);
+//		d.addNode(a8);
+//		d.connect(a1.getKey(),a2.getKey(),5);
+//	//	d.connect(a1.getKey(),a5.getKey(),2);
+//		d.connect(a1.getKey(),a3.getKey(),6);
+//	//	d.connect(a1.getKey(),a6.getKey(),5);
+//		d.connect(a3.getKey(),a4.getKey(),7);
+//		d.connect(a2.getKey(),a8.getKey(),8);
+//	//	d.connect(a2.getKey(),a7.getKey(),3);
+//		d.connect(a5.getKey(),a1.getKey(),5);
+//		d.connect(a5.getKey(),a6.getKey(),2);
+//	//	d.connect(a6.getKey(),a1.getKey(),3);
+//		d.connect(a6.getKey(),a5.getKey(),3);
+//		d.connect(a6.getKey(),a7.getKey(),3);
+//		//d.connect(a7.getKey(),a6.getKey(),3);
+//		Graph_Algo p = new Graph_Algo();
+//		p.Greph=d;
+//		List<Integer> r = new LinkedList<>();
+//		r.add(a1.getKey());
+//		r.add(a6.getKey());
+//		r.add(a5.getKey());
+//		List<node_data> ans = p.TSP(r);
+//		//System.out.println(d.getNode(7).getWeight());
+//		System.out.println(ans);
+
+		Point3D x = new Point3D(-400,300,0);
+		Point3D x2 = new Point3D(300,150,0);
+		Point3D x3 = new Point3D(380,-300,0);
+		Point3D x4 = new Point3D(150,-400,0);
+		Point3D x5 = new Point3D(0,-450,0);
+		Point3D x6 = new Point3D(200,-300,0);
+		Point3D x7 = new Point3D(-400,-150,0);
+		Point3D x8 = new Point3D(-400,120,0);
+		Node a1 = new Node(1,x);
+		Node a2 = new Node(2,x2);
+		Node a3 = new Node(3,x3);
+		Node a4 = new Node(4,x4);
+		Node a5 = new Node(5,x5);
+		Node a6 = new Node(6,x6);
+		Node a7 = new Node(7,x7);
+		Node a8 = new Node(8,x8);
 		DGraph d = new DGraph();
 		d.addNode(a1);
 		d.addNode(a2);
@@ -351,28 +408,36 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		d.addNode(a6);
 		d.addNode(a7);
 		d.addNode(a8);
-		d.connect(a1.getKey(),a2.getKey(),5);
-	//	d.connect(a1.getKey(),a5.getKey(),2);
-		d.connect(a1.getKey(),a3.getKey(),6);
-	//	d.connect(a1.getKey(),a6.getKey(),5);
-		d.connect(a3.getKey(),a4.getKey(),7);
-		d.connect(a2.getKey(),a8.getKey(),8);
-	//	d.connect(a2.getKey(),a7.getKey(),3);
-		d.connect(a5.getKey(),a1.getKey(),5);
-		d.connect(a5.getKey(),a6.getKey(),2);
-	//	d.connect(a6.getKey(),a1.getKey(),3);
-		d.connect(a6.getKey(),a5.getKey(),3);
-		d.connect(a6.getKey(),a7.getKey(),3);
-		//d.connect(a7.getKey(),a6.getKey(),3);
+		d.connect(1,2,5);
+		d.connect(1,5,2);
+		d.connect(1,3,6);
+		d.connect(1,6,5);
+		d.connect(3,4,7);
+		d.connect(2,8,8);
+		d.connect(2,7,3);
+		d.connect(5,1,5);
+		d.connect(5,6,2);
+		d.connect(6,1,3);
+		d.connect(6,5,3);
+		d.connect(6,7,3);
+		d.connect(7,6,3);
 		Graph_Algo p = new Graph_Algo();
-		p.Greph=d;
+		p.init(d);
 		List<Integer> r = new LinkedList<>();
-		r.add(a1.getKey());
-		r.add(a6.getKey());
-		r.add(a5.getKey());
+		r.add(1);
+		r.add(6);
+		r.add(5);
 		List<node_data> ans = p.TSP(r);
-		//System.out.println(d.getNode(7).getWeight());
-		System.out.println(ans);
+		Graph_GUI q = new Graph_GUI(d);
+
+
+
+		double bbbb = p.shortestPathDist(3,4);
+		//    List<node_data> theList = p.TSP(r);
+		double eeeee = p.shortestPathDist(1,6);
+		//     List<node_data> qqqq =  p.TSP(r);
+		System.out.println(p.isConnected());
+		System.out.println("r");
 	}
 
 }

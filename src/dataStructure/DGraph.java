@@ -34,6 +34,7 @@ public class DGraph implements graph,Serializable{
 	 * @return Node that is the key holder
 	 * We will check if the key value belongs to a particular Node, if yes - we return it, otherwise we will throw an exception
 	 * that stops the program and notify the user that no such node exists.
+	 * If the node's key does not exist in HashMap then the function returns null
 	 */
 	@Override
 	public node_data getNode(int key) {

@@ -25,6 +25,10 @@ public class Edge implements edge_data,Serializable{
      *A constructor that accepts parameters
      */
     public Edge(int s, int d, double w){
+        if(w<0)
+        {
+            throw new RuntimeException("ERR: The weight is negative");
+        }
         this.src=s;
         this.dest=d;
         this.weight=w;
