@@ -1,4 +1,6 @@
 
+![WhatsApp Image 2020-01-05 at 10 42 38](https://user-images.githubusercontent.com/57855070/71777411-292c4600-2fa8-11ea-8c89-4a91053942bd.jpeg)
+
 In this project we built a directed graph which is also a weighted graph.
 Also in this project you will find some algorithms that can be done on a graph that is both directed and weighted.
 
@@ -52,6 +54,41 @@ This parameter is designed for programmers to help us with the algorithms.
 * Info: 
 A string that can indicate more information about the edge.
 This parameter is designed for programmers to help us with the algorithms.
+
+####  DGraph class:
+This class is designed to build a graph  that is both directed and weighted, by adding nodes and edges.
+ when each graph has the following properties:
+ 
+ * Nodes count: Count the number of vertices in the graph.
+ 
+ * Edges count: Count the number of edges in the graph.
+ 
+ * Node graph: The field contains a data structure called HashMap that stores all the vertices of the graph.
+ 
+ * Edge graph:The field contains a data structure called HashMap and within HashMap another HashMap, to save all the edges in the graph.
+ 
+ ####  Graph_Algo class:
+ The Graph Algo class contains all algorithms that can be run on a graph. The algorithms are:
+ 
+ * Init: Allows to insert a graph into the Graph Algo class so that we can run algorithms on it.
+ 
+ * Init from file: Allows to insert a graph from serializable file into the Graph Algo class so that we can run algorithms on it.
+
+* Save to file: Allows to save a graph into a serializable file.
+
+* isConnected: Checks whether the graph is strongly related, that is, if for any two vertices in the graph we mark them in u, v there is a path between u and v and there is a path between v and u.
+
+* Shortest path dist: The algorithm finds the shortest way between the node Src and the node Dest, the shortest way is the way the least amount of weight is passed.
+
+* shortestPath: The algorithm returns the the shortest path between src to dest - as an ordered List of nodes,for example: 
+
+  src -> n1 ->n2 ->...-> dest
+
+* TSP: The algorithm computes a relatively short path which visit each node in the targets List.
+ The algorithm return the nodes we pass in this path  - as an ordered List of nodess,for example: 
+  n1 -> n2 ->n3 ->...-> nk
+
+* Copy:The algorithm compute a deep copy of this graph.
 
 
 
