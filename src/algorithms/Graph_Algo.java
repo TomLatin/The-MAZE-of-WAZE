@@ -23,13 +23,19 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		this.Greph = new DGraph();
 	}
 
-
-
+	/**
+	 * Init this set of algorithms on the parameter - graph.
+	 * @param g - the graph we work on
+	 */
 	@Override
 	public void init(graph g) {
 		this.Greph = g;
 	}
 
+	/**
+	 * Init a graph from file
+	 * @param file_name - the name of the file we loading
+	 */
 	@Override
 	public void init(String file_name) {
 		try {
@@ -43,6 +49,10 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		}
 	}
 
+	/**
+	 * Saves the graph to a file.
+	 * @param file_name - the name we give to the file we saving
+	 */
 	@Override
 	public void save(String file_name) {
 		try
@@ -64,6 +74,10 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 
 	}
 
+	/**
+	 * we returns true if and only if (iff) there is a valid path from EVREY node to each other node.
+	 * @Return true iff the graph is connected
+	 */
 	@Override
 	public boolean isConnected() {
 		graph copied = copy();
@@ -83,12 +97,21 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		return true;
 	}
 
+	/**
+	 * set the tags of all the node's graph to 0
+	 * @param ga
+	 */
 	void setZeroTag(graph ga){
 		for (node_data curr : ga.getV()){
 			curr.setTag(0);
 		}
 	}
 
+	/**
+	 * set the tag of the nodes that we can reach starting with key to 1
+	 * @param copied - the name of the graph
+	 * @param key - the key we start from
+	 */
 	void DFSUtil(graph copied , int key)
 	{
 		copied.getNode(key).setTag(1);
@@ -99,6 +122,10 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		}
 	}
 
+	/**
+	 * this method transpose the graph, if there is no opposite edge we change his direction
+	 * @param ga - the graph we transpose
+	 */
 	void getTranspose(graph ga){
 		for (node_data currV : ga.getV()){
 			if (ga.getE(currV.getKey())!=null) {
@@ -123,6 +150,12 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		}
 	}
 
+	/**
+	 * we calculate the distance between 2 node (the distance measure by shorted path)
+	 * @param src - start node
+	 * @param dest - end (target) node
+	 * @return the length of the shortest path between src to dest in the graph
+	 */
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		for (node_data currV : this.Greph.getV()) {
@@ -148,7 +181,11 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		return this.Greph.getNode(dest).getWeight();
 	}
 
-
+	/**
+	 * find the node with the smallest value on given collection
+	 * @param v - the collectino we get to fint the min value
+	 * @return the smallest value on the given collection
+	 */
 	private node_data findMinNode(Collection<node_data> v) {
 		Point3D p = new Point3D(0,0);
 		node_data toReturn= new Node(0,p);
@@ -163,7 +200,13 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		return toReturn;
 	}
 
-
+	/**
+	 * returns the the shortest path between src to dest - as an ordered List of nodes:
+	 * src -> n1 ->n2 ->...-> dest
+	 * @param src - start node
+	 * @param dest - end (target) node
+	 * @return the list of nodes in the shortest path between src to dest in the graph
+	 */
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
 		shortestPathDist(src,dest);
@@ -178,30 +221,36 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		return toReturn;
 	}
 
+	/**
+	 * computes a relatively short path which visit each node in the targets List.
+	 * @param targets - the list of Nodes we need to pass in this path
+	 * @Return the nodes we pass in this path - - as an ordered List of nodes:
+	 * n1 -> n2 ->n3 ->...-> nk
+	 */
 	@Override
 	public List<node_data> TSP (List<Integer> targets) {
-		List<node_data> path = new LinkedList<node_data>();
-		double w=Double.MAX_VALUE;
-		for (int i = 0; i < targets.size(); i++) {
-			double currW=0;
-			List<node_data> currpath = new LinkedList<node_data>();
-			List<Integer> currTarget = new LinkedList<Integer>();
+		List<node_data> path = new LinkedList<node_data>(); //the path we return
+		double w=Double.MAX_VALUE; //the weight of the current full shortest path
+		for (int i = 0; i < targets.size(); i++) { // for all the targets nodes we start from..
+			double currW=0; //weight counter
+			List<node_data> currpath = new LinkedList<node_data>(); //the path we build when starting from each node
+			List<Integer> currTarget = new LinkedList<Integer>(); //build copy of targets list
 			for (Integer k : targets){
 				currTarget.add(k);
 			}
-			node_data curr = this.Greph.getNode(currTarget.get(i));
+			node_data curr = this.Greph.getNode(currTarget.get(i)); //choose the start node(i from the loop)
 			currpath.add(curr);
 			currTarget.remove((Integer) curr.getKey());
 			int size = currTarget.size();
-			for (int j = 0; j < size; j++) {
-				List <node_data> nextPath = findNextStep(curr,currTarget);
-				if (nextPath==null) return null;
-				currW += shortestPathDist(curr.getKey(),nextPath.get(nextPath.size()-1).getKey());
-				curr = nextPath.get(nextPath.size()-1);
-				currpath.addAll(nextPath);
+			for (int j = 0; j < size; j++) { // do currTarget.size times:
+				List <node_data> nextPath = findNextStep(curr,currTarget); //get the path from curr node
+				if (nextPath==null) return null; //this graph is not connected
+				currW += shortestPathDist(curr.getKey(),nextPath.get(nextPath.size()-1).getKey()); //curr weight
+				curr = nextPath.get(nextPath.size()-1); // make the step
+				currpath.addAll(nextPath); // add this part of path to the current path
 				currTarget.remove((Integer) curr.getKey());
 			}
-			if (currW < w){
+			if (currW < w){ //check if it is the shorted option
 				path=currpath;
 				w=currW;
 			}
@@ -226,6 +275,12 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 //		return path;
 //	}
 
+	/**
+	 * we will find the next step of given node from a targets list of nodes
+	 * @param curr the node we find the next step by shorted path
+	 * @param targets list of optional nodes to go from the current node
+	 * @return th lise of the path between the current node and his next step
+	 */
 	private List<node_data> findNextStep(node_data curr, List<Integer> targets) {
 		node_data next= this.Greph.getNode(targets.get(0));
 		for (Integer n : targets){
@@ -239,6 +294,10 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		return tempPath;
 	}
 
+	/**
+	 * Compute a deep copy of this graph.
+	 * @return the copy of the graph
+	 */
 	@Override
 	public graph copy() {
 		graph toCopy = new DGraph();

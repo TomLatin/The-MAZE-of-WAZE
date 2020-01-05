@@ -161,7 +161,7 @@ public class Graph_GUI extends Thread {
         graphAlgo.init(filename);
         dGraph=(DGraph)graphAlgo.copy();
         keyEmpty=dGraph.findNextKey();
-        sketch();
+        draw();
     }
 
     /**
@@ -218,7 +218,7 @@ public class Graph_GUI extends Thread {
         Range y = findRangeY();
         int width = (int)(x.get_max()-x.get_min()+100);
         int height = (int)(y.get_max()-y.get_min()+100);
-        StdDraw.setCanvasSize(width,height,this);
+        StdDraw.setCanvasSize(15000,15000,this);
         StdDraw.setXscale(x.get_min()-20,x.get_max()+20);
         StdDraw.setYscale(y.get_min()-20,y.get_max()+20);
         sketch();

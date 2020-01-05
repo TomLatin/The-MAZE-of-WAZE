@@ -1795,7 +1795,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			case " New   ":
 				System.out.println("New File");
 				GUI= new Graph_GUI();
-				GUI.sketch();
+				GUI.draw();
 
 				break;
 			case " Save...   ":
