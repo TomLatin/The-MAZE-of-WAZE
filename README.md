@@ -90,6 +90,15 @@ This class is designed to build a graph  that is both directed and weighted, by 
 
 * Copy:The algorithm compute a deep copy of this graph.
 
+####  GUI class:
+
+The GUI class allows us to see the graphs visually.
+Plus change the graph in real time by adding or taking down vertices and edges.
+also we can save and load graph's from and to the  GUI.
+In addition, some algorithms can be run on the graph in the GUI class.
+
+
+
 
 
 
