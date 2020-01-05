@@ -1,4 +1,4 @@
-package tests;
+package Tests;
 
 import dataStructure.Node;
 import org.junit.Before;

@@ -1,8 +1,13 @@
-package algorithms;
+package Tests;
 
+import algorithms.Graph_Algo;
+import algorithms.graph_algorithms;
+import dataStructure.DGraph;
+import dataStructure.Node;
+import dataStructure.graph;
+import dataStructure.node_data;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import utils.Point3D;
 
 public class Graph_AlgoTest {
 
@@ -42,15 +47,4 @@ public class Graph_AlgoTest {
     public void shortestPath() {
     }
 
-    @Test
-    public void TSP() {
-    }
-
-    @Test
-    public void copy() {
-    }
-
-    @Test
-    public void main() {
-    }
 }

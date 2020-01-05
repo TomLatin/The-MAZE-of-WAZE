@@ -1,15 +1,11 @@
-package tests;
+package Tests;
 
-import algorithms.Graph_Algo;
 import dataStructure.*;
 import org.junit.Before;
 import org.junit.Test;
 import utils.Point3D;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 

@@ -27,7 +27,7 @@ package utils;
  *
  ******************************************************************************/
 
-import GUI.Graph_GUI;
+import gui.Graph_GUI;
 import dataStructure.node_data;
 
 import java.awt.*;

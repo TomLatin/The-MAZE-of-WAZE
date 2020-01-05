@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 
 import algorithms.Graph_Algo;
 import dataStructure.*;
