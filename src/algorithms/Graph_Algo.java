@@ -165,18 +165,24 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		}
 		this.Greph.getNode(src).setWeight(0);
 		node_data min = this.Greph.getNode(src);
-		while (min!= this.Greph.getNode(dest) && min.getInfo()!="empty"){
+		node_data prev=this.Greph.getNode(src);
+		while (prev!= this.Greph.getNode(dest) && min.getInfo()!="empty"){
 			min.setTag(1);
 			if (this.Greph.getE(min.getKey())!=null) {
 				for (edge_data currE : this.Greph.getE(min.getKey())) {
-					if (min.getWeight() + currE.getWeight() < this.Greph.getNode(currE.getDest()).getWeight()) {
+					if ( (this.Greph.getNode(currE.getDest()).getTag()==0) && (min.getWeight() + currE.getWeight() < this.Greph.getNode(currE.getDest()).getWeight()) ) {
 						this.Greph.getNode(currE.getDest()).setWeight(min.getWeight() + currE.getWeight());
 						this.Greph.getNode(currE.getDest()).setInfo("" + min.getKey());
+						prev = min;
 					}
 				}
+
 			}
-			this.Greph.getNode(dest).setInfo(""+ min.getKey());
 			min = findMinNode(this.Greph.getV());
+		}
+		if(this.Greph.getNode(dest).getWeight()==Integer.MAX_VALUE){
+			System.out.print("There is not a path between the nodes.");
+			return Integer.MAX_VALUE;
 		}
 		return this.Greph.getNode(dest).getWeight();
 	}
@@ -209,7 +215,8 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	 */
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
-		shortestPathDist(src,dest);
+		Double val = shortestPathDist(src,dest);
+		if (val == Integer.MAX_VALUE) return null;
 		LinkedList<node_data> toReturn = new LinkedList<node_data>();
 		node_data currV = this.Greph.getNode(dest);
 		toReturn.add(currV);

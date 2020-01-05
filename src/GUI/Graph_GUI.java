@@ -294,20 +294,18 @@ public class Graph_GUI extends Thread {
 
     public static void main(String[] args) {
         DGraph d = new DGraph();
-        node_data t = new Node(88,new Point3D(120,120));
-        d.addNode(t);
-        Graph_GUI g = new Graph_GUI(d);
-//        for (int i = 0; i < 9; i++) {
-//            for (int j = 1; j <= 9; j++) {
-//                int key = (i*9)+(j);
-//                Point3D  p = new Point3D(((j-1)*20)-80,(i*20)-80);
-//                node_data curr = new Node(key,p);
-//                d.addNode(curr);
-//                if (((key-1)%9)!=0) d.connect(key-1,key,1+((int)(Math.random()*20)));
-//                if (key>9) d.connect(key-9,key,1+(int)(Math.random()*20));
-//            }
-//        }
-        d.connect(81,1,9999999);
-        //Graph_GUI g = new Graph_GUI(d);
+     //   Graph_GUI g = new Graph_GUI(d);
+        for (int i = 0; i < 9; i++) {
+            for (int j = 1; j <= 9; j++) {
+                int key = (i*9)+(j);
+                Point3D  p = new Point3D(((j-1)*20)-80,(i*20)-80);
+                node_data curr = new Node(key,p);
+                d.addNode(curr);
+                if (((key-1)%9)!=0) d.connect(key-1,key,1+((int)(Math.random()*20)));
+                if (key>9) d.connect(key-9,key,1+(int)(Math.random()*20));
+            }
+        }
+       d.connect(81,1,9999999);
+       Graph_GUI g = new Graph_GUI(d);
     }
 }
