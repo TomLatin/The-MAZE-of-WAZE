@@ -170,8 +170,8 @@ public class Graph_GUI extends Thread {
      */
     public Range findRangeX(){
         if (dGraph.nodeSize()!=0){
-            double min = -80;
-            double max = 80;
+            double min = Integer.MAX_VALUE;
+            double max = Integer.MIN_VALUE;
             for (node_data curr : dGraph.getV()){
                 if (curr.getLocation().x() > max) max = curr.getLocation().x();
                 if (curr.getLocation().x() < min) min = curr.getLocation().x();
@@ -181,7 +181,7 @@ public class Graph_GUI extends Thread {
             return toReturn;
         }
         else {
-            Range Default = new Range(-80,80);
+            Range Default = new Range(35.1,35.3);
             rangeX = Default;
             return Default;
         }
@@ -193,18 +193,18 @@ public class Graph_GUI extends Thread {
      */
     public Range findRangeY(){
         if (dGraph.nodeSize()!=0){
-            double min = -80;
-            double max = 80;
+            double min = Integer.MAX_VALUE;
+            double max = Integer.MIN_VALUE;
             for (node_data curr : dGraph.getV()){
-                if (curr.getLocation().x() > max) max = curr.getLocation().x();
-                if (curr.getLocation().x() < min) min = curr.getLocation().x();
+                if (curr.getLocation().y() > max) max = curr.getLocation().y();
+                if (curr.getLocation().y() < min) min = curr.getLocation().y();
             }
             Range toReturn = new Range(min,max);
             rangeY = toReturn;
             return toReturn;
         }
         else {
-            Range Default = new Range(-80,80);
+            Range Default = new Range(32.1,32.3);
             rangeY = Default;
             return Default;
         }
@@ -216,9 +216,11 @@ public class Graph_GUI extends Thread {
     public void draw(){
         Range x = findRangeX();
         Range y = findRangeY();
-        StdDraw.setCanvasSize(1000,1000,this);
-        StdDraw.setXscale(x.get_min()-20,x.get_max()+20);
-        StdDraw.setYscale(y.get_min()-20,y.get_max()+20);
+        StdDraw.setCanvasSize(1024,512);
+        StdDraw.setXscale(x.get_min()-0.002,x.get_max()+0.002);
+        StdDraw.setYscale(y.get_min()-0.002,y.get_max()+0.002);
+//        System.out.println(x.get_min()+", "+x.get_max());
+//        System.out.println(y.get_min()+", "+y.get_max());
         sketch();
     }
 
@@ -227,6 +229,10 @@ public class Graph_GUI extends Thread {
      */
     public void sketch() {
         StdDraw.clear();
+        Range xx = findRangeX();
+        Range yy = findRangeY();
+        double rightScaleX = ((xx.get_max()-xx.get_min())*0.004);
+        double rightScaleY =  ((yy.get_max()-yy.get_min())*0.004);
         for (node_data currV : dGraph.getV()) {
             if (dGraph.getE(currV.getKey()) != null) {
                 for (edge_data currE : dGraph.getE(currV.getKey())) {
@@ -236,7 +242,7 @@ public class Graph_GUI extends Thread {
                         Point3D srcP = srcN.getLocation();
                         Point3D dstP = dstN.getLocation();
                         StdDraw.setPenColor(Color.BLACK);
-                        StdDraw.setPenRadius(0.006);
+                        StdDraw.setPenRadius(rightScaleX*0.06);
                         StdDraw.line(srcP.x(), srcP.y(), dstP.x(), dstP.y());
                     }
                 }
@@ -255,25 +261,25 @@ public class Graph_GUI extends Thread {
                         double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
 
                         double rx = 0, gy = 0;
-                        if (srcP.y() == dstP.y()) gy = 4;
-                        else if (srcP.x() == dstP.x()) rx = 5 ;
+                        if (srcP.y() == dstP.y()) gy = rightScaleX*4;
+                        else if (srcP.x() == dstP.x()) rx = rightScaleX*5 ;
                         else {
                             double m = (dstP.y() - srcP.y()) / (dstP.x() - srcP.x());
-                            if (Math.abs(m) > 1) rx = 4;
-                            else gy = 3;
+                            if (Math.abs(m) > 1) rx = rightScaleX*4;
+                            else gy = rightScaleX*3;
                         }
                         StdDraw.text(tX + rx, tY + gy, "" + (int)weight);
-                        StdDraw.filledRectangle(tX, tY, 1.3, 1.3);
+                        StdDraw.filledRectangle(tX, tY, rightScaleX*1.5, rightScaleY*2);
                     }
                 }
             }
             for (node_data curr : dGraph.getV()) {
                 StdDraw.setPenColor(Color.RED);
-                StdDraw.setPenRadius(0.1);
+                StdDraw.setPenRadius(rightScaleX*0.1);
                 Point3D p = curr.getLocation();
-                StdDraw.filledCircle(p.x(), p.y(), 3);
+                StdDraw.filledCircle(p.x(), p.y(), rightScaleX*3);
                 StdDraw.setPenColor(Color.YELLOW);
-                StdDraw.text(p.x(), p.y()-0.5, "" + curr.getKey());
+                StdDraw.text(p.x(), p.y()-rightScaleX*0.5, "" + curr.getKey());
             }
         }
     }
