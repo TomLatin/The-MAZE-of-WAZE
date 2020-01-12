@@ -699,7 +699,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 		frame.setContentPane(draw);
 		frame.addKeyListener(std);    // JLabel cannot get keyboard focus
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
 		// frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
 		frame.setTitle("Welcome to The Maze Of Waze!!");
@@ -707,6 +707,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.pack();
 		frame.requestFocusInWindow();
 		frame.setVisible(true);
+		frame.getHeight();
+
 	}
 
 	// create the menu bar (changed to private)
@@ -2109,6 +2111,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
+	//to find out if the whight and hige is change and then change the para.need to have a para for this.
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -2118,6 +2121,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
 		}
+
 	}
 
 	/**
