@@ -7,37 +7,45 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class RobotsContain {
-    private Robot[] RobotArray;
+    private Robot[] RobotArr;
     private int numOfRobots;
     private game_service game;
-    private int[] nodeKey;
 
-    public RobotsContain (game_service game, int[]keys){
+
+    public RobotsContain (game_service game){
         this.game = game;
-        getNumOfRobots();
-        nodeKey = keys;
-        RobotArray = new Robot[this.numOfRobots];
-        for (int i = 0; i < numOfRobots; i++) {
-            this.game.addRobot(nodeKey[i]);
-        }
-        List<String> toAdd= game.getRobots();
-        for (int i = 0; i < numOfRobots ; i++) {
-            
+        this.numOfRobots = getNumOfRobots();
+        RobotArr = new Robot[this.numOfRobots];
+    }
+
+    public void initToServer(int[]keys){
+        for (int i = 0; i < numOfRobots; i++) { // insert robots to server
+            this.game.addRobot(keys[i]);
         }
     }
 
-    public void addRobot(Robot toAdd){
-
+    public Robot[] init(List<String>json){
+        int i=0;
+        for (String curr : json)
+        {
+            Robot toAdd = new Robot();
+            toAdd = (Robot) toAdd.init(curr);
+            this.RobotArr[i]=toAdd;
+            i++;
+        }
+        return this.RobotArr;
     }
 
-    public void getNumOfRobots(){
+    public int getNumOfRobots(){
+        int num=0;
         try {
             String info = game.toString();
             JSONObject line = new JSONObject(info);
             JSONObject GameServer = line.getJSONObject("GameServer");
-            this.numOfRobots = GameServer.getInt("robots");
+            num = GameServer.getInt("robots");
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return num;
     }
 }

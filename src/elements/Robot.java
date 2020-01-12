@@ -12,6 +12,7 @@ public class Robot implements elementsInTheGame{
     private int dest;
     private  double speed;
     private Point3D pos;
+    private String Pic;
 
     public Robot()
     {
@@ -21,6 +22,7 @@ public class Robot implements elementsInTheGame{
         this.dest=0;
         this.speed=0;
         this.pos=null;
+        this.Pic="";
 
     }
 
@@ -35,8 +37,9 @@ public class Robot implements elementsInTheGame{
             toReturn.src= Robot.getInt("src");
             toReturn.dest= Robot.getInt("dest");
             toReturn.speed= Robot.getDouble("speed");
-            String posSring = Robot.getString("speed").toString();
-            toReturn.pos= new Point3D(posSring);
+            String posString = Robot.getString("pos").toString();
+            toReturn.pos= new Point3D(posString);
+            toReturn.Pic = "robot.jpg";
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -45,12 +48,12 @@ public class Robot implements elementsInTheGame{
 
     @Override
     public void setPic(String file_name) {
-
+        this.Pic = file_name;
     }
 
     @Override
     public String getPic() {
-        return null;
+        return this.Pic;
     }
 
 //    @Override
