@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import utils.Range;
 import utils.StdDraw;
 
-public class MyGameGUI {
+public class MyGameGUI extends Thread{
     private Graph_GUI graph_gui;
     private DGraph dg;
     private game_service game;
@@ -30,32 +30,47 @@ public class MyGameGUI {
         welcomWindow();//just open the window
 
         //create window that ask for scenario
-
-        //just draw the graph
         this.game = Game_Server.getServer(gameScenario);
+
+        this.start();
+        drawGraph();
+        drawFruits();
+        drawRobots();
+
+        System.out.println(game.getRobots());
+        System.out.println(game.getFruits());
+        System.out.println(game.toString());
+
+    }
+
+    public void drawGraph(){
+        //just draw the graph
         String graphJson = game.getGraph();
         this.dg = new DGraph();
         this.dg.init(graphJson);
         draw();
         graph_gui = new Graph_GUI(this.dg);
         graph_gui.sketchGraph(findRangeX(),findRangeY());
+    }
 
-
+    public void drawFruits(){
         this.gameFruits = new FruitContain(this.game); //build a FruitContain
         fruitArr = gameFruits.init(this.game.getFruits()); //initialize the arr of fruits
 
         //Placing the fruits on the board
         for (Fruit curr : fruitArr){
-            StdDraw.picture(curr.getLocation().x(),curr.getLocation().y(),curr.getPic(),0.0005,0.0005);
+            StdDraw.picture(curr.getLocation().x(),curr.getLocation().y(),curr.getPic(),0.0008,0.0008);
         }
+    }
 
+    public void drawRobots(){
         gameRobot = new RobotsContain(game);
         int [] robotKeys = new int[gameRobot.getNumOfRobots()];  //open arr of keys
 
         //fill the robot array (menual / auto)
         robotKeys[0] = 8;
-        robotKeys[1] = 30;
-        robotKeys[2] = 1;
+//        robotKeys[1] = 30;
+//        robotKeys[2] = 1;
 
         //build RobotContain
         gameRobot.initToServer(robotKeys);
@@ -65,13 +80,8 @@ public class MyGameGUI {
 
         //Placing the robots on the board
         for (Robot curr : robotArr){
-            StdDraw.picture(curr.getLocation().x(),curr.getLocation().y(),curr.getPic(),0.0005,0.0005);
+            StdDraw.picture(curr.getLocation().x(),curr.getLocation().y(),curr.getPic(),0.0008,0.0008);
         }
-
-        System.out.println(game.getRobots());
-        System.out.println(game.getFruits());
-        System.out.println(game.toString());
-
     }
 
     /**
@@ -140,7 +150,19 @@ public class MyGameGUI {
 
     }
 
+    public void run(){
+        while (true){
+            drawFruits();
+            drawRobots();
+            try {
+                sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        MyGameGUI games = new MyGameGUI(23);
+        MyGameGUI games = new MyGameGUI(8);
     }
 }
