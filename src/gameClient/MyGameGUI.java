@@ -9,7 +9,7 @@ import elements.Fruit;
 import elements.FruitContain;
 import elements.Robot;
 import elements.RobotsContain;
-import gui.Graph_GUI;
+import utils.Point3D;
 import utils.Range;
 import utils.StdDraw;
 import javax.swing.*;
@@ -19,13 +19,10 @@ import java.util.LinkedList;
 
 public class MyGameGUI extends Thread{
     private int[] robotKeys;
-    private Graph_GUI graph_gui;
-    private DGraph dg;
+    public DGraph dg;
     private game_service game;
-    private RobotsContain gameRobot;
-    private Robot[] robotArr;
-    private FruitContain gameFruits;
-    private Fruit[] fruitArr;
+    public RobotsContain gameRobot;
+    public FruitContain gameFruits;
     private Range rangeX;
     private Range rangeY;
     private LinkedList<node_data> toMark=new LinkedList<node_data>();
@@ -145,7 +142,7 @@ public class MyGameGUI extends Thread{
     }
 
     public node_data getNeerRobot (double x, double y){
-        for (node_data curr : robotArr){
+        for (node_data curr : this.gameRobot.RobotArr){
             double currX = curr.getLocation().x();
             double currY = curr.getLocation().y();
             if ((x < currX+0.0004) && (x > currX-0.0004) && (y < currY+0.0004) && (y > currY-0.0004)) return curr;
@@ -157,7 +154,9 @@ public class MyGameGUI extends Thread{
     public void run(){
         while (this.game.isRunning()){
 
-            graph_gui.sketchGraph(findRangeX(),findRangeY());
+            sketchGraph(findRangeX(),findRangeY());
+            StdDraw.setPenColor(Color.BLUE);
+            StdDraw.text(findRangeX().get_min()+ (findRangeX().get_length()/2),findRangeY().get_max(),"TIME To END: "+ game.timeToEnd()/1000);
             drawFruits();
             menualMove();
             game.move();
@@ -183,29 +182,86 @@ public class MyGameGUI extends Thread{
         this.dg = new DGraph();
         this.dg.init(graphJson);
         draw();
-        graph_gui = new Graph_GUI(this.dg);
-        graph_gui.sketchGraph(findRangeX(),findRangeY());
+        sketchGraph(findRangeX(),findRangeY());
+    }
+
+    /**
+     * this method sketch of the graph on the opened window of the gui.
+     */
+    public void sketchGraph(Range RangeX, Range RangeY) {
+        StdDraw.clear();
+        Range xx = RangeX;
+        Range yy = RangeY;
+        double rightScaleX = ((xx.get_max()-xx.get_min())*0.004);
+        double rightScaleY =  ((yy.get_max()-yy.get_min())*0.004);
+        for (node_data currV : this.dg.getV()) {
+            if (this.dg.getE(currV.getKey()) != null) {
+                for (edge_data currE : this.dg.getE(currV.getKey())) {
+                    if (currE.getDest() != currE.getSrc()) {
+                        node_data srcN = currV;
+                        node_data dstN = this.dg.getNode(currE.getDest());
+                        Point3D srcP = srcN.getLocation();
+                        Point3D dstP = dstN.getLocation();
+                        StdDraw.setPenColor(Color.BLACK);
+                        StdDraw.setPenRadius(rightScaleX*60);
+                        StdDraw.line(srcP.x(), srcP.y(), dstP.x(), dstP.y());
+                    }
+                }
+            }
+        }
+        for (node_data currV : this.dg.getV()) {
+            if (this.dg.getE(currV.getKey()) != null) {
+                for (edge_data currE : this.dg.getE(currV.getKey())) {
+                    if (currE.getDest() != currE.getSrc()) {
+                        double weight = currE.getWeight();
+                        node_data srcN = currV;
+                        node_data dstN = this.dg.getNode(currE.getDest());
+                        Point3D srcP = srcN.getLocation();
+                        Point3D dstP = dstN.getLocation();
+                        StdDraw.setPenColor(Color.MAGENTA);
+                        double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
+                        double rx = 0, gy = 0;
+                        if (srcP.y() == dstP.y()) gy = rightScaleX*4;
+                        else if (srcP.x() == dstP.x()) rx = rightScaleX*5 ;
+                        else {
+                            double m = (dstP.y() - srcP.y()) / (dstP.x() - srcP.x());
+                            if (Math.abs(m) > 1) rx = rightScaleX*4;
+                            else gy = rightScaleX*3;
+                        }
+                        double printWeight = Math.round(weight*100.0)/100.0;
+                        StdDraw.text(tX + rx, tY + gy, "" + printWeight);
+                        StdDraw.filledRectangle(tX, tY, rightScaleX, rightScaleX);
+                    }
+                }
+            }
+        }
+        for (node_data curr : this.dg.getV()) {
+            StdDraw.setPenColor(Color.RED);
+            StdDraw.setPenRadius(rightScaleX*0.1);
+            Point3D p = curr.getLocation();
+            StdDraw.filledCircle(p.x(), p.y(), rightScaleX*2.5);
+            StdDraw.setPenColor(Color.YELLOW);
+            StdDraw.text(p.x(), p.y()-rightScaleX*0.5, "" + curr.getKey());
+        }
     }
 
     public void drawFruits(){
         this.gameFruits = new FruitContain(this.game); //build a FruitContain
-        fruitArr = gameFruits.init(this.game.getFruits()); //initialize the arr of fruits
+        gameFruits.init(this.game.getFruits()); //initialize the arr of fruits
 
 
         //Placing the fruits on the board
-        for (Fruit curr : fruitArr){
+        for (Fruit curr : this.gameFruits.fruitsArr){
             StdDraw.picture(curr.getLocation().x(),curr.getLocation().y(),curr.getPic(),0.0008,0.0008);
         }
     }
 
     public void updateRobot(){
-
         //print
-        this.robotArr = this.gameRobot.init(this.game.getRobots());
-
+        this.gameRobot.init(this.game.getRobots());
 
         //Placing the robots on the board
-        for (Robot curr : this.robotArr){
+        for (Robot curr : this.gameRobot.RobotArr){
             StdDraw.picture(curr.getLocation().x(),curr.getLocation().y(),curr.getPic(),0.0008,0.0008);
 
         }

@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class RobotsContain {
-    private Robot[] RobotArr;
+    public Robot[] RobotArr;
     private int numOfRobots;
     private game_service game;
 

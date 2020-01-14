@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import algorithms.*;
 import dataStructure.*;
 import utils.*;
-import gui.*;
 
 /**
  * EX2 Structure test:
@@ -56,7 +55,7 @@ class Ex2Test {
         return ans;
     }
     boolean drawGraph(graph g) {
-       Graph_GUI ga =new Graph_GUI((DGraph)g);
+
         return true;
 
     }

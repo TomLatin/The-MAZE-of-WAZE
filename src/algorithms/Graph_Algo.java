@@ -240,7 +240,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	@Override
 	public List<node_data> TSP (List<Integer> targets) {
 		List<Integer> chek = new LinkedList<>();
-		for (Integer n : targets) {
+		for (Integer n : targets) { //check duplicate
 			if(!chek.contains(n))
 			{
 				chek.add(n);

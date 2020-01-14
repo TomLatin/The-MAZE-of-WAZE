@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class FruitContain {
-    private Fruit[] fruitsArr;
+    public Fruit[] fruitsArr;
     private int numOfFruits;
     private game_service game;
 

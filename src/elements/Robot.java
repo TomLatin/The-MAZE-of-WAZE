@@ -1,8 +1,11 @@
 package elements;
 
+import dataStructure.node_data;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Point3D;
+
+import java.util.LinkedList;
 
 public class Robot implements elementsInTheGame{
 
@@ -13,6 +16,9 @@ public class Robot implements elementsInTheGame{
     private  double speed;
     private Point3D pos;
     private String Pic;
+    public double weight;
+
+    public LinkedList<node_data> path;
 
     public Robot()
     {
@@ -23,6 +29,8 @@ public class Robot implements elementsInTheGame{
         this.speed=0;
         this.pos=null;
         this.Pic="";
+        this.path = null;
+        this.weight= 0;
 
     }
 
@@ -76,14 +84,21 @@ public class Robot implements elementsInTheGame{
         this.pos = p;
     }
 
+    public double getValue() {
+        return this.value;
+    }
+
+    public void setValue(double w) {
+        this.value = w;
+    }
     @Override
     public double getWeight() {
-        return this.value;
+        return this.weight;
     }
 
     @Override
     public void setWeight(double w) {
-        this.value = w;
+        this.weight = w;
     }
 
     @Override
@@ -104,6 +119,14 @@ public class Robot implements elementsInTheGame{
     @Override
     public void setTag(int t) {
 
+    }
+
+    public LinkedList<node_data> getPath (){
+        return  this.path;
+    }
+
+    public void setPath( LinkedList<node_data> path){
+        this.path = path;
     }
 
     public double getSpeed() {

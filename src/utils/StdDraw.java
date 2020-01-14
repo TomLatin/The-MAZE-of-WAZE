@@ -28,7 +28,7 @@ package utils;
  ******************************************************************************/
 
 import gameClient.MyGameGUI;
-import gui.Graph_GUI;
+
 import dataStructure.node_data;
 
 import java.awt.*;
@@ -620,7 +620,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// set of key codes currently pressed down
 	private static TreeSet<Integer> keysDown = new TreeSet<Integer>();
 
-	public static Graph_GUI GUI;
+	public static MyGameGUI GUI;
 	// singleton pattern: client can't instantiate
 	private StdDraw() { }
 
@@ -642,7 +642,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 * @param height
 	 * @param graph_gui
 	 */
-	public static void setCanvasSize(int width, int height, Graph_GUI graph_gui) {
+	public static void setCanvasSize(int width, int height, MyGameGUI graph_gui) {
 		setCanvasSize(DEFAULT_SIZE, DEFAULT_SIZE);
 	}
 
