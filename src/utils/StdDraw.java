@@ -27,6 +27,7 @@ package utils;
  *
  ******************************************************************************/
 
+import gameClient.MyGameGUI;
 import gui.Graph_GUI;
 import dataStructure.node_data;
 
@@ -606,10 +607,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static StdDraw std = new StdDraw();
 
 	// the frame for drawing to the screen
-	private static JFrame frame;
+	public static JFrame frame;
 
 	// mouse state
-	private static boolean isMousePressed = false;
+	public static boolean isMousePressed = false;
 	private static double mouseX = 0;
 	private static double mouseY = 0;
 
@@ -1698,8 +1699,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 * Copies offscreen buffer to onscreen buffer. There is no reason to call
 	 * this method unless double buffering is enabled.
 	 */
-	public static void show() {
-		onscreen.drawImage(offscreenImage, 0, 0, null);
+	public static void show() { onscreen.drawImage(offscreenImage, 0, 0, null);
 		frame.repaint();
 	}
 
@@ -1842,12 +1842,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 
+
 	/**
 	 * This method cannot be called directly.
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-//
+
 //		if (toAddNode) {
 //			double locX = mouseX, locY = mouseY;
 //			if(locX<90 && locX>80 && locY<-88 && locY>-92){

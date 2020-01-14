@@ -37,21 +37,6 @@ public class Graph_GUI {
         StdDraw.GUI = this;
     }
 
-    /**
-     * we will return the node that the location (X, Y) is at that node,
-     * We will loop through the nodes of the graph until we find a node that corresponds to the desired location
-     * @param x - The location on the X axis that is sent to find the node
-     * @param y - The location on the Y axis that is sent to find the node
-     * @return the node that the location (X, Y) is at that node
-     */
-    public node_data getNeerNode (double x, double y){
-        for (node_data curr : dGraph.getV()){
-            double currX = curr.getLocation().x();
-            double currY = curr.getLocation().y();
-            if ((x < currX+3.5) && (x > currX-3.5) && (y < currY+3.5) && (y > currY-3.5)) return curr;
-        }
-        return null;
-    }
 
 
 
