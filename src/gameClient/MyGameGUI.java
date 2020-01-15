@@ -62,6 +62,10 @@ public class MyGameGUI extends Thread{
      //   placeRobots();
         //auto
         this.gameAuto = new MyGameAlgo(this,this.dg);
+        for (int i = 0; i < this.gameRobot.getNumOfRobots(); i++) {
+            Robot toAdd = new Robot(i+1);
+            this.gameRobot.RobotArr[i]=toAdd;
+        }
         this.gameAuto.menagerOfRobots();
 
         this.gameRobot.initToServer(robotKeys); //build RobotContain
@@ -132,7 +136,11 @@ public class MyGameGUI extends Thread{
 
     public void autoMove(){
         for (Robot r: this.gameRobot.RobotArr) {
-            this.game.chooseNextEdge(r.getKey(),r.path.getFirst().getKey());
+            this.game.chooseNextEdge(r.getKey(),r.path.get(0).getKey());
+            System.out.println(r.path.get(0).getKey());
+//            System.out.println(r.path.get(1).getKey());
+//            System.out.println(this.gameAuto.findFruitsEdge(r.robotFruit));
+//            System.out.println(r.path);
         }
     }
 
@@ -273,7 +281,7 @@ public class MyGameGUI extends Thread{
 
     public void drawFruits(){
         this.gameFruits = new FruitContain(this.game); //build a FruitContain
-        gameFruits.init(this.game.getFruits()); //initialize the arr of fruits
+        this.gameFruits.init(this.game.getFruits()); //initialize the arr of fruits
 
 
         //Placing the fruits on the board
@@ -282,7 +290,8 @@ public class MyGameGUI extends Thread{
         }
     }
 
-    public void updateRobot(){
+    public void
+    updateRobot(){
         //print
         this.gameRobot.init(this.game.getRobots());
 

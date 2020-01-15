@@ -17,10 +17,13 @@ public class MyGameAlgo {
     private MyGameGUI gameGUI;
     private graph graphGame;
     private Graph_Algo ga;
+    private boolean initedFirstTime = true;
+
 
     public MyGameAlgo(MyGameGUI gameGUI, graph graphGame){
         this.gameGUI = gameGUI;
         this.graphGame = graphGame;
+        this.ga = new Graph_Algo();
         this.ga.init(graphGame);
     }
 
@@ -71,7 +74,7 @@ public class MyGameAlgo {
                 currTarget.add(k);
             }
             node_data currSrc = this.graphGame.getNode(currEstart.getSrc()); //choose the start node from src edge
-            node_data currDest = this.graphGame.getNode(currEstart.getSrc()); //choose the start node from dest edge
+            node_data currDest = this.graphGame.getNode(currEstart.getDest()); //choose the start node from dest edge
             currpath.add(currSrc);
             currpath.add(currDest);
             currTarget.remove(currEstart); //remove first edge
@@ -92,6 +95,11 @@ public class MyGameAlgo {
         Node weight = new Node(1000000,new Point3D(0,0));
         weight.setWeight(w);
         path.add(weight);
+        if (path.get(0).getKey()==path.get(1).getKey()) {
+            path.removeFirst();
+            path.removeFirst();
+            path.removeFirst();
+        }
         return path;
     }
 
@@ -110,7 +118,7 @@ public class MyGameAlgo {
             }
         }
         List<node_data>tempPath = this.ga.shortestPath(curr.getDest(),next.getSrc());
-        tempPath.remove(0);
+        if (tempPath.size()>2) tempPath.remove(0);
         tempPath.add(this.graphGame.getNode(next.getDest()));
         return tempPath;
     }
@@ -118,12 +126,17 @@ public class MyGameAlgo {
 
     public void menagerOfRobots (){
         this.fruitEdge = findFruitsEdge(arrayToLinkedList(this.gameGUI.gameFruits.fruitsArr)); // init the fruitEdge from the array that came from the game
+        if (this.gameGUI.gameRobot.inited){
+           //add to fruitEdge the SP from the robotEdge to firstEdge and the weight
+            this.fruitEdge.add(this.graphGame.getEdge(this.gameGUI.gameRobot.RobotArr[0].getSrc(),this.gameGUI.gameRobot.RobotArr[0].getSrc()));
+        }
         LinkedList<node_data> TSP = TSP(this.fruitEdge); //get the best path from TSP
         double weight = TSP.getLast().getWeight(); //get the weight from the TSP
         TSP.removeLast();
         this.gameGUI.gameRobot.RobotArr[0].setPath(TSP); //set path to first robot
+        System.out.println(this.gameGUI.gameRobot.RobotArr[0].getPath());
         this.gameGUI.gameRobot.RobotArr[0].setWeight(weight); //set weight to first robot
-
+        this.gameGUI.gameRobot.RobotArr[0].robotFruit.addAll(arrayToLinkedList(this.gameGUI.gameFruits.fruitsArr));
         LinkedList<Fruit> originalFruit = null;
         LinkedList<edge_data> currEdgeTemp = null;
         LinkedList<Fruit> fruitRobotTemp = null;
@@ -140,7 +153,9 @@ public class MyGameAlgo {
             while (takeAnotherFruit) {
                 for (Fruit currFruit : this.gameGUI.gameFruits.fruitsArr) { // for each Fruit
                     if (!this.gameGUI.gameRobot.RobotArr[i].robotFruit.contains(currFruit)) {
-                        fruitRobotTemp.addAll(this.gameGUI.gameRobot.RobotArr[i].robotFruit);
+                        if(this.gameGUI.gameRobot.RobotArr[i].robotFruit!=null) {
+                            fruitRobotTemp.addAll(this.gameGUI.gameRobot.RobotArr[i].robotFruit);
+                        }
                         fruitRobotTemp.add(currFruit);
                         currEdgeTemp = findFruitsEdge(fruitRobotTemp);
                         currNodeTemp = TSP(currEdgeTemp);
@@ -171,10 +186,14 @@ public class MyGameAlgo {
                 }
             }
         }
-        initPath();
+        if (initedFirstTime){
+            initFirstTime();
+            this.initedFirstTime = false;
+        }
+
     }
 
-    public void initPath (){
+    public void initFirstTime (){
         LinkedList<node_data> toSet;
         for (Robot r : this.gameGUI.gameRobot.RobotArr) {
             r.setPath(TSP(findFruitsEdge(r.robotFruit)));

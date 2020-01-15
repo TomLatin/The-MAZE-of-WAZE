@@ -52,6 +52,7 @@ public class DGraph implements graph,Serializable{
 				String pos = nodes.getJSONObject(i).getString("pos");
 				Point3D p = new Point3D(pos);
 				this.addNode(new Node(s, p));
+				this.connect(s,s,0);
 			}
 
 			for(i = 0; i < edges.length(); ++i) {

@@ -32,7 +32,21 @@ public class Robot implements elementsInTheGame{
         this.Pic="";
         this.path = null;
         this.weight= 0;
-        this.robotFruit = null;
+        this.robotFruit = new LinkedList<Fruit>();
+
+    }
+    public Robot(int id)
+    {
+        this.id=0;
+        this.value=0;
+        this.src=0;
+        this.dest=0;
+        this.speed=0;
+        this.pos=null;
+        this.Pic="";
+        this.path = null;
+        this.weight= 0;
+        this.robotFruit = new LinkedList<Fruit>();
 
     }
 
