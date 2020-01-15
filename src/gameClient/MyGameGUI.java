@@ -9,6 +9,8 @@ import elements.Fruit;
 import elements.FruitContain;
 import elements.Robot;
 import elements.RobotsContain;
+import org.json.JSONException;
+import org.json.JSONObject;
 import utils.Point3D;
 import utils.Range;
 import utils.StdDraw;
@@ -18,14 +20,16 @@ import java.util.LinkedList;
 
 
 public class MyGameGUI extends Thread{
-    private int[] robotKeys;
+    public int[] robotKeys;
     public DGraph dg;
     private game_service game;
     public RobotsContain gameRobot;
     public FruitContain gameFruits;
+    private MyGameAlgo gameAuto;
     private Range rangeX;
     private Range rangeY;
     private LinkedList<node_data> toMark=new LinkedList<node_data>();
+
 
 
 
@@ -53,7 +57,13 @@ public class MyGameGUI extends Thread{
 
         //draw first time robots
         this.gameRobot = new RobotsContain(this.game);
-        placeRobots();
+        this.robotKeys = new int [this.gameRobot.getNumOfRobots()];  //open arr of keys
+        //menual
+     //   placeRobots();
+        //auto
+        this.gameAuto = new MyGameAlgo(this,this.dg);
+        this.gameAuto.menagerOfRobots();
+
         this.gameRobot.initToServer(robotKeys); //build RobotContain
         updateRobot();
 
@@ -64,10 +74,6 @@ public class MyGameGUI extends Thread{
     }
 
     public void placeRobots(){
-        this.robotKeys = new int [this.gameRobot.getNumOfRobots()];  //open arr of keys
-
-        //fill the robot array (menual / auto)
-        //manual
         double locX, locY;
         int countClick = 0;
         int tar = this.gameRobot.getNumOfRobots();
@@ -113,7 +119,7 @@ public class MyGameGUI extends Thread{
                             for (edge_data curr : this.dg.getE(temp.getSrc())) {
                                 if (dest.getKey() == curr.getDest()){
                                     System.out.println("node is neer");
-                                    game.chooseNextEdge(temp.getKey(), dest.getKey());
+                                    this.game.chooseNextEdge(temp.getKey(), dest.getKey());
                                 }
                                 else System.out.println("error");
                             }
@@ -121,6 +127,12 @@ public class MyGameGUI extends Thread{
                     }
                 }
             }
+        }
+    }
+
+    public void autoMove(){
+        for (Robot r: this.gameRobot.RobotArr) {
+            this.game.chooseNextEdge(r.getKey(),r.path.getFirst().getKey());
         }
     }
 
@@ -156,10 +168,24 @@ public class MyGameGUI extends Thread{
 
             sketchGraph(findRangeX(),findRangeY());
             StdDraw.setPenColor(Color.BLUE);
-            StdDraw.text(findRangeX().get_min()+ (findRangeX().get_length()/2),findRangeY().get_max(),"TIME To END: "+ game.timeToEnd()/1000);
+            StdDraw.text(findRangeX().get_min(),findRangeY().get_max()+0.0015,"TIME TO END: "+ game.timeToEnd()/1000);
+            int score=0;
+            try {
+                String info = game.toString();
+                JSONObject line = new JSONObject(info);
+                JSONObject GameServer = line.getJSONObject("GameServer");
+                score = GameServer.getInt("grade");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            StdDraw.text(findRangeX().get_max(),findRangeY().get_max()+0.0015,"Score: "+ score);
             drawFruits();
-            menualMove();
-            game.move();
+            //manual
+            //   menualMove();
+            //auto
+            this.gameAuto.menagerOfRobots();
+            autoMove();
+            this.game.move();
             updateRobot();
             StdDraw.show();
             try {

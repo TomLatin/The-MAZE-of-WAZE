@@ -19,6 +19,7 @@ public class Robot implements elementsInTheGame{
     public double weight;
 
     public LinkedList<node_data> path;
+    public LinkedList<Fruit> robotFruit;
 
     public Robot()
     {
@@ -31,6 +32,7 @@ public class Robot implements elementsInTheGame{
         this.Pic="";
         this.path = null;
         this.weight= 0;
+        this.robotFruit = null;
 
     }
 
@@ -127,6 +129,13 @@ public class Robot implements elementsInTheGame{
 
     public void setPath( LinkedList<node_data> path){
         this.path = path;
+    }
+    public LinkedList<Fruit> getRobotFruit (){
+        return this.robotFruit;
+    }
+
+    public void setRobotFruit( LinkedList<Fruit> robotFruit){
+        this.robotFruit = robotFruit;
     }
 
     public double getSpeed() {
