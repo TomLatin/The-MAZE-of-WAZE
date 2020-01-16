@@ -51,9 +51,6 @@ public class MyGameGUI extends Thread{
         //create window that ask for scenario
         this.game = Game_Server.getServer(Scenario);
 
-        //to start game for KML
-        KML_Logger.game=this.game;
-
         //draw the game in the first time
         drawGraph();
         drawFruits();
@@ -68,6 +65,9 @@ public class MyGameGUI extends Thread{
 
         this.gameAuto.initFirstTime(); //fill the robotKeys
         this.gameRobot.initToServer(this.robotKeys); // insert robots to server
+
+        //to start game for KML
+        KML_Logger.myGameGUI=this;
 
         updateRobot(); //just draw
 
@@ -378,6 +378,22 @@ public class MyGameGUI extends Thread{
         StdDraw.setYscale(y.get_min()-0.002,y.get_max()+0.002);
 
 
+    }
+
+    public int[] getRobotKeys() {
+        return robotKeys;
+    }
+
+    public game_service getGame() {
+        return game;
+    }
+
+    public RobotsContain getGameRobot() {
+        return gameRobot;
+    }
+
+    public FruitContain getGameFruits() {
+        return gameFruits;
     }
 
     public static void main(String[] args) {

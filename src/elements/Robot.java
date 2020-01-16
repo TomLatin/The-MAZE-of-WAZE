@@ -8,7 +8,7 @@ import utils.Point3D;
 import java.util.LinkedList;
 
 public class Robot implements elementsInTheGame{
-
+    //Fields
     private int id;
     private double value;
     private int src;
@@ -79,11 +79,6 @@ public class Robot implements elementsInTheGame{
     public String getPic() {
         return this.Pic;
     }
-
-//    @Override
-//    public void drawOnBorad(elementsInTheGame toDraw) {
-//
-//    }
 
     @Override
     public int getKey() {
