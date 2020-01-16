@@ -198,7 +198,7 @@ public class MyGameGUI extends Thread{
     //      menualMove();
 
             //auto
-            this.gameAuto.menagerOfRobots2(); //set path and dest to every Robot
+            this.gameAuto.menagerOfRobots(); //set path and dest to every Robot
             autoMove(); //set the next using every Robot path
             this.game.move(); // make the move in the server
             updateRobot(); //just draw
