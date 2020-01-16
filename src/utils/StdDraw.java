@@ -27,6 +27,9 @@ package utils;
  *
  ******************************************************************************/
 
+//import Server.Game_Server;
+import Server.game_service;
+import gameClient.KML_Logger;
 import gameClient.MyGameGUI;
 
 import dataStructure.node_data;
@@ -57,6 +60,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.TreeSet;
@@ -622,6 +626,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 	public static MyGameGUI GUI;
 	// singleton pattern: client can't instantiate
+
+//	public static game_service game;
 	private StdDraw() { }
 
 	public static boolean toAddNode = false, toRemoveNode = false, toAddEdge = false, toAddREdge = false, toRemoveEdge = false , destSF=false, destSC=false, TSPsel=false;
@@ -1787,7 +1793,25 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equals("Start Game"))
+		{
+//			game.startGame();
+			KML_Logger loggerKml = new KML_Logger();
+			Thread thread = new Thread(new Runnable() {
+				@Override
+				public void run()
+				{
+					try {
+						loggerKml.objectToKml();
+					}
 
+					catch (ParseException | InterruptedException e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+			thread.start();
+		}
 	}
 
 

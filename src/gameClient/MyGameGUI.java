@@ -51,6 +51,9 @@ public class MyGameGUI extends Thread{
         //create window that ask for scenario
         this.game = Game_Server.getServer(Scenario);
 
+        //to start game for KML
+        KML_Logger.game=this.game;
+
         //draw the game in the first time
         drawGraph();
         drawFruits();
