@@ -1,7 +1,6 @@
 package gameClient;
 
 import Server.Game_Server;
-import Server.RobotG;
 import Server.game_service;
 import dataStructure.DGraph;
 import dataStructure.edge_data;
@@ -141,11 +140,8 @@ public class MyGameGUI extends Thread{
             ) {
                 if (r.path.getFirst().getKey() == r.getSrc()) r.path.removeFirst();
                 this.game.chooseNextEdge(r.getKey(), r.path.get(0).getKey());
-               // System.out.println( r.path.get(0).getKey());
+                System.out.println( r.path.get(0).getKey());
             }
-            System.out.println(r.getKey() + ") "+ r.getSpeed()+ "      " + r.getValue());
-            for (Fruit f :this.gameFruits.fruitsArr) System.out.print(f.getKey() + ")" + f.getWeight() + "    ");
-            System.out.println();
         }
     }
 
@@ -202,7 +198,7 @@ public class MyGameGUI extends Thread{
     //      menualMove();
 
             //auto
-            this.gameAuto.menagerOfRobots(); //set path and dest to every Robot
+            this.gameAuto.menagerOfRobots2(); //set path and dest to every Robot
             autoMove(); //set the next using every Robot path
             this.game.move(); // make the move in the server
             updateRobot(); //just draw

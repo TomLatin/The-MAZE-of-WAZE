@@ -9,6 +9,8 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Style;
 import de.micromata.opengis.kml.v_2_2_0.TimeSpan;
 import de.micromata.opengis.kml.v_2_2_0.TimeStamp;
+import elements.Fruit;
+import elements.Robot;
 import elements.RobotsContain;
 import org.junit.experimental.theories.Theories;
 import utils.StdDraw;
@@ -24,20 +26,21 @@ import java.util.Locale;
 
 public class KML_Logger {
 
-   public static game_service game;
+   public static MyGameGUI myGameGUI;
 
     public void objectToKml()throws ParseException, InterruptedException
     {
         int i=0;
         Kml kml =new Kml(); //create KML object
         Document document=kml.createAndSetDocument(); //create Document object
-        while (game.isRunning())
+        while (myGameGUI.getGame().isRunning())
         {
             Thread.sleep(100);
             i++;
-            //set arr
+            Robot[] arrR=myGameGUI.getGameRobot().RobotArr;
+            Fruit [] arrF=myGameGUI.getGameFruits().fruitsArr;
 
-            for (int j = 0; j <1000 ; j++) {
+            for (int j = 0; j <arrR.length ; j++) {
                 Placemark placemark=document.createAndAddPlacemark();
                 Icon icon=new Icon();
                 icon.setHref("");
@@ -63,7 +66,7 @@ public class KML_Logger {
                 timeSpan.setEnd(timeSecond);
             }
 
-            for (int j = 0; j <1000 ; j++) {
+            for (int j = 0; j <arrF.length ; j++) {
                 Placemark placemark=document.createAndAddPlacemark();
                 Icon icon=new Icon();
                 icon.setHref("");
