@@ -20,18 +20,15 @@ import java.util.LinkedList;
 
 
 public class MyGameGUI extends Thread{
-    public int[] robotKeys;
-    public DGraph dg;
+    private int[] robotKeys;
+    private DGraph dg;
     private game_service game;
-    public RobotsContain gameRobot;
-    public FruitContain gameFruits;
+    private RobotsContain gameRobot;
+    private FruitContain gameFruits;
     private MyGameAlgo gameAuto;
     private Range rangeX;
     private Range rangeY;
     private LinkedList<node_data> toMark=new LinkedList<node_data>();
-
-
-
 
     public MyGameGUI() {
         welcomWindow();//just open the window
@@ -51,29 +48,33 @@ public class MyGameGUI extends Thread{
         //create window that ask for scenario
         this.game = Game_Server.getServer(Scenario);
 
-        //to start game for KML
-        KML_Logger.game=this.game;
-
         //draw the game in the first time
         drawGraph();
         drawFruits();
 
         //draw first time robots
-        this.gameRobot = new RobotsContain(this.game); //build RobotContain
+        this.gameRobot = new RobotsContain(this.game);
         this.robotKeys = new int [this.gameRobot.getNumOfRobots()];  //open arr of keys
         //menual
      //   placeRobots();
         //auto
         this.gameAuto = new MyGameAlgo(this,this.dg);
+        for (int i = 0; i < this.gameRobot.getNumOfRobots(); i++) {
+            Robot toAdd = new Robot(i+1);
+            this.gameRobot.RobotArr[i]=toAdd;
+        }
+        this.gameAuto.menagerOfRobots();
 
-        this.gameAuto.initFirstTime(); //fill the robotKeys
-        this.gameRobot.initToServer(this.robotKeys); // insert robots to server
-
-        updateRobot(); //just draw
+        this.gameRobot.initToServer(robotKeys); //build RobotContain
+        updateRobot();
 
         this.game.startGame(); // start the game in the server
 
         StdDraw.enableDoubleBuffering();
+
+        //to start game for KML
+        KML_Logger.myGameGUI=this;
+
         this.start(); //start Thread
     }
 
@@ -136,12 +137,11 @@ public class MyGameGUI extends Thread{
 
     public void autoMove(){
         for (Robot r: this.gameRobot.RobotArr) {
-            if (r.path != null && r.path.size()>0
-            ) {
-                if (r.path.getFirst().getKey() == r.getSrc()) r.path.removeFirst();
-                this.game.chooseNextEdge(r.getKey(), r.path.get(0).getKey());
-                System.out.println( r.path.get(0).getKey());
-            }
+            this.game.chooseNextEdge(r.getKey(),r.path.get(0).getKey());
+            System.out.println(r.path.get(0).getKey());
+//            System.out.println(r.path.get(1).getKey());
+//            System.out.println(this.gameAuto.findFruitsEdge(r.robotFruit));
+//            System.out.println(r.path);
         }
     }
 
@@ -175,7 +175,6 @@ public class MyGameGUI extends Thread{
     public void run(){
         while (this.game.isRunning()){
 
-//----------- statistics -----------------------------
             sketchGraph(findRangeX(),findRangeY());
             StdDraw.setPenColor(Color.BLUE);
             StdDraw.text(findRangeX().get_min(),findRangeY().get_max()+0.0015,"TIME TO END: "+ game.timeToEnd()/1000);
@@ -189,30 +188,22 @@ public class MyGameGUI extends Thread{
                 e.printStackTrace();
             }
             StdDraw.text(findRangeX().get_max(),findRangeY().get_max()+0.0015,"Score: "+ score);
-
-//----------- Fruits -----------------------------
             drawFruits();
-
-//----------- Robots -----------------------------
             //manual
-    //      menualMove();
-
+            //   menualMove();
             //auto
-            this.gameAuto.menagerOfRobots2(); //set path and dest to every Robot
-            autoMove(); //set the next using every Robot path
-            this.game.move(); // make the move in the server
-            updateRobot(); //just draw
-
-//----------- show every 10 ms -----------------------------
+            this.gameAuto.menagerOfRobots();
+            autoMove();
+            this.game.move();
+            updateRobot();
             StdDraw.show();
             try {
-                sleep(33);
+                sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-//---------------- Game Over ----------------
+        //Game Over
         this.game.stopGame();
         System.out.println("Game Over");
         JFrame f=new JFrame();
@@ -378,6 +369,25 @@ public class MyGameGUI extends Thread{
         StdDraw.setYscale(y.get_min()-0.002,y.get_max()+0.002);
 
 
+    }
+    public int[] getRobotKeys() {
+        return robotKeys;
+    }
+
+    public DGraph getDg() {
+        return dg;
+    }
+
+    public game_service getGame() {
+        return game;
+    }
+
+    public RobotsContain getGameRobot() {
+        return gameRobot;
+    }
+
+    public FruitContain getGameFruits() {
+        return gameFruits;
     }
 
     public static void main(String[] args) {
