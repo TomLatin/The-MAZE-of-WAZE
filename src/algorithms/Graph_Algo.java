@@ -217,7 +217,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	 * @return the list of nodes in the shortest path between src to dest in the graph
 	 */
 	@Override
-	public List<node_data> shortestPath(int src, int dest) {
+	public LinkedList<node_data> shortestPath(int src, int dest) {
 		Double val = shortestPathDist(src,dest);
 		if (val == Integer.MAX_VALUE) return null;
 		LinkedList<node_data> toReturn = new LinkedList<node_data>();

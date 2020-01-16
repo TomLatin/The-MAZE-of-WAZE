@@ -59,20 +59,17 @@ public class MyGameGUI extends Thread{
         drawFruits();
 
         //draw first time robots
-        this.gameRobot = new RobotsContain(this.game);
+        this.gameRobot = new RobotsContain(this.game); //build RobotContain
         this.robotKeys = new int [this.gameRobot.getNumOfRobots()];  //open arr of keys
         //menual
      //   placeRobots();
         //auto
         this.gameAuto = new MyGameAlgo(this,this.dg);
-        for (int i = 0; i < this.gameRobot.getNumOfRobots(); i++) {
-            Robot toAdd = new Robot(i+1);
-            this.gameRobot.RobotArr[i]=toAdd;
-        }
-        this.gameAuto.menagerOfRobots();
 
-        this.gameRobot.initToServer(robotKeys); //build RobotContain
-        updateRobot();
+        this.gameAuto.initFirstTime(); //fill the robotKeys
+        this.gameRobot.initToServer(this.robotKeys); // insert robots to server
+
+        updateRobot(); //just draw
 
         this.game.startGame(); // start the game in the server
 
@@ -139,11 +136,12 @@ public class MyGameGUI extends Thread{
 
     public void autoMove(){
         for (Robot r: this.gameRobot.RobotArr) {
-            this.game.chooseNextEdge(r.getKey(),r.path.get(0).getKey());
-            System.out.println(r.path.get(0).getKey());
-//            System.out.println(r.path.get(1).getKey());
-//            System.out.println(this.gameAuto.findFruitsEdge(r.robotFruit));
-//            System.out.println(r.path);
+            if (r.path != null && r.path.size()>0
+            ) {
+                if (r.path.getFirst().getKey() == r.getSrc()) r.path.removeFirst();
+                this.game.chooseNextEdge(r.getKey(), r.path.get(0).getKey());
+                System.out.println( r.path.get(0).getKey());
+            }
         }
     }
 
@@ -177,6 +175,7 @@ public class MyGameGUI extends Thread{
     public void run(){
         while (this.game.isRunning()){
 
+//----------- statistics -----------------------------
             sketchGraph(findRangeX(),findRangeY());
             StdDraw.setPenColor(Color.BLUE);
             StdDraw.text(findRangeX().get_min(),findRangeY().get_max()+0.0015,"TIME TO END: "+ game.timeToEnd()/1000);
@@ -190,22 +189,30 @@ public class MyGameGUI extends Thread{
                 e.printStackTrace();
             }
             StdDraw.text(findRangeX().get_max(),findRangeY().get_max()+0.0015,"Score: "+ score);
+
+//----------- Fruits -----------------------------
             drawFruits();
+
+//----------- Robots -----------------------------
             //manual
-            //   menualMove();
+    //      menualMove();
+
             //auto
-            this.gameAuto.menagerOfRobots();
-            autoMove();
-            this.game.move();
-            updateRobot();
+            this.gameAuto.menagerOfRobots2(); //set path and dest to every Robot
+            autoMove(); //set the next using every Robot path
+            this.game.move(); // make the move in the server
+            updateRobot(); //just draw
+
+//----------- show every 10 ms -----------------------------
             StdDraw.show();
             try {
-                sleep(10);
+                sleep(33);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        //Game Over
+
+//---------------- Game Over ----------------
         this.game.stopGame();
         System.out.println("Game Over");
         JFrame f=new JFrame();

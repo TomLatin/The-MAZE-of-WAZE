@@ -10,7 +10,6 @@ public class RobotsContain {
     public Robot[] RobotArr;
     private int numOfRobots;
     private game_service game;
-    public boolean inited = false;
 
 
     public RobotsContain (game_service game){
@@ -20,9 +19,8 @@ public class RobotsContain {
     }
 
     public void initToServer(int[]keys){
-        for (int i = 0; i < numOfRobots; i++) { // insert robots to server
+        for (int i = 0; i < this.numOfRobots; i++) { // insert robots to server
             this.game.addRobot(keys[i]);
-            this.inited = true;
         }
     }
 
