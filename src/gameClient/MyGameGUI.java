@@ -20,11 +20,11 @@ import java.util.LinkedList;
 
 
 public class MyGameGUI extends Thread{
-    public int[] robotKeys;
-    public DGraph dg;
+    private int[] robotKeys;
+    private DGraph dg;
     private game_service game;
-    public RobotsContain gameRobot;
-    public FruitContain gameFruits;
+    private RobotsContain gameRobot;
+    private FruitContain gameFruits;
     private MyGameAlgo gameAuto;
     private Range rangeX;
     private Range rangeY;
@@ -62,9 +62,10 @@ public class MyGameGUI extends Thread{
      //   placeRobots();
         //auto
         this.gameAuto = new MyGameAlgo(this,this.dg);
-
-        this.gameAuto.initFirstTime(); //fill the robotKeys
+        LinkedList<Fruit>[] FruitsForRobots = this.gameAuto.placeRobotsFirstTime(); //fill the robotKeys
         this.gameRobot.initToServer(this.robotKeys); // insert robots to server
+        this.gameRobot.init(this.game.getRobots());
+        setFruitsToRobots(FruitsForRobots);
 
         //to start game for KML
         KML_Logger.myGameGUI=this;
@@ -93,6 +94,12 @@ public class MyGameGUI extends Thread{
                    toMark.add(temp);
                 }
             }
+        }
+    }
+
+    public void setFruitsToRobots (LinkedList<Fruit>[] toSet){
+        for (int i = 0; i < this.robotKeys.length; i++) {
+            this.gameRobot.RobotArr[i].setRobotFruit(toSet[i]);
         }
     }
 
@@ -198,7 +205,7 @@ public class MyGameGUI extends Thread{
     //      menualMove();
 
             //auto
-            this.gameAuto.menagerOfRobots(); //set path and dest to every Robot
+            this.gameAuto.updatePathFruits(); //set path and dest to every Robot
             autoMove(); //set the next using every Robot path
             this.game.move(); // make the move in the server
             updateRobot(); //just draw
@@ -381,19 +388,19 @@ public class MyGameGUI extends Thread{
     }
 
     public int[] getRobotKeys() {
-        return robotKeys;
+        return this.robotKeys;
     }
 
     public game_service getGame() {
-        return game;
+        return this.game;
     }
 
     public RobotsContain getGameRobot() {
-        return gameRobot;
+        return this.gameRobot;
     }
 
     public FruitContain getGameFruits() {
-        return gameFruits;
+        return this.gameFruits;
     }
 
     public static void main(String[] args) {

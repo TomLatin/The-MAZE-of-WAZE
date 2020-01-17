@@ -139,6 +139,7 @@ public class Robot implements elementsInTheGame{
     public void setPath( LinkedList<node_data> path){
         this.path = path;
     }
+
     public LinkedList<Fruit> getRobotFruit (){
         return this.robotFruit;
     }
