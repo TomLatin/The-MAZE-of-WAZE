@@ -15,6 +15,7 @@ import elements.RobotsContain;
 import org.junit.experimental.theories.Theories;
 import utils.StdDraw;
 
+import javax.swing.*;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +44,7 @@ public class KML_Logger {
             for (int j = 0; j <arrR.length ; j++) {
                 Placemark placemark=document.createAndAddPlacemark();
                 Icon icon=new Icon();
-                icon.setHref("");
+                icon.setHref("spidermen.png");
                 icon.setViewBoundScale(1);
                 icon.setViewRefreshTime(1);
                 icon.withRefreshInterval(1);
@@ -54,13 +55,13 @@ public class KML_Logger {
                 iconStyle.setColor("ff007db3");
                 iconStyle.setIcon(icon);
                 placemark.createAndAddStyle().setIconStyle(iconStyle);
-                placemark.withDescription("Type:Super Hero");
+                placemark.withDescription("Type:Super Hero").withOpen(Boolean.TRUE).createAndSetPoint().addToCoordinates(arrR[j].getLocation().x(),arrR[j].getLocation().y());
                 String timeFirst=disIntMillisToString(StringToDisInMillis(currentTime())+i*1000);
                 String timeSecond=disIntMillisToString(StringToDisInMillis(currentTime())+(i+1)*1000);
                 String [] first=timeFirst.split(" ");
                 timeFirst=first[0]+"T"+first[1]+"Z";
                 String [] seconde=timeSecond.split(" ");
-                timeFirst=seconde[0]+"T"+seconde[1]+"Z";
+                timeSecond=seconde[0]+"T"+seconde[1]+"Z";
                 TimeSpan timeSpan=placemark.createAndSetTimeSpan();
                 timeSpan.setBegin(timeFirst);
                 timeSpan.setEnd(timeSecond);
@@ -69,7 +70,7 @@ public class KML_Logger {
             for (int j = 0; j <arrF.length ; j++) {
                 Placemark placemark=document.createAndAddPlacemark();
                 Icon icon=new Icon();
-                icon.setHref("");
+                icon.setHref("redStone.png");
                 icon.setViewBoundScale(1);
                 icon.setViewRefreshTime(1);
                 icon.withRefreshInterval(1);
@@ -80,28 +81,29 @@ public class KML_Logger {
                 iconStyle.setColor("ff007db3");
                 iconStyle.setIcon(icon);
                 placemark.createAndAddStyle().setIconStyle(iconStyle);
-                placemark.withDescription("Type:Power Stone");
+                placemark.withDescription("Type:Power Stone").withOpen(Boolean.TRUE).createAndSetPoint().addToCoordinates(arrF[j].getLocation().x(),arrF[j].getLocation().y());
                 String timeFirst=disIntMillisToString(StringToDisInMillis(currentTime())+i*1000);
                 String timeSecond=disIntMillisToString(StringToDisInMillis(currentTime())+(i+1)*1000);
                 String [] first=timeFirst.split(" ");
                 timeFirst=first[0]+"T"+first[1]+"Z";
                 String [] seconde=timeSecond.split(" ");
-                timeFirst=seconde[0]+"T"+seconde[1]+"Z";
+                timeSecond=seconde[0]+"T"+seconde[1]+"Z";
                 TimeSpan timeSpan=placemark.createAndSetTimeSpan();
                 timeSpan.setBegin(timeFirst);
                 timeSpan.setEnd(timeSecond);
             }
 
-            try
-            {
-                kml.marshal(new File("KmlGAME.kml"));
-            }
-            catch (Exception e)
-            {
-                System.out.println("The KML isn't create");
-            }
-
         }
+        try
+        {
+            JOptionPane.showConfirmDialog(null,"Save to kml?!","save?",JOptionPane.YES_NO_OPTION);
+            kml.marshal(new File("KmlGAME.kml"));
+        }
+        catch (Exception e)
+        {
+            System.out.println("The KML isn't create");
+        }
+
     }
 
 

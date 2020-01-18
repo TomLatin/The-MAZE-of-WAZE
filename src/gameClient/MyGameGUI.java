@@ -233,7 +233,8 @@ public class MyGameGUI extends Thread{
 //----------- statistics -----------------------------
             sketchGraph(findRangeX(),findRangeY());
             StdDraw.setPenColor(Color.BLUE);
-            StdDraw.text(findRangeX().get_min(),findRangeY().get_max()+0.0015,"TIME TO END: "+ game.timeToEnd()/1000);
+            StdDraw.setFont(new Font(null,Font.BOLD,15));
+            StdDraw.text(findRangeX().get_min()+0.0002,findRangeY().get_max()+0.0015,"TIME TO END: "+ game.timeToEnd()/1000);
             int score=0;
             try {
                 String info = game.toString();
@@ -256,8 +257,9 @@ public class MyGameGUI extends Thread{
             else {
                 //auto
                 this.gameAuto.updatePathFruits(); //set path and dest to every Robot
+                autoMove(); //set the next using every Robot path
             }
-            autoMove(); //set the next using every Robot path
+
             this.game.move(); // make the move in the server
             updateRobot(); //just draw
 
@@ -323,6 +325,7 @@ public class MyGameGUI extends Thread{
                         node_data dstN = this.dg.getNode(currE.getDest());
                         Point3D srcP = srcN.getLocation();
                         Point3D dstP = dstN.getLocation();
+                        StdDraw.setFont(new Font(null,0,15));
                         StdDraw.setPenColor(Color.CYAN);
                         double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
                         double rx = 0, gy = 0;
