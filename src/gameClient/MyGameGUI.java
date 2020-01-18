@@ -32,6 +32,7 @@ public class MyGameGUI extends Thread{
     private boolean isManual;
     private boolean isAuto;
     private LinkedList<node_data> toMark=new LinkedList<node_data>(); //list that save which nodes need to be mark the selection of robots in the manual game
+    private int[] prevOfRobots;
 
     /**
      * The default constructor
@@ -69,6 +70,7 @@ public class MyGameGUI extends Thread{
         //draw first time robots
         this.gameRobot = new RobotsContain(this.game); //build RobotContain
         this.robotKeys = new int [this.gameRobot.getNumOfRobots()];  //open arr of keys
+        this.prevOfRobots = new int [this.gameRobot.getNumOfRobots()];  //open arr of prev
 
         if(menualOrAuto=="Manual game")
         {
@@ -191,11 +193,20 @@ public class MyGameGUI extends Thread{
 
     public void autoMove(){
         for (Robot r: this.gameRobot.RobotArr) {
-            if (r.path != null && r.path.size()>0
-            ) {
+          //  System.out.println("prev - "+r.getPrev());
+            if (r.path != null && r.path.size()>1) {
                 if (r.path.getFirst().getKey() == r.getSrc()) r.path.removeFirst();
                 this.game.chooseNextEdge(r.getKey(), r.path.get(0).getKey());
-                System.out.println( r.path.get(0).getKey());
+                System.out.println("to go: "+ r.path.get(0).getKey());
+            }
+            else if (r.path.size() == 1){
+//                this.game.chooseNextEdge(r.getKey(), this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getSrc());
+                this.game.chooseNextEdge(r.getKey(), r.path.get(0).getKey());
+                System.out.println( "to go: "+ this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getSrc());
+            }
+            else if (r.path.size() == 0){
+                this.game.chooseNextEdge(r.getKey(), this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getDest());
+                System.out.println( "to go: "+ this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getDest());
             }
         }
     }
@@ -257,6 +268,16 @@ public class MyGameGUI extends Thread{
             else {
                 //auto
                 this.gameAuto.updatePathFruits(); //set path and dest to every Robot
+                for (Robot r : this.getGameRobot().RobotArr){
+                    LinkedList<edge_data> toShow= this.gameAuto.findFruitsEdge(r.robotFruit);
+                    for (edge_data F: toShow){
+                        System.out.println("Fruit: " + F.getSrc() + ", " + F.getDest());
+                    }
+                    System.out.println("curr place: "+r.getSrc());
+                    System.out.println("curr path: "+r.getKey()+ ") " + r.path);
+//                    System.out.println();
+
+                }
                 autoMove(); //set the next using every Robot path
             }
 
@@ -270,6 +291,7 @@ public class MyGameGUI extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println();
         }
 
 //---------------- Game Over ----------------
@@ -366,8 +388,18 @@ public class MyGameGUI extends Thread{
 
     public void
     updateRobot(){
+        int[] currPlace = new int[this.gameRobot.getNumOfRobots()];
+        for (int i=0; i < this.gameRobot.RobotArr.length; i++){
+            currPlace[i] = this.gameRobot.RobotArr[i].getSrc();
+        }
+
         //print
         this.gameRobot.init(this.game.getRobots());
+
+        for (int i=0; i < this.gameRobot.RobotArr.length; i++){
+            if (currPlace[i] != this.gameRobot.RobotArr[i].getSrc())
+                prevOfRobots[i]=currPlace[i];
+        }
 
         //Placing the robots on the board
         for (Robot curr : this.gameRobot.RobotArr){
@@ -464,6 +496,10 @@ public class MyGameGUI extends Thread{
 
     public FruitContain getGameFruits() {
         return this.gameFruits;
+    }
+
+    public int[] getPrevOfRobots(){
+        return this.prevOfRobots;
     }
 
     public static void main(String[] args) {
