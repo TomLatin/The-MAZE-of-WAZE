@@ -37,7 +37,7 @@ public class Robot implements elementsInTheGame{
     }
     public Robot(int id)
     {
-        this.id=0;
+        this.id=id;
         this.value=0;
         this.src=0;
         this.dest=0;
@@ -63,7 +63,7 @@ public class Robot implements elementsInTheGame{
             toReturn.speed= Robot.getDouble("speed");
             String posString = Robot.getString("pos").toString();
             toReturn.pos= new Point3D(posString);
-            toReturn.Pic = "robot.jpg";
+            toReturn.Pic = "spidermen.png";
         } catch (JSONException e) {
             e.printStackTrace();
         }

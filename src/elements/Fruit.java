@@ -34,8 +34,8 @@ public class Fruit implements elementsInTheGame{
             JSONObject fruit = line.getJSONObject("Fruit");
             toReturn.value= fruit.getDouble("value");
             toReturn.type= fruit.getInt("type");
-            if (toReturn.type==1) toReturn.Pic = "Banana.jpeg";
-            else toReturn.Pic = "Strawberry.jpg";
+            if (toReturn.type==1) toReturn.Pic = "greenStone.png";
+            else toReturn.Pic = "redStone.png";
             String posSring = fruit.getString("pos").toString();
             toReturn.pos= new Point3D(posSring);
         } catch (JSONException e) {

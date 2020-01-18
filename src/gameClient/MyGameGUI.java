@@ -16,24 +16,31 @@ import utils.Range;
 import utils.StdDraw;
 import javax.swing.*;
 import java.awt.*;
+import java.text.ParseException;
 import java.util.LinkedList;
 
 
 public class MyGameGUI extends Thread{
-    private int[] robotKeys;
-    private DGraph dg;
+    private int[] robotKeys; //save the Robots id on array
+    private DGraph dg; //the graph
     private game_service game;
-    private RobotsContain gameRobot;
-    private FruitContain gameFruits;
+    private RobotsContain gameRobot; //array that keep all the Robots of the game
+    private FruitContain gameFruits; //array that keep all the Fruits of the game
     private MyGameAlgo gameAuto;
     private Range rangeX;
     private Range rangeY;
-    private LinkedList<node_data> toMark=new LinkedList<node_data>();
+    private boolean isManual;
+    private boolean isAuto;
+    private LinkedList<node_data> toMark=new LinkedList<node_data>(); //list that save which nodes need to be mark the selection of robots in the manual game
 
-
-
-
+    /**
+     * The default constructor
+     */
     public MyGameGUI() {
+        //initialize
+        isManual=false;
+        isAuto=false;
+
         welcomWindow();//just open the window
 
         //Opens the scenario selection window
@@ -51,6 +58,10 @@ public class MyGameGUI extends Thread{
         //create window that ask for scenario
         this.game = Game_Server.getServer(Scenario);
 
+        String[] chooseGame = {"Manual game", "Auto game"};
+
+        Object menualOrAuto = JOptionPane.showInputDialog(null, "Choose a game mode", "Message",JOptionPane.INFORMATION_MESSAGE, null, chooseGame, chooseGame[0]);
+
         //draw the game in the first time
         drawGraph();
         drawFruits();
@@ -58,14 +69,32 @@ public class MyGameGUI extends Thread{
         //draw first time robots
         this.gameRobot = new RobotsContain(this.game); //build RobotContain
         this.robotKeys = new int [this.gameRobot.getNumOfRobots()];  //open arr of keys
-        //menual
-     //   placeRobots();
-        //auto
-        this.gameAuto = new MyGameAlgo(this,this.dg);
-        LinkedList<Fruit>[] FruitsForRobots = this.gameAuto.placeRobotsFirstTime(); //fill the robotKeys
-        this.gameRobot.initToServer(this.robotKeys); // insert robots to server
-        this.gameRobot.init(this.game.getRobots());
-        setFruitsToRobots(FruitsForRobots);
+
+        if(menualOrAuto=="Manual game")
+        {
+            isManual=true;
+
+            // menual
+            placeRobots();
+
+            this.gameRobot.initToServer(this.robotKeys); // insert robots to server
+
+        }
+        else
+        {
+            isAuto=true;
+
+            //auto
+            this.gameAuto = new MyGameAlgo(this,this.dg);
+
+            LinkedList<Fruit>[] FruitsForRobots = this.gameAuto.placeRobotsFirstTime(); //fill the robotKeys
+
+            this.gameRobot.initToServer(this.robotKeys); // insert robots to server
+
+            this.gameRobot.init(this.game.getRobots());
+
+            setFruitsToRobots(FruitsForRobots);
+        }
 
         //to start game for KML
         KML_Logger.myGameGUI=this;
@@ -75,8 +104,27 @@ public class MyGameGUI extends Thread{
         this.game.startGame(); // start the game in the server
 
         StdDraw.enableDoubleBuffering();
+
+
+        KML_Logger loggerKml = new KML_Logger();
+        Thread threadKml = new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                try {
+                    loggerKml.objectToKml();
+                }
+
+                catch (ParseException | InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        threadKml.start();
         this.start(); //start Thread
     }
+
+
 
     public void placeRobots(){
         double locX, locY;
@@ -89,9 +137,9 @@ public class MyGameGUI extends Thread{
                 locY = StdDraw.mouseY();
                 node_data temp = getNeerNode(locX, locY);
                 if (temp != null) {
-                   this.robotKeys[countClick++] = temp.getKey();
-                   markSelectedNode(temp);
-                   toMark.add(temp);
+                    this.robotKeys[countClick++] = temp.getKey();
+                    markSelectedNode(temp);
+                    toMark.add(temp);
                 }
             }
         }
@@ -104,7 +152,7 @@ public class MyGameGUI extends Thread{
     }
 
     public void markSelectedNode(node_data toMark){
-        StdDraw.setPenColor(Color.BLUE);
+        StdDraw.setPenColor(Color.green);
         StdDraw.setPenRadius(0.006);
         StdDraw.circle(toMark.getLocation().x(), toMark.getLocation().y(), 0.0003);
     }
@@ -201,11 +249,14 @@ public class MyGameGUI extends Thread{
             drawFruits();
 
 //----------- Robots -----------------------------
-            //manual
-    //      menualMove();
-
-            //auto
-            this.gameAuto.updatePathFruits(); //set path and dest to every Robot
+            if(isManual) {
+                //manual
+                menualMove();
+            }
+            else {
+                //auto
+                this.gameAuto.updatePathFruits(); //set path and dest to every Robot
+            }
             autoMove(); //set the next using every Robot path
             this.game.move(); // make the move in the server
             updateRobot(); //just draw
@@ -243,8 +294,11 @@ public class MyGameGUI extends Thread{
         StdDraw.clear();
         Range xx = RangeX;
         Range yy = RangeY;
+        StdDraw.clear();
+        StdDraw.picture((xx.get_max()+xx.get_min())/2,(yy.get_max()+yy.get_min())/2,"backgroundPlay.jpg");
         double rightScaleX = ((xx.get_max()-xx.get_min())*0.004);
         double rightScaleY =  ((yy.get_max()-yy.get_min())*0.004);
+
         for (node_data currV : this.dg.getV()) {
             if (this.dg.getE(currV.getKey()) != null) {
                 for (edge_data currE : this.dg.getE(currV.getKey())) {
@@ -253,7 +307,7 @@ public class MyGameGUI extends Thread{
                         node_data dstN = this.dg.getNode(currE.getDest());
                         Point3D srcP = srcN.getLocation();
                         Point3D dstP = dstN.getLocation();
-                        StdDraw.setPenColor(Color.BLACK);
+                        StdDraw.setPenColor(Color.BLUE);
                         StdDraw.setPenRadius(rightScaleX*60);
                         StdDraw.line(srcP.x(), srcP.y(), dstP.x(), dstP.y());
                     }
@@ -269,7 +323,7 @@ public class MyGameGUI extends Thread{
                         node_data dstN = this.dg.getNode(currE.getDest());
                         Point3D srcP = srcN.getLocation();
                         Point3D dstP = dstN.getLocation();
-                        StdDraw.setPenColor(Color.MAGENTA);
+                        StdDraw.setPenColor(Color.CYAN);
                         double tX = srcP.x() + (dstP.x() - srcP.x()) * 0.8, tY = srcP.y() + (dstP.y() - srcP.y()) * 0.8;
                         double rx = 0, gy = 0;
                         if (srcP.y() == dstP.y()) gy = rightScaleX*4;
@@ -287,11 +341,11 @@ public class MyGameGUI extends Thread{
             }
         }
         for (node_data curr : this.dg.getV()) {
-            StdDraw.setPenColor(Color.RED);
+            StdDraw.setPenColor(Color.BLUE);
             StdDraw.setPenRadius(rightScaleX*0.1);
             Point3D p = curr.getLocation();
             StdDraw.filledCircle(p.x(), p.y(), rightScaleX*2.5);
-            StdDraw.setPenColor(Color.YELLOW);
+            StdDraw.setPenColor(Color.WHITE);
             StdDraw.text(p.x(), p.y()-rightScaleX*0.5, "" + curr.getKey());
         }
     }
@@ -314,7 +368,12 @@ public class MyGameGUI extends Thread{
 
         //Placing the robots on the board
         for (Robot curr : this.gameRobot.RobotArr){
-            StdDraw.picture(curr.getLocation().x(),curr.getLocation().y(),curr.getPic(),0.0008,0.0008);
+            if(curr.getPic()=="spidermen.png") {
+                StdDraw.picture(curr.getLocation().x(), curr.getLocation().y(), curr.getPic(), 0.0015, 0.0015);
+            }
+            else{
+                StdDraw.picture(curr.getLocation().x(), curr.getLocation().y(), curr.getPic(), 0.0018, 0.0018);
+            }
 
         }
 
@@ -371,7 +430,7 @@ public class MyGameGUI extends Thread{
         StdDraw.setCanvasSize(1024,512);
         StdDraw.setXscale(-100,100);
         StdDraw.setYscale(-50,50);
-        StdDraw.text(0,0, "WELLCOME");
+        StdDraw.picture(0,0,"Welcome.jpg");
     }
 
     /**
@@ -383,6 +442,7 @@ public class MyGameGUI extends Thread{
         StdDraw.setCanvasSize(1024,512);
         StdDraw.setXscale(x.get_min()-0.002,x.get_max()+0.002);
         StdDraw.setYscale(y.get_min()-0.002,y.get_max()+0.002);
+
 
 
     }
