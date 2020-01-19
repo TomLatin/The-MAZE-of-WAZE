@@ -41,6 +41,26 @@ class RobotsContainTest {
 
 
     @Test
+    public void init() {
+        this.server = Game_Server.getServer(0);
+        RobotsContain r = new RobotsContain(server);
+        Robot[] rr = r.init(this.server.getRobots());
+        assertEquals(rr,r.RobotArr);
+    }
+
+    @Test
+    void initToServer() {
+        server = Game_Server.getServer(23);
+        for (int i = 0; i < 3; i++) { // insert robots to server
+            server.addRobot(i);
+            RobotsContain r = new RobotsContain(server);
+            Robot[] rr = r.init(this.server.getRobots());
+            assertEquals(i,rr[i].getSrc());
+        }
+
+    }
+
+    @Test
     void getNumOfRobots() {
             this.server = Game_Server.getServer(0);
             RobotsContain r = new RobotsContain(server);

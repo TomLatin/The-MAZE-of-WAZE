@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FruitContainTest {
 
-    static String[] checkJsonString = new String[8];
+    static String[] checkJsonString = new String[6];
     static List<String> checkforBuildFruitList = new LinkedList<>();
     static game_service server;
 
@@ -28,8 +28,6 @@ class FruitContainTest {
         checkJsonString[3] = "{\"Fruit\":{\"value\":4.0,\"type\":-1,\"pos\":\"7.0,8.0,0.0\"}}";
         checkJsonString[4] = "{\"Fruit\":{\"value\":5.0,\"type\":-1,\"pos\":\"9.0,10.0,0.0\"}}";
         checkJsonString[5] = "{\"Fruit\":{\"value\":6.0,\"type\":-1,\"pos\":\"11.0,12.0,0.0\"}}";
-        checkJsonString[6] = "{\"Fruit\":{\"value\":7.0,\"type\":-1,\"pos\":\"13.0,14.0,0.0\"}}";
-        checkJsonString[7] = "{\"Fruit\":{\"value\":8.0,\"type\":-1,\"pos\":\"15.0,16.0,0.0\"}}";
 
         checkforBuildFruitList.add(checkJsonString[0]);
         checkforBuildFruitList.add(checkJsonString[1]);
@@ -37,9 +35,23 @@ class FruitContainTest {
         checkforBuildFruitList.add(checkJsonString[3]);
         checkforBuildFruitList.add(checkJsonString[4]);
         checkforBuildFruitList.add(checkJsonString[5]);
-        checkforBuildFruitList.add(checkJsonString[6]);
-        checkforBuildFruitList.add(checkJsonString[7]);
 
+    }
+
+    @Test
+    public void init() {
+        server=Game_Server.getServer(23);
+        FruitContain f = new FruitContain(server);
+        Fruit [] fruitsArr = f.init(checkforBuildFruitList);
+        for(int i =0; i < fruitsArr.length; i++){
+            Fruit check = fruitsArr[i];
+            assertEquals((i*2)+1, check.getLocation().x(), 0.0001);
+            assertEquals((i*2)+2, check.getLocation().y(), 0.0001);
+            assertEquals(0.0, check.getLocation().z(), 0.0001);
+            assertEquals(i+1, check.getWeight(), 0.0001);
+            assertEquals(-1, check.getTag());
+            assertEquals("redStone.png", check.getPic());
+        }
     }
 
     @Test
