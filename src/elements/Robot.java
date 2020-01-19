@@ -41,6 +41,16 @@ public class Robot implements elementsInTheGame{
 
     }
 
+    public Robot(int src,int dest,int id,Point3D pos,int speed,double value,String pic){
+        this.src = src;
+        this.dest = dest;
+        this.id = id;
+        this.pos = pos;
+        this.speed = speed;
+        this.value = value;
+        this.Pic = pic;
+    }
+
     /**
      * @param json that we receive from server
      * @return elementsInTheGame that in our case will be Robot
