@@ -219,8 +219,13 @@ public class MyGameAlgo {
             }
         }
         for (int i = 0; i <  numOfRobots; i++) {
-            if (arrListsFruits[i]!=null || arrListsFruits[i].size()!=0) this.gameGUI.getRobotKeys()[i] = TSP(arrListsFruits[i]).getFirst().getSrc();
-            else this.gameGUI.getRobotKeys()[i] = 0;
+            if (arrListsFruits[i]!=null && arrListsFruits[i].size()!=0) {
+                this.gameGUI.getRobotKeys()[i] = TSP(arrListsFruits[i]).getFirst().getSrc();
+            }
+            else
+            {
+                this.gameGUI.getRobotKeys()[i] = 0;
+            }
         }
         return arrListsFruits;
     }

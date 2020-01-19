@@ -60,7 +60,7 @@ public class MyGameGUI extends Thread{
         //create window that ask for scenario
         this.game = Game_Server.getServer(Scenario);
 
-        String[] chooseGame = {"Manual game", "Auto game"};
+        String[] chooseGame = { "Auto game","Manual game"};
 
         Object menualOrAuto = JOptionPane.showInputDialog(null, "Choose a game mode", "Message",JOptionPane.INFORMATION_MESSAGE, null, chooseGame, chooseGame[0]);
 
@@ -404,7 +404,7 @@ public class MyGameGUI extends Thread{
     public void
     updateRobot(){
         int[] currPlace = new int[this.gameRobot.getNumOfRobots()];
-        for (int i=0; i < this.gameRobot.RobotArr.length; i++){
+        for (int i=0; i < this.gameRobot.RobotArr.length&&this.gameRobot.RobotArr[i]!=null; i++){
             currPlace[i] = this.gameRobot.RobotArr[i].getSrc();
         }
 
