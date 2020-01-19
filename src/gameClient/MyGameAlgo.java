@@ -12,6 +12,7 @@ import java.util.List;
 
 public class MyGameAlgo {
 
+    //Fields
     private LinkedList<edge_data> fruitEdge;
     private final Double EPSILON = 0.0000001;
     private MyGameGUI gameGUI;
@@ -19,7 +20,11 @@ public class MyGameAlgo {
     private Graph_Algo ga;
 
 
-
+    /**
+     * the constractor
+     * @param gameGUI - the game we work on
+     * @param graphGame - the graph of the game
+     */
     public MyGameAlgo(MyGameGUI gameGUI, graph graphGame){
         this.gameGUI = gameGUI;
         this.graphGame = graphGame;
@@ -27,6 +32,11 @@ public class MyGameAlgo {
         this.ga.init(graphGame);
     }
 
+    /**
+     * method that find all the Edges that the fruit is on
+     * @param fruitList - the list of Fruits that we search the edges
+     * @return list of edges of the Fruits list
+     */
     public LinkedList<edge_data> findFruitsEdge (LinkedList<Fruit> fruitList){
         LinkedList<edge_data> toReturn = new LinkedList<edge_data>();
         double currEdge, srcToFruit, fruitToDest;
@@ -54,44 +64,55 @@ public class MyGameAlgo {
         return  toReturn;
     }
 
+    /**
+     * method that find the order of the edges on the path to reach all the fruits we get
+     * @param targets - the list of Fruits
+     * @return the order of the edges on the path to reach all the fruits
+     */
     public LinkedList<edge_data> TSP (LinkedList<Fruit> targets) {
         LinkedList<edge_data> before = findFruitsEdge(targets);
-        LinkedList<edge_data> check = new LinkedList<>();
-        for (edge_data n : before) { //check duplicate
-            if(!check.contains(n))    check.add(n);
-        }
-        before =check;
-        LinkedList<edge_data> toReturn = new LinkedList<edge_data>(); //the order of fruits edge we return
-        double w=Double.MAX_VALUE; //the weight of the current full shortest path
-        for (edge_data currEstart : before) { // for all the targets edges we start from..
-            double currW=0; //weight counter
-            LinkedList<edge_data> currTarget = new LinkedList<edge_data>(); //build copy of targets list
-            for (edge_data k : before){
-                currTarget.add(k);
-            }
-            node_data currSrc = this.graphGame.getNode(currEstart.getSrc()); //choose the Src from start edge
-            node_data currDest = this.graphGame.getNode(currEstart.getDest()); //choose the Dest from start edge
-            currTarget.remove(currEstart); //remove first edge
-            int size = currTarget.size();
-            LinkedList<edge_data> currEdgeOrdered = new LinkedList<edge_data>();
-            currEdgeOrdered.add(currEstart);
-            for (int j = 0; j < size; j++) { // do currTarget.size times:
-                edge_data nextStep = findNextStep(currEstart,currTarget); //get the path from curr node
-                currW += this.ga.shortestPathDist(currEstart.getDest(),nextStep.getSrc()); //curr weight
-                currEstart =nextStep; // make the step
-                currTarget.remove(currEstart);
-                currEdgeOrdered.add(currEstart);
-            }
-            if (currW < w){ //check if it is the shorted option
-                toReturn=currEdgeOrdered;
-                w=currW;
-            }
-        }
-        Edge weight = new Edge(-1,-1,w);
-        toReturn.add(weight);
+        LinkedList<edge_data> toReturn = TSPedge(before);
+//        LinkedList<edge_data> check = new LinkedList<>();
+//        for (edge_data n : before) { //check duplicate
+//            if(!check.contains(n))    check.add(n);
+//        }
+//        before =check;
+//        LinkedList<edge_data> toReturn = new LinkedList<edge_data>(); //the order of fruits edge we return
+//        double w=Double.MAX_VALUE; //the weight of the current full shortest path
+//        for (edge_data currEstart : before) { // for all the targets edges we start from..
+//            double currW=0; //weight counter
+//            LinkedList<edge_data> currTarget = new LinkedList<edge_data>(); //build copy of targets list
+//            for (edge_data k : before){
+//                currTarget.add(k);
+//            }
+//            node_data currSrc = this.graphGame.getNode(currEstart.getSrc()); //choose the Src from start edge
+//            node_data currDest = this.graphGame.getNode(currEstart.getDest()); //choose the Dest from start edge
+//            currTarget.remove(currEstart); //remove first edge
+//            int size = currTarget.size();
+//            LinkedList<edge_data> currEdgeOrdered = new LinkedList<edge_data>();
+//            currEdgeOrdered.add(currEstart);
+//            for (int j = 0; j < size; j++) { // do currTarget.size times:
+//                edge_data nextStep = findNextStep(currEstart,currTarget); //get the path from curr node
+//                currW += this.ga.shortestPathDist(currEstart.getDest(),nextStep.getSrc()); //curr weight
+//                currEstart =nextStep; // make the step
+//                currTarget.remove(currEstart);
+//                currEdgeOrdered.add(currEstart);
+//            }
+//            if (currW < w){ //check if it is the shorted option
+//                toReturn=currEdgeOrdered;
+//                w=currW;
+//            }
+//        }
+//        Edge weight = new Edge(-1,-1,w);
+//        toReturn.add(weight);
         return toReturn;
     }
 
+    /**
+     * method that find the order of the edges on the path to reach all the edges we get
+     * @param before - the list of edges
+     * @return the order of the edges on the path to reach all the edges of fruits
+     */
     public LinkedList<edge_data> TSPedge (LinkedList<edge_data> before) {
         int RobotPlace = before.getLast().getSrc();
         before.removeLast();
@@ -136,10 +157,8 @@ public class MyGameAlgo {
      * we will find the next step of given node from a targets list of nodes
      * @param curr the node we find the next step by shorted path
      * @param targets list of optional nodes to go from the current node
-     * @return th lise of the path between the current node and his next step
+     * @return the lise of the path between the current node and his next step
      */
-
-
     private edge_data findNextStep(edge_data curr, List<edge_data> targets) {
         edge_data next= targets.get(0);
         for (edge_data n : targets){
@@ -150,6 +169,11 @@ public class MyGameAlgo {
         return next;
     }
 
+    /**
+     * this method return a array of lists of Fruits that every list represent the list of fruit to each robot
+     * and build the array that used to place the robots first time using TSP on the fruits
+     * @return the array of lists of Fruits that every list represent the list of fruit to each robot
+     */
     public LinkedList<Fruit>[] placeRobotsFirstTime (){
         int numOfRobots = this.gameGUI.getGameRobot().getNumOfRobots();
         LinkedList<Fruit>[] arrListsFruits = new LinkedList[numOfRobots];
@@ -230,7 +254,11 @@ public class MyGameAlgo {
         return arrListsFruits;
     }
 
-
+    /**
+     * this help method get array of fruits and return a list of this fruits
+     * @param fruitsArr - array of fruits
+     * @return a list of fruits
+     */
     public LinkedList<Fruit> arrayToLinkedList (Fruit[] fruitsArr){
         LinkedList<Fruit> toReturn= new LinkedList<Fruit>();
         for (int i = 0; i <fruitsArr.length ; i++) {
@@ -239,6 +267,10 @@ public class MyGameAlgo {
         return toReturn;
     }
 
+    /**
+     * this method find all the new fruit that showes in the map
+     * @return list of the fruits
+     */
     public LinkedList<Fruit> findNewFruits(){
         LinkedList<Fruit> toReturn= new LinkedList<Fruit>();
         boolean theOne;
@@ -259,6 +291,9 @@ public class MyGameAlgo {
         return toReturn;
     }
 
+    /**
+     * this method update for each robot the path acording the updated list  of hus fruits
+     */
     public void updatePathFruits(){
         deleteOldFruits();
         LinkedList<Fruit> news = findNewFruits();
@@ -275,7 +310,7 @@ public class MyGameAlgo {
                 addFruitToList.addAll(currR.getRobotFruit());
                 addFruitToList.add(toFind);
                 currWeight = TSP(addFruitToList).getLast().getWeight();
-                if (currWeight/currR.getSpeed() < profit){
+                if (currWeight < profit){
                     profit = currWeight;
                     toAdd = currR;
                 }
@@ -312,6 +347,9 @@ public class MyGameAlgo {
         }
     }
 
+    /**
+     * this method find the fruit in the robots lists that already eaten and remove them
+     */
     private void deleteOldFruits() {
         for (Robot currR : this.gameGUI.getGameRobot().RobotArr){
             for (int i = 0; i < currR.robotFruit.size(); i++) {
@@ -327,4 +365,5 @@ public class MyGameAlgo {
             }
         }
     }
+
 }
