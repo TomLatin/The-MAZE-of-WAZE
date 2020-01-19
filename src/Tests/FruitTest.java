@@ -2,6 +2,7 @@ package Tests;
 
 import elements.Fruit;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.Point3D;
 import elements.elementsInTheGame;
@@ -15,7 +16,7 @@ class FruitTest {
     static Point3D pCheck=new Point3D(3.0,2.0,0.0);
     static Point3D p=new Point3D(0,0,0);
 
-    @Before
+    @BeforeEach
     public void BeforeEach(){
         //create 10 new default fruit
         for (int i = 0; i < arrFruit.length; i++) {
@@ -23,7 +24,7 @@ class FruitTest {
         }
 
         //initialize the fruits, it is also a check for init function!
-        arrJson1[0]="{\"Fruit\":{\"value\":1.0,\"type\":-1,\"pos\":\"3.0,2.0,0.0\"}}";
+        arrJson1[0]=("{\"Fruit\":{\"value\":1.0,\"type\":-1,\"pos\":\"3.0,2.0,0.0\"}}");
         arrJson1[1]=("{\"Fruit\":{\"value\":2.0,\"type\":-1,\"pos\":\"3.0,2.0,0.0\"}}");
         arrJson1[2]=("{\"Fruit\":{\"value\":3.0,\"type\":-1,\"pos\":\"3.0,2.0,0.0\"}}");
         arrJson1[3]=("{\"Fruit\":{\"value\":4.0,\"type\":-1,\"pos\":\"3.0,2.0,0.0\"}}");
@@ -71,7 +72,7 @@ class FruitTest {
     @Test
     void getWeight() {
         for (int i = 0; i <arrFruit.length ; i++) {
-            assertEquals(i,arrFruit[i].getWeight());
+            assertEquals(i+1,arrFruit[i].getWeight());
         }
     }
 
@@ -89,15 +90,6 @@ class FruitTest {
     void getTag() {
         for (int i = 0; i <arrFruit.length ; i++) {
             assertEquals(-1,arrFruit[i].getTag());
-        }
-    }
-
-    //set type
-    @Test
-    void setTag() {
-        for (int i = 0; i <arrFruit.length ; i++) {
-            arrFruit[i].setTag(1);
-            assertEquals(1,arrFruit[i].getTag());
         }
     }
 }
