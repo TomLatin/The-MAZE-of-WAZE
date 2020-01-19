@@ -27,8 +27,13 @@ import java.util.Locale;
 
 public class KML_Logger {
 
-   public static MyGameGUI myGameGUI;
+   public static MyGameGUI myGameGUI; //to start game for KML
 
+    /**
+     * the function take thr information of object and convert him to kml syncs
+     * @throws ParseException
+     * @throws InterruptedException
+     */
     public void objectToKml()throws ParseException, InterruptedException
     {
         int i=0;
@@ -96,8 +101,16 @@ public class KML_Logger {
         }
         try
         {
-            JOptionPane.showConfirmDialog(null,"Save to kml?!","save?",JOptionPane.YES_NO_OPTION);
-            kml.marshal(new File("KmlGAME.kml"));
+            int save=JOptionPane.showConfirmDialog(null,"Do you want to save to kml?","save the plat to kml",JOptionPane.YES_NO_OPTION);
+            if(save==1)
+            {
+                StdDraw.saveToKML=false;
+            }
+            else {
+                StdDraw.saveToKML=true;
+                System.out.println("save to kml");
+                kml.marshal(new File("KmlGAME.kml"));
+            }
         }
         catch (Exception e)
         {
@@ -106,14 +119,23 @@ public class KML_Logger {
 
     }
 
-
+    /**
+     *convert distance in miles to a string
+     * @param distMillis
+     * @return
+     */
     private String disIntMillisToString(Long distMillis)
     {
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDate.format(new Date(distMillis));
     }
 
-
+    /**
+     *convert string to a distance in miles
+     * @param TimeAsString
+     * @return
+     * @throws ParseException
+     */
     private long StringToDisInMillis(String TimeAsString) throws ParseException
     {
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -122,6 +144,9 @@ public class KML_Logger {
         return disInMillis;
     }
 
+    /**
+     * @return current Time
+     */
     private String currentTime()
     {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());

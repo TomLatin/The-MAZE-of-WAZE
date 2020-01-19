@@ -8,6 +8,7 @@ class RobotsContainTest {
 
     @Test
     void initToServer() {
+
     }
 
     @Test

@@ -7,23 +7,35 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class RobotsContain {
-    public Robot[] RobotArr;
-    private int numOfRobots;
-    private game_service game;
+    //Fields
+    public Robot[] RobotArr; //The array that saves the robots you get from the server
+    private int numOfRobots; //The numbers of robot you get from the server
+    private game_service game; //save the current game
 
-
+    /**
+     *A constructor that accepts parameters
+     */
     public RobotsContain (game_service game){
         this.game = game;
         this.numOfRobots = getNumOfRobots();
         RobotArr = new Robot[this.numOfRobots];
     }
 
+    /**
+     * Insert data Robot the server
+     * @param keys
+     */
     public void initToServer(int[]keys){
         for (int i = 0; i < this.numOfRobots; i++) { // insert robots to server
             this.game.addRobot(keys[i]);
         }
     }
 
+    /**
+     * Insert data into object RobotContain from the server
+     * @param json
+     * @return Robot array
+     */
     public Robot[] init(List<String>json){
         int i=0;
         for (String curr : json)
@@ -44,6 +56,9 @@ public class RobotsContain {
         return this.RobotArr;
     }
 
+    /**
+     * @return the number of Robots in the game
+     */
     public int getNumOfRobots(){
         int num=0;
         try {

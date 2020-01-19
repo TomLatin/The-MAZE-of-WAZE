@@ -59,9 +59,7 @@ public class MyGameGUI extends Thread{
 
         //create window that ask for scenario
         this.game = Game_Server.getServer(Scenario);
-
         String[] chooseGame = { "Auto game","Manual game"};
-
         Object menualOrAuto = JOptionPane.showInputDialog(null, "Choose a game mode", "Message",JOptionPane.INFORMATION_MESSAGE, null, chooseGame, chooseGame[0]);
 
         //draw the game in the first time
@@ -76,41 +74,33 @@ public class MyGameGUI extends Thread{
         if(menualOrAuto=="Manual game")
         {
             isManual=true;
-
             // menual
             placeRobots();
-
             this.gameRobot.initToServer(this.robotKeys); // insert robots to server
 
         }
-        else
+        else // menualOrAuto=="Auto game"
         {
             isAuto=true;
-
             //auto
             this.gameAuto = new MyGameAlgo(this,this.dg);
-
             LinkedList<Fruit>[] FruitsForRobots = this.gameAuto.placeRobotsFirstTime(); //fill the robotKeys
-
             this.gameRobot.initToServer(this.robotKeys); // insert robots to server
-
             this.gameRobot.init(this.game.getRobots());
-
             setFruitsToRobots(FruitsForRobots);
-
             this.arrListsFruits = FruitsForRobots;
         }
 
         //to start game for KML
         KML_Logger.myGameGUI=this;
 
-        updateRobot(); //just draw
+        updateRobot(); //just draw robots
 
         this.game.startGame(); // start the game in the server
 
         StdDraw.enableDoubleBuffering();
 
-
+        //Tread to KML
         KML_Logger loggerKml = new KML_Logger();
         Thread threadKml = new Thread(new Runnable() {
             @Override
@@ -125,12 +115,14 @@ public class MyGameGUI extends Thread{
                 }
             }
         });
-        threadKml.start();
+        threadKml.start(); //start Thread KML
         this.start(); //start Thread
     }
 
 
-
+    /**
+     * Place Robots for the manual game
+     */
     public void placeRobots(){
         double locX, locY;
         int countClick = 0;
@@ -150,41 +142,40 @@ public class MyGameGUI extends Thread{
         }
     }
 
-    public void setFruitsToRobots (LinkedList<Fruit>[] toSet){
-        for (int i = 0; i < this.robotKeys.length; i++) {
-            if (toSet[i].size()!=0) {
-                this.gameRobot.RobotArr[i].setRobotFruit(toSet[i]);
-            }
-        }
-    }
-
+    /**
+     *The function encircles the selected node that the player chose to put the robots on
+     * @param toMark
+     */
     public void markSelectedNode(node_data toMark){
         StdDraw.setPenColor(Color.green);
         StdDraw.setPenRadius(0.006);
         StdDraw.circle(toMark.getLocation().x(), toMark.getLocation().y(), 0.0003);
     }
 
+    /**
+     * A function through which the manual displacement works
+     */
     public void menualMove(){
         double locX, locY;
         if (StdDraw.isMousePressed()) {
-            System.out.println("click robot");
+            //click robot
             StdDraw.isMousePressed = false;
             locX = StdDraw.mouseX();
             locY = StdDraw.mouseY();
             Robot temp = (Robot)getNeerRobot(locX, locY);
             if (temp != null) {
-                System.out.println("robot selected");
+                //robot selected
                 while (StdDraw.isMousePressed == false) {
                     if (StdDraw.isMousePressed()) {
-                        System.out.println("click dest");
+                        //click dest
                         locX = StdDraw.mouseX();
                         locY = StdDraw.mouseY();
                         node_data dest = getNeerNode(locX, locY);
                         if (dest != null) {
-                            System.out.println("dest is node");
+                            //dest is node
                             for (edge_data curr : this.dg.getE(temp.getSrc())) {
                                 if (dest.getKey() == curr.getDest()){
-                                    System.out.println("node is neer");
+                                    //node is near
                                     this.game.chooseNextEdge(temp.getKey(), dest.getKey());
                                 }
                                 else System.out.println("error");
@@ -196,24 +187,34 @@ public class MyGameGUI extends Thread{
         }
     }
 
+    /**
+     * A function through which the automatic displacement works
+     */
     public void autoMove(){
         for (Robot r: this.gameRobot.RobotArr) {
-          //  System.out.println("prev - "+r.getPrev());
             if (r.path != null && r.path.size()>1) {
                 if (r.path.getFirst().getKey() == r.getSrc()) r.path.removeFirst();
                 this.game.chooseNextEdge(r.getKey(), r.path.get(0).getKey());
-                System.out.println("to go: "+ r.path.get(0).getKey());
             }
             else if (r.path.size() == 1){
-//                this.game.chooseNextEdge(r.getKey(), this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getSrc());
                 this.game.chooseNextEdge(r.getKey(), r.path.get(0).getKey());
-                System.out.println( "to go: "+ this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getSrc());
             }
             else if (r.path.size() == 0){
                 if (r.robotFruit.size()!=0) {
                     this.game.chooseNextEdge(r.getKey(), this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getDest());
-                    System.out.println("to go: " + this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getDest());
                 }
+            }
+        }
+    }
+
+    /**
+     * set fruits to Robots in the automatic game
+     * @param toSet
+     */
+    public void setFruitsToRobots (LinkedList<Fruit>[] toSet){
+        for (int i = 0; i < this.robotKeys.length; i++) {
+            if (toSet[i].size()!=0) {
+                this.gameRobot.RobotArr[i].setRobotFruit(toSet[i]);
             }
         }
     }
@@ -235,6 +236,11 @@ public class MyGameGUI extends Thread{
         return null;
     }
 
+    /**
+     * @param x value
+     * @param y value
+     * @return node_data that is near to point (x,y)
+     */
     public node_data getNeerRobot (double x, double y){
         for (node_data curr : this.gameRobot.RobotArr){
             double currX = curr.getLocation().x();
@@ -244,7 +250,9 @@ public class MyGameGUI extends Thread{
         return null;
     }
 
-    //go to here after start, and draw the game all the time
+    /**
+     * go to here after start, and draw the game all the time
+     */
     public void run(){
         while (this.game.isRunning()){
 
@@ -278,14 +286,7 @@ public class MyGameGUI extends Thread{
                 this.gameAuto.updatePathFruits(); //set path and dest to every Robot
                 this.saveListFruitsOfRobots();
                 for (Robot r : this.getGameRobot().RobotArr){
-                    System.out.println("Robot : "+ r.getKey());
                     LinkedList<edge_data> toShow= this.gameAuto.findFruitsEdge(r.robotFruit);
-                    for (edge_data F: toShow){
-                        System.out.println("Fruit: " + F.getSrc() + ", " + F.getDest());
-                    }
-                    System.out.println("curr place: "+r.getSrc());
-                    System.out.println("curr path: "+r.getKey()+ ") " + r.path);
-//                    System.out.println();
                 }
                 autoMove(); //set the next using every Robot path
             }
@@ -300,7 +301,6 @@ public class MyGameGUI extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println();
         }
 
 //---------------- Game Over ----------------
@@ -310,13 +310,18 @@ public class MyGameGUI extends Thread{
         JOptionPane.showMessageDialog(f,"The Game is OVER!");
     }
 
+    /**
+     * saves update list of fruit of robots in the var arrListsFruits
+     */
     public void saveListFruitsOfRobots (){
         for (int i = 0; i < this.gameRobot.getNumOfRobots(); i++) {
             this.arrListsFruits[i]=this.gameRobot.RobotArr[i].getRobotFruit();
         }
     }
 
-
+    /**
+     * draw the graph
+     */
     public void drawGraph(){
         //just draw the graph
         String graphJson = game.getGraph();
@@ -390,10 +395,12 @@ public class MyGameGUI extends Thread{
         }
     }
 
+    /**
+     *draw the Fruits on the graph
+     */
     public void drawFruits(){
         this.gameFruits = new FruitContain(this.game); //build a FruitContain
         this.gameFruits.init(this.game.getFruits()); //initialize the arr of fruits
-
 
         //Placing the fruits on the board
         for (Fruit curr : this.gameFruits.fruitsArr){
@@ -401,8 +408,10 @@ public class MyGameGUI extends Thread{
         }
     }
 
-    public void
-    updateRobot(){
+    /**
+     * draw the Robots on the graph
+     */
+    public void updateRobot(){
         int[] currPlace = new int[this.gameRobot.getNumOfRobots()];
         for (int i=0; i < this.gameRobot.RobotArr.length&&this.gameRobot.RobotArr[i]!=null; i++){
             currPlace[i] = this.gameRobot.RobotArr[i].getSrc();
@@ -475,7 +484,9 @@ public class MyGameGUI extends Thread{
         }
     }
 
-
+    /**
+     * open the welcome window
+     */
     public void welcomWindow(){
         StdDraw.setCanvasSize(1024,512);
         StdDraw.setXscale(-100,100);
@@ -492,11 +503,9 @@ public class MyGameGUI extends Thread{
         StdDraw.setCanvasSize(1024,512);
         StdDraw.setXscale(x.get_min()-0.002,x.get_max()+0.002);
         StdDraw.setYscale(y.get_min()-0.002,y.get_max()+0.002);
-
-
-
     }
 
+    //---------------- Geters ----------------
     public int[] getRobotKeys() {
         return this.robotKeys;
     }

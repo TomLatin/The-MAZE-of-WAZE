@@ -625,6 +625,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static TreeSet<Integer> keysDown = new TreeSet<Integer>();
 
 	public static MyGameGUI GUI;
+
+	public static boolean saveToKML = false;
+
 	// singleton pattern: client can't instantiate
 
 //	public static game_service game;

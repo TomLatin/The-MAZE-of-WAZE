@@ -71,40 +71,39 @@ public class MyGameAlgo {
      */
     public LinkedList<edge_data> TSP (LinkedList<Fruit> targets) {
         LinkedList<edge_data> before = findFruitsEdge(targets);
-        LinkedList<edge_data> toReturn = TSPedge(before);
-//        LinkedList<edge_data> check = new LinkedList<>();
-//        for (edge_data n : before) { //check duplicate
-//            if(!check.contains(n))    check.add(n);
-//        }
-//        before =check;
-//        LinkedList<edge_data> toReturn = new LinkedList<edge_data>(); //the order of fruits edge we return
-//        double w=Double.MAX_VALUE; //the weight of the current full shortest path
-//        for (edge_data currEstart : before) { // for all the targets edges we start from..
-//            double currW=0; //weight counter
-//            LinkedList<edge_data> currTarget = new LinkedList<edge_data>(); //build copy of targets list
-//            for (edge_data k : before){
-//                currTarget.add(k);
-//            }
-//            node_data currSrc = this.graphGame.getNode(currEstart.getSrc()); //choose the Src from start edge
-//            node_data currDest = this.graphGame.getNode(currEstart.getDest()); //choose the Dest from start edge
-//            currTarget.remove(currEstart); //remove first edge
-//            int size = currTarget.size();
-//            LinkedList<edge_data> currEdgeOrdered = new LinkedList<edge_data>();
-//            currEdgeOrdered.add(currEstart);
-//            for (int j = 0; j < size; j++) { // do currTarget.size times:
-//                edge_data nextStep = findNextStep(currEstart,currTarget); //get the path from curr node
-//                currW += this.ga.shortestPathDist(currEstart.getDest(),nextStep.getSrc()); //curr weight
-//                currEstart =nextStep; // make the step
-//                currTarget.remove(currEstart);
-//                currEdgeOrdered.add(currEstart);
-//            }
-//            if (currW < w){ //check if it is the shorted option
-//                toReturn=currEdgeOrdered;
-//                w=currW;
-//            }
-//        }
-//        Edge weight = new Edge(-1,-1,w);
-//        toReturn.add(weight);
+        LinkedList<edge_data> check = new LinkedList<>();
+        for (edge_data n : before) { //check duplicate
+            if(!check.contains(n))    check.add(n);
+        }
+        before =check;
+        LinkedList<edge_data> toReturn = new LinkedList<edge_data>(); //the order of fruits edge we return
+        double w=Double.MAX_VALUE; //the weight of the current full shortest path
+        for (edge_data currEstart : before) { // for all the targets edges we start from..
+            double currW=0; //weight counter
+            LinkedList<edge_data> currTarget = new LinkedList<edge_data>(); //build copy of targets list
+            for (edge_data k : before){
+                currTarget.add(k);
+            }
+            node_data currSrc = this.graphGame.getNode(currEstart.getSrc()); //choose the Src from start edge
+            node_data currDest = this.graphGame.getNode(currEstart.getDest()); //choose the Dest from start edge
+            currTarget.remove(currEstart); //remove first edge
+            int size = currTarget.size();
+            LinkedList<edge_data> currEdgeOrdered = new LinkedList<edge_data>();
+            currEdgeOrdered.add(currEstart);
+            for (int j = 0; j < size; j++) { // do currTarget.size times:
+                edge_data nextStep = findNextStep(currEstart,currTarget); //get the path from curr node
+                currW += this.ga.shortestPathDist(currEstart.getDest(),nextStep.getSrc()); //curr weight
+                currEstart =nextStep; // make the step
+                currTarget.remove(currEstart);
+                currEdgeOrdered.add(currEstart);
+            }
+            if (currW < w){ //check if it is the shorted option
+                toReturn=currEdgeOrdered;
+                w=currW;
+            }
+        }
+        Edge weight = new Edge(-1,-1,w);
+        toReturn.add(weight);
         return toReturn;
     }
 
@@ -298,7 +297,6 @@ public class MyGameAlgo {
         deleteOldFruits();
         LinkedList<Fruit> news = findNewFruits();
         LinkedList<edge_data> newsEdge = findFruitsEdge(news);
-        System.out.println("new Fruits: "+ newsEdge);
         double currWeight, profit=Double.MAX_VALUE;
         LinkedList<Fruit> addFruitToList=new  LinkedList<Fruit>();
         for (int i = 0 ; i<news.size(); i++){
@@ -326,9 +324,7 @@ public class MyGameAlgo {
             LinkedList<edge_data> toTsp = findFruitsEdge(currR.robotFruit);
             toTsp.add(this.graphGame.getEdge(currR.getSrc(),currR.getSrc()));
             toTsp = TSPedge(toTsp);
-
             toTsp.removeLast();
-            System.out.println("after: "+toTsp);
             if (toTsp.size()!=0) {
                 LinkedList<node_data> pathToFirst = this.ga.shortestPath(currR.getSrc(), toTsp.getFirst().getSrc());
                 pathToFirst.removeFirst();
@@ -343,7 +339,6 @@ public class MyGameAlgo {
                 toAdd.removeFirst();
             }
             currR.setPath(toAdd);
-            System.out.println("toAdd: " + toAdd);
         }
     }
 
