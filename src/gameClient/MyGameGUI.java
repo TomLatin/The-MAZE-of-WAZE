@@ -269,6 +269,7 @@ public class MyGameGUI extends Thread{
                 //auto
                 this.gameAuto.updatePathFruits(); //set path and dest to every Robot
                 for (Robot r : this.getGameRobot().RobotArr){
+                    System.out.println("Robot : "+ r.getKey());
                     LinkedList<edge_data> toShow= this.gameAuto.findFruitsEdge(r.robotFruit);
                     for (edge_data F: toShow){
                         System.out.println("Fruit: " + F.getSrc() + ", " + F.getDest());
