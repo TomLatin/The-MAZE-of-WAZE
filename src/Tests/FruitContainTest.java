@@ -20,7 +20,7 @@ class FruitContainTest {
     static game_service server;
 
     @BeforeEach
-    public void BeforeEach() {
+    public void BeforeEach(){
 
         checkJsonString[0] = "{\"Fruit\":{\"value\":1.0,\"type\":-1,\"pos\":\"1.0,2.0,0.0\"}}";
         checkJsonString[1] = "{\"Fruit\":{\"value\":2.0,\"type\":-1,\"pos\":\"3.0,4.0,0.0\"}}";
