@@ -219,7 +219,8 @@ public class MyGameAlgo {
             }
         }
         for (int i = 0; i <  numOfRobots; i++) {
-            if (arrListsFruits[i]!=null) this.gameGUI.getRobotKeys()[i] = TSP(arrListsFruits[i]).getFirst().getSrc();
+            if (arrListsFruits[i]!=null || arrListsFruits[i].size()!=0) this.gameGUI.getRobotKeys()[i] = TSP(arrListsFruits[i]).getFirst().getSrc();
+            else this.gameGUI.getRobotKeys()[i] = 0;
         }
         return arrListsFruits;
     }
@@ -263,11 +264,13 @@ public class MyGameAlgo {
         for (int i = 0 ; i<news.size(); i++){
             Fruit toFind = news.get(i);
             Robot toAdd=null;
+            profit=Double.MAX_VALUE;
             for(Robot currR : this.gameGUI.getGameRobot().RobotArr){
-                addFruitToList= currR.getRobotFruit();
+                addFruitToList=new  LinkedList<Fruit>();
+                addFruitToList.addAll(currR.getRobotFruit());
                 addFruitToList.add(toFind);
                 currWeight = TSP(addFruitToList).getLast().getWeight();
-                if (currWeight/currR.getSpeed()<profit){
+                if (currWeight/currR.getSpeed() < profit){
                     profit = currWeight;
                     toAdd = currR;
                 }
@@ -283,10 +286,14 @@ public class MyGameAlgo {
             LinkedList<edge_data> toTsp = findFruitsEdge(currR.robotFruit);
             toTsp.add(this.graphGame.getEdge(currR.getSrc(),currR.getSrc()));
             toTsp = TSPedge(toTsp);
+
             toTsp.removeLast();
-            LinkedList<node_data> pathToFirst = this.ga.shortestPath(currR.getSrc(),toTsp.getFirst().getSrc());
-            pathToFirst.removeFirst();
-            toAdd.addAll(pathToFirst);
+            System.out.println("after: "+toTsp);
+            if (toTsp.size()!=0) {
+                LinkedList<node_data> pathToFirst = this.ga.shortestPath(currR.getSrc(), toTsp.getFirst().getSrc());
+                pathToFirst.removeFirst();
+                toAdd.addAll(pathToFirst);
+            }
             for (int i = 0; i < toTsp.size()-1 && toTsp.size()>1; i++) {
                 LinkedList<node_data> currPath = this.ga.shortestPath(toTsp.get(i).getDest(),toTsp.get(i+1).getSrc());
                 toAdd.addAll(currPath);

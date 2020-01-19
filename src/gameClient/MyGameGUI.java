@@ -152,7 +152,9 @@ public class MyGameGUI extends Thread{
 
     public void setFruitsToRobots (LinkedList<Fruit>[] toSet){
         for (int i = 0; i < this.robotKeys.length; i++) {
-            this.gameRobot.RobotArr[i].setRobotFruit(toSet[i]);
+            if (toSet[i].size()!=0) {
+                this.gameRobot.RobotArr[i].setRobotFruit(toSet[i]);
+            }
         }
     }
 
@@ -208,8 +210,10 @@ public class MyGameGUI extends Thread{
                 System.out.println( "to go: "+ this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getSrc());
             }
             else if (r.path.size() == 0){
-                this.game.chooseNextEdge(r.getKey(), this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getDest());
-                System.out.println( "to go: "+ this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getDest());
+                if (r.robotFruit.size()!=0) {
+                    this.game.chooseNextEdge(r.getKey(), this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getDest());
+                    System.out.println("to go: " + this.gameAuto.findFruitsEdge(r.robotFruit).getFirst().getDest());
+                }
             }
         }
     }
