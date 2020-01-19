@@ -235,12 +235,15 @@ public class MyGameAlgo {
 
     public LinkedList<Fruit> findNewFruits(){
         LinkedList<Fruit> toReturn= new LinkedList<Fruit>();
-        boolean theOne=true;
+        boolean theOne;
         for (Fruit toCheck : this.gameGUI.getGameFruits().fruitsArr){
             theOne=true;
             for(Robot r : this.gameGUI.getGameRobot().RobotArr){
-                if(r.getRobotFruit().contains(toCheck)) {
-                    theOne=false;
+                for (Fruit inRobot : r.getRobotFruit()) {
+                    if (inRobot.getLocation().x()==toCheck.getLocation().x() && inRobot.getLocation().y()==toCheck.getLocation().y()) {
+                        theOne = false;
+                        break;
+                    }
                 }
             }
             if (theOne){
@@ -253,9 +256,12 @@ public class MyGameAlgo {
     public void updatePathFruits(){
         deleteOldFruits();
         LinkedList<Fruit> news = findNewFruits();
+        LinkedList<edge_data> newsEdge = findFruitsEdge(news);
+        System.out.println("new Fruits: "+ newsEdge);
         double currWeight, profit=Double.MAX_VALUE;
         LinkedList<Fruit> addFruitToList=new  LinkedList<Fruit>();
-        for (Fruit toFind : news){
+        for (int i = 0 ; i<news.size(); i++){
+            Fruit toFind = news.get(i);
             Robot toAdd=null;
             for(Robot currR : this.gameGUI.getGameRobot().RobotArr){
                 addFruitToList= currR.getRobotFruit();
@@ -268,6 +274,8 @@ public class MyGameAlgo {
             }
             if(toAdd!=null && !toAdd.getRobotFruit().contains(toFind)) {
                 toAdd.getRobotFruit().add(toFind);
+                news.remove(toFind);
+                i--;
             }
         }
         for(Robot currR : this.gameGUI.getGameRobot().RobotArr){
@@ -294,14 +302,17 @@ public class MyGameAlgo {
 
     private void deleteOldFruits() {
         for (Robot currR : this.gameGUI.getGameRobot().RobotArr){
-            for (Fruit currF : currR.robotFruit){
+            for (int i = 0; i < currR.robotFruit.size(); i++) {
+                Fruit currF = currR.robotFruit.get(i);
                 boolean isContain = false;
                 for( Fruit arrF : this.gameGUI.getGameFruits().fruitsArr){
-                    if (arrF == currF) isContain = true;
+                    if (arrF.getLocation().x() == currF.getLocation().x() && arrF.getLocation().y() == currF.getLocation().y()) isContain = true;
                 }
-                if (isContain) currR.robotFruit.remove(currF);
+                if (!isContain){
+                    currR.robotFruit.remove(currF);
+                    i--;
+                }
             }
         }
     }
-
 }

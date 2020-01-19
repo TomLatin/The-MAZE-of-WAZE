@@ -33,6 +33,7 @@ public class MyGameGUI extends Thread{
     private boolean isAuto;
     private LinkedList<node_data> toMark=new LinkedList<node_data>(); //list that save which nodes need to be mark the selection of robots in the manual game
     private int[] prevOfRobots;
+    private LinkedList<Fruit>[] arrListsFruits;
 
     /**
      * The default constructor
@@ -96,6 +97,8 @@ public class MyGameGUI extends Thread{
             this.gameRobot.init(this.game.getRobots());
 
             setFruitsToRobots(FruitsForRobots);
+
+            this.arrListsFruits = FruitsForRobots;
         }
 
         //to start game for KML
@@ -267,7 +270,9 @@ public class MyGameGUI extends Thread{
             }
             else {
                 //auto
+                this.setFruitsToRobots(this.arrListsFruits);
                 this.gameAuto.updatePathFruits(); //set path and dest to every Robot
+                this.saveListFruitsOfRobots();
                 for (Robot r : this.getGameRobot().RobotArr){
                     System.out.println("Robot : "+ r.getKey());
                     LinkedList<edge_data> toShow= this.gameAuto.findFruitsEdge(r.robotFruit);
@@ -277,7 +282,6 @@ public class MyGameGUI extends Thread{
                     System.out.println("curr place: "+r.getSrc());
                     System.out.println("curr path: "+r.getKey()+ ") " + r.path);
 //                    System.out.println();
-
                 }
                 autoMove(); //set the next using every Robot path
             }
@@ -300,6 +304,12 @@ public class MyGameGUI extends Thread{
         System.out.println("Game Over");
         JFrame f=new JFrame();
         JOptionPane.showMessageDialog(f,"The Game is OVER!");
+    }
+
+    public void saveListFruitsOfRobots (){
+        for (int i = 0; i < this.gameRobot.getNumOfRobots(); i++) {
+            this.arrListsFruits[i]=this.gameRobot.RobotArr[i].getRobotFruit();
+        }
     }
 
 
