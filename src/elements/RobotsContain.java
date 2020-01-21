@@ -57,7 +57,7 @@ public class RobotsContain {
     }
 
     /**
-     * @return the number of Robots in the game
+     * @return getNumOfRobots
      */
     public int getNumOfRobots(){
         int num=0;
