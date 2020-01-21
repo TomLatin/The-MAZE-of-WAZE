@@ -324,6 +324,7 @@ public class MyGameAlgo {
             LinkedList<edge_data> toTsp = findFruitsEdge(currR.robotFruit);
             toTsp.add(this.graphGame.getEdge(currR.getSrc(),currR.getSrc()));
             toTsp = TSPedge(toTsp);
+            currR.first=toTsp.getFirst();
             toTsp.removeLast();
             if (toTsp.size()!=0) {
                 LinkedList<node_data> pathToFirst = this.ga.shortestPath(currR.getSrc(), toTsp.getFirst().getSrc());

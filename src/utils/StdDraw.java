@@ -28,6 +28,7 @@ package utils;
  ******************************************************************************/
 
 //import Server.Game_Server;
+import Server.Game_Server;
 import Server.game_service;
 import gameClient.KML_Logger;
 import gameClient.MyGameGUI;
@@ -628,9 +629,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 	public static boolean saveToKML = false;
 
+
 	// singleton pattern: client can't instantiate
 
-//	public static game_service game;
 	private StdDraw() { }
 
 	public static boolean toAddNode = false, toRemoveNode = false, toAddEdge = false, toAddREdge = false, toRemoveEdge = false , destSF=false, destSC=false, TSPsel=false;
@@ -726,11 +727,15 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 
 	private static JMenuBar createMenuBar() {
-//		JMenuBar menuBar = new JMenuBar();
+		JMenuBar menuBar = new JMenuBar();
 //		/**--------File---------**/
+		JMenu fileMenu = new JMenu("Login");
+		menuBar.add(fileMenu);
+		return menuBar;
+
 //		JMenu fileMenu = new JMenu("   File    ");
 //		menuBar.add(fileMenu);
-//
+
 //		JMenuItem FileNew = new JMenuItem(" New   ");
 //		FileNew.addActionListener(std);
 //		fileMenu.add(FileNew);
@@ -864,7 +869,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 //		Dev.addActionListener(std);
 //		infoMenu.add(Dev);
 //
-		return null;
+
 	}
 
 
@@ -1796,25 +1801,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals("Start Game"))
-		{
-//			game.startGame();
-			KML_Logger loggerKml = new KML_Logger();
-			Thread thread = new Thread(new Runnable() {
-				@Override
-				public void run()
-				{
-					try {
-						loggerKml.objectToKml();
-					}
 
-					catch (ParseException | InterruptedException e1) {
-						e1.printStackTrace();
-					}
-				}
-			});
-			thread.start();
-		}
 	}
 
 

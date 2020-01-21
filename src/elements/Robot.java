@@ -1,5 +1,6 @@
 package elements;
 
+import dataStructure.edge_data;
 import dataStructure.node_data;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +18,7 @@ public class Robot implements elementsInTheGame{
     private Point3D pos;
     private String Pic;
     public double weight;
-
+    public edge_data first;
     public LinkedList<node_data> path; //Keeps the way of the node it needs to pass
     public LinkedList<Fruit> robotFruit; //Keep the fruit that aging to the robot
 
@@ -38,6 +39,7 @@ public class Robot implements elementsInTheGame{
         this.path = null;
         this.weight= 0;
         this.robotFruit = new LinkedList<Fruit>();
+        this.first=null;
 
     }
 
@@ -49,6 +51,7 @@ public class Robot implements elementsInTheGame{
         this.speed = speed;
         this.value = value;
         this.Pic = pic;
+        this.first=null;
     }
 
     /**

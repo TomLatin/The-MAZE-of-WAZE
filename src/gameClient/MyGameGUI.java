@@ -34,6 +34,8 @@ public class MyGameGUI extends Thread{
     private LinkedList<node_data> toMark=new LinkedList<node_data>(); //list that save which nodes need to be mark the selection of robots in the manual game
     private int[] prevOfRobots;
     private LinkedList<Fruit>[] arrListsFruits;
+    private int tomove =0;
+
 
     /**
      * The default constructor
@@ -261,16 +263,19 @@ public class MyGameGUI extends Thread{
             StdDraw.setPenColor(Color.BLUE);
             StdDraw.setFont(new Font(null,Font.BOLD,15));
             StdDraw.text(findRangeX().get_min()+0.0002,findRangeY().get_max()+0.0015,"TIME TO END: "+ game.timeToEnd()/1000);
-            int score=0;
+            int score=0, moves =0;
             try {
                 String info = game.toString();
                 JSONObject line = new JSONObject(info);
                 JSONObject GameServer = line.getJSONObject("GameServer");
                 score = GameServer.getInt("grade");
+                moves = GameServer.getInt("moves");
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             StdDraw.text(findRangeX().get_max(),findRangeY().get_max()+0.0015,"Score: "+ score);
+            StdDraw.text((findRangeX().get_max()+findRangeX().get_min())/2,findRangeY().get_max()+0.0015,"moves: "+ moves);
 
 //----------- Fruits -----------------------------
             drawFruits();
@@ -290,16 +295,17 @@ public class MyGameGUI extends Thread{
                 }
                 autoMove(); //set the next using every Robot path
             }
-
-            this.game.move(); // make the move in the server
+            if (tomove%10 ==0 ) {
+                this.game.move(); // make the move in the server
+            }
+            tomove++;
             updateRobot(); //just draw
 
 //----------- show every 10 ms -----------------------------
             StdDraw.show();
             try {
-                sleep(33);
+                    sleep((long) (8 * calSleep()));
             } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
 
@@ -308,6 +314,21 @@ public class MyGameGUI extends Thread{
         System.out.println("Game Over");
         JFrame f=new JFrame();
         JOptionPane.showMessageDialog(f,"The Game is OVER!");
+    }
+
+    public double calSleep (){
+        double toReturn = Double.MAX_VALUE;
+        double curr;
+        for(Robot r : this.gameRobot.RobotArr){
+            if(r.first!=null) {
+                curr = r.getLocation().distance2D(this.dg.getNode(r.first.getSrc()).getLocation());
+            }
+            else {
+                curr=0;
+            }
+            if (toReturn> curr +1 ) toReturn = curr+1;
+        }
+        return toReturn;
     }
 
     /**
@@ -527,6 +548,18 @@ public class MyGameGUI extends Thread{
     }
 
     public static void main(String[] args) {
+        String ID="";
+        int intNumberID=0;
+        ID=JOptionPane.showInputDialog(null,"please enter your ID number: ");
+        try {
+           intNumberID=Integer.parseInt(ID);
+        }
+        catch (Exception e1)
+        {
+            JOptionPane.showInputDialog(null,"Invalid input,please enter just numbers");
+        }
+        Game_Server.login(intNumberID);
+
         MyGameGUI games = new MyGameGUI();
     }
 }
