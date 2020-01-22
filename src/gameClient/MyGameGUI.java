@@ -307,12 +307,12 @@ public class MyGameGUI extends Thread{
 //----------- show every 10 ms -----------------------------
             StdDraw.show();
             if (calSleep() < 0.0015) {
-                sleepTime = 25;
+                sleepTime = 60;
                 System.out.println("aa");
             }
-            else sleepTime = 70;
+            else sleepTime = 140;
             try {
-                    sleep(40);
+                    sleep(sleepTime);
             } catch (InterruptedException e) {
             }
         }
@@ -350,14 +350,19 @@ public class MyGameGUI extends Thread{
         double currEdge, srcToFruit, fruitToDest;
         node_data start = this.dg.getNode(thisEdge.getSrc());
         node_data end = this.dg.getNode(thisEdge.getDest());
-        for (Fruit currF : this.gameFruits.fruitsArr){
-            currEdge = start.getLocation().distance2D(end.getLocation()); // dist of the edge
-            srcToFruit = start.getLocation().distance2D(currF.getLocation());  // dist from src to fruit
-            fruitToDest = currF.getLocation().distance2D(end.getLocation()); //dist from fruit to dest
-            if (srcToFruit + fruitToDest - currEdge < EPSILON)
-                return currF;
+        try {
+            for (Fruit currF : this.gameFruits.fruitsArr){
+                currEdge = start.getLocation().distance2D(end.getLocation()); // dist of the edge
+                srcToFruit = start.getLocation().distance2D(currF.getLocation());  // dist from src to fruit
+                fruitToDest = currF.getLocation().distance2D(end.getLocation()); //dist from fruit to dest
+                if (srcToFruit + fruitToDest - currEdge < EPSILON)
+                    return currF;
+            }
+            return null;
         }
-        return null;
+        catch (Exception e) {
+            return null;
+        }
     }
 
     /**
