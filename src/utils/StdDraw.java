@@ -61,11 +61,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.sql.*;
 import java.text.ParseException;
+import java.util.*;
 import java.util.List;
-import java.util.LinkedList;
-import java.util.TreeSet;
-import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 
 import javax.swing.*;
@@ -1823,7 +1822,104 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 		}
 
+		if (e.getActionCommand().equals("Score relative to class"))
+		{
+
+		}
+
 	}
+
+	public void MyScore(){
+		StdDraw.clear();
+		ArrayList<Integer> score=new ArrayList<>();
+		ArrayList<Integer> moves=new ArrayList<>();
+		int [] expectedScore={145,450,0,720,0,570,0,0,0,510,0,1050,0,310,0,0,235,0,0,250,200,0,0,1000};
+		int [] expectedMoves={290,580,0,580,0,500,0,0,0,580,0,580,0,580,0,0,290,0,0,580,290,0,0,1140};
+		int allTheGamesInServer=0,movesInLevel=0,scoreInLevel=0 ,currLevel=0;
+
+		//initialize and create all the ArrayLists
+		for (int i = 0; i <24 ; i++) {
+			score.add(i,0);
+			moves.add(i,0);
+		}
+		//get the id from the user to the
+		JFrame getId=new JFrame();
+		String id=JOptionPane.showInputDialog(getId,"Please enter ID number ");
+		int intID=Integer.parseInt(id);
+
+		//get from the user ID for filtering the data from the server
+		String allCustomersQuery = "SELECT * FROM Logs WHERE UserID =" + intID + " ORDER BY levelID , score;";
+
+		try {
+			//conection to DB
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection connection =
+					DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+			while(resultSet.next())
+			{
+				allTheGamesInServer++;
+				currLevel=resultSet.getInt("levelID");
+				movesInLevel=resultSet.getInt("moves");
+				scoreInLevel=resultSet.getInt("score");
+				//if the score Meets conditions and bigger or equal to the best score that save And the amount of move is less than or equal
+				if(expectedScore[currLevel]<=scoreInLevel && score.get(currLevel) <= scoreInLevel && movesInLevel<= expectedMoves[currLevel])
+				{
+					//Update the result and the amount of moves and best score
+					score.remove(currLevel);
+					moves.remove(currLevel);
+					score.add(currLevel,scoreInLevel);
+					moves.add(currLevel,movesInLevel);
+				}
+			}
+
+			int [] moreGood=new int [24];
+			Hashtable<Integer,Integer>  best=new Hashtable<>();
+			/*--------------global grades----------------*/
+			for (int i = 0; i <24 ; i++) {
+				String allCustomersQuerySeconse = "SELECT * FROM oop.Logs where levelID = "+i+" and score > "+score.get(i)+" and moves <= "+expectedMoves[i]+";";
+				ResultSet resultSetSeconde = statement.executeQuery(allCustomersQuerySeconse);
+				while (resultSetSeconde.next())
+				{
+					if(!best.containsKey(resultSetSeconde.getInt("userID")))
+					{
+						best.put(resultSetSeconde.getInt("userID"),resultSetSeconde.getInt("score"));
+					}
+				}
+				moreGood[i]=best.size();
+				best.clear();
+
+			}
+		}
+
+		catch (SQLException sqle) {
+			System.out.println("SQLException: " + sqle.getMessage());
+			System.out.println("Vendor Error: " + sqle.getErrorCode());
+		}
+
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		/*--------------print----------------*/
+
+		StdDraw.setPenColor(Color.BLACK);
+		StdDraw.setPenRadius(0.05);
+		StdDraw.text(0,0,"The amount of games in the server is "+allTheGamesInServer+"\n");
+		StdDraw.text(0,0,"Your level is "+currLevel);
+
+		for (int i = 0; i <24 ; i++) {
+			if(score.get(i)!=0)
+			{
+				StdDraw.text(0,0,"The best score in level "+i+" is "+ score.get(i)+" and the amount of moves is "+moves.get(i));
+
+			}
+		}
+
+	}
+
+
 
 
 	/***************************************************************************
