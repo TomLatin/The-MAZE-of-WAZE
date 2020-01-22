@@ -625,9 +625,16 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// set of key codes currently pressed down
 	private static TreeSet<Integer> keysDown = new TreeSet<Integer>();
 
+	//for information from the game
 	public static MyGameGUI GUI;
 
+	//for KML
 	public static boolean saveToKML = false;
+
+	//for information from the DB
+	public static final String jdbcUrl="jdbc:mysql://db-mysql-ams3-67328-do-user-4468260-0.db.ondigitalocean.com:25060/oop?useUnicode=yes&characterEncoding=UTF-8&useSSL=false";
+	public static final String jdbcUser="student";
+	public static final String jdbcUserPassword="OOP2020student";
 
 
 	// singleton pattern: client can't instantiate
@@ -729,8 +736,18 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 //		/**--------File---------**/
-		JMenu fileMenu = new JMenu("Login");
+		JMenu fileMenu = new JMenu("Data on the game"); //A tab that opens my first two grades in all stages and the second me in relation to the class
+
+		JMenuItem myScores = new JMenuItem("My Scores");//A tab that says my grades at all stages
+		fileMenu.addActionListener(std);
+		fileMenu.add(myScores);
 		menuBar.add(fileMenu);
+
+		JMenuItem ScoreRelativeToClass = new JMenuItem("Score relative to class");//A tab that says my grades at all stages
+		fileMenu.addActionListener(std);
+		fileMenu.add(ScoreRelativeToClass);
+		menuBar.add(fileMenu);
+
 		return menuBar;
 
 //		JMenu fileMenu = new JMenu("   File    ");
@@ -1801,6 +1818,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("My Scores"))
+		{
+
+		}
 
 	}
 
