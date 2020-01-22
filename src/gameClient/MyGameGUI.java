@@ -35,6 +35,10 @@ public class MyGameGUI extends Thread{
     private int[] prevOfRobots;
     private LinkedList<Fruit>[] arrListsFruits;
     private int tomove =0;
+    public static int sleepTime=30;
+    private final Double EPSILON = 0.0000001;
+    public edge_data[] firstOfRobots;
+
 
 
     /**
@@ -72,6 +76,7 @@ public class MyGameGUI extends Thread{
         this.gameRobot = new RobotsContain(this.game); //build RobotContain
         this.robotKeys = new int [this.gameRobot.getNumOfRobots()];  //open arr of keys
         this.prevOfRobots = new int [this.gameRobot.getNumOfRobots()];  //open arr of prev
+        this.firstOfRobots = new edge_data[this.gameRobot.getNumOfRobots()];
 
         if(menualOrAuto=="Manual game")
         {
@@ -256,6 +261,7 @@ public class MyGameGUI extends Thread{
      * go to here after start, and draw the game all the time
      */
     public void run(){
+        int score=0, moves =0;
         while (this.game.isRunning()){
 
 //----------- statistics -----------------------------
@@ -263,7 +269,6 @@ public class MyGameGUI extends Thread{
             StdDraw.setPenColor(Color.BLUE);
             StdDraw.setFont(new Font(null,Font.BOLD,15));
             StdDraw.text(findRangeX().get_min()+0.0002,findRangeY().get_max()+0.0015,"TIME TO END: "+ game.timeToEnd()/1000);
-            int score=0, moves =0;
             try {
                 String info = game.toString();
                 JSONObject line = new JSONObject(info);
@@ -290,45 +295,69 @@ public class MyGameGUI extends Thread{
                 this.setFruitsToRobots(this.arrListsFruits);
                 this.gameAuto.updatePathFruits(); //set path and dest to every Robot
                 this.saveListFruitsOfRobots();
-                for (Robot r : this.getGameRobot().RobotArr){
-                    LinkedList<edge_data> toShow= this.gameAuto.findFruitsEdge(r.robotFruit);
-                }
+
                 autoMove(); //set the next using every Robot path
             }
-            if (tomove%10 ==0 ) {
+//            if (tomove%2 ==0 ) {
                 this.game.move(); // make the move in the server
-            }
-            tomove++;
+//            }
+//            tomove++;
             updateRobot(); //just draw
 
 //----------- show every 10 ms -----------------------------
             StdDraw.show();
+            if (calSleep() < 0.0015) {
+                sleepTime = 25;
+                System.out.println("aa");
+            }
+            else sleepTime = 70;
             try {
-                    sleep((long) (8 * calSleep()));
+                    sleep(40);
             } catch (InterruptedException e) {
             }
         }
 
 //---------------- Game Over ----------------
         this.game.stopGame();
-        System.out.println("Game Over");
+        System.out.println("Game Over\n Score: "+score+"  Moves: "+moves);
         JFrame f=new JFrame();
-        JOptionPane.showMessageDialog(f,"The Game is OVER!");
+        JOptionPane.showMessageDialog(f,"The Game is OVER!\n Score: "+score+"  Moves: "+moves);
     }
 
     public double calSleep (){
         double toReturn = Double.MAX_VALUE;
         double curr;
         for(Robot r : this.gameRobot.RobotArr){
-            if(r.first!=null) {
-                curr = r.getLocation().distance2D(this.dg.getNode(r.first.getSrc()).getLocation());
+            if (r.first!=null) {
+                Fruit fff = findFruitOnEdge(r.first);
+                if (fff != null) {
+                    curr = r.getLocation().distance2D(fff.getLocation());
+                }
+                else {
+                    curr=1;
+                }
             }
             else {
-                curr=0;
+                curr=2;
             }
-            if (toReturn> curr +1 ) toReturn = curr+1;
+            if ( toReturn > curr  ) toReturn = curr;
         }
+        System.out.println(toReturn);
         return toReturn;
+    }
+
+    public Fruit findFruitOnEdge (edge_data thisEdge){
+        double currEdge, srcToFruit, fruitToDest;
+        node_data start = this.dg.getNode(thisEdge.getSrc());
+        node_data end = this.dg.getNode(thisEdge.getDest());
+        for (Fruit currF : this.gameFruits.fruitsArr){
+            currEdge = start.getLocation().distance2D(end.getLocation()); // dist of the edge
+            srcToFruit = start.getLocation().distance2D(currF.getLocation());  // dist from src to fruit
+            fruitToDest = currF.getLocation().distance2D(end.getLocation()); //dist from fruit to dest
+            if (srcToFruit + fruitToDest - currEdge < EPSILON)
+                return currF;
+        }
+        return null;
     }
 
     /**
@@ -444,6 +473,7 @@ public class MyGameGUI extends Thread{
         for (int i=0; i < this.gameRobot.RobotArr.length; i++){
             if (currPlace[i] != this.gameRobot.RobotArr[i].getSrc())
                 prevOfRobots[i]=currPlace[i];
+            this.gameRobot.RobotArr[i].first = this.firstOfRobots[i];
         }
 
         //Placing the robots on the board

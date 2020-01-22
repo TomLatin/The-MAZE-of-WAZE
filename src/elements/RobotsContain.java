@@ -1,6 +1,7 @@
 package elements;
 
 import Server.game_service;
+import gameClient.MyGameGUI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
