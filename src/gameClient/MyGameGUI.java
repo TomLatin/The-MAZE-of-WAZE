@@ -322,13 +322,13 @@ public class MyGameGUI extends Thread{
             timePassed = System.currentTimeMillis() - timeNow;
 //----------- show every sleeptime ms -----------------------------
 
-            if (calSleep() < 0.0015) {
+            if (calSleep() < 0.001) {
                 sleepTime = 10;
                 System.out.println("aa");
             }
-            else sleepTime = 55;
+            else sleepTime = 60;
             try {
-                    sleep(Math.abs(100-timePassed));
+                    sleep(Math.abs(sleepTime-timePassed));
             } catch (InterruptedException e) {
             }
 
