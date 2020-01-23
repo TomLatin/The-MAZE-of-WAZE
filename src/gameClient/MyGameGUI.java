@@ -46,6 +46,8 @@ public class MyGameGUI extends Thread{
     public static final String jdbcUser="student";
     public static final String jdbcUserPassword="OOP2020student";
 
+    private int[] neer = {7 , 7, 7,7,7,8,7,7,7,11,7,7,7,7,7,7,9,7,7,9,7,7,7,3};
+    private int[] far = {20 , 20, 20,20,20,21,20,20,20,19,20,21,20,18,20,20,16,20,20,18,13,20,20,8};
 
     private int numOfMoves;
     private int[] movesArr = {290,580,10000,580,10000,500,10000,10000,10000,580,10000,580,10000,580,10000,10000,290,10000,10000,580,290,10000,10000,1140};
@@ -330,9 +332,10 @@ public class MyGameGUI extends Thread{
             System.out.println(this.movesArr[Scenario]);
             System.out.println(numOfMoves);
             if (numOfMoves < this.movesArr[Scenario]) {
-                int n = 7;
+
+                int n = far[Scenario];
                 if (calSleep() < 0.0017) {
-                    n = 7;
+                    n = neer[Scenario];
                 }
                 if (tomove%n ==0 ) {
                     this.game.move(); // make the move in the server
