@@ -44,11 +44,11 @@ public class RobotsContain {
             Robot toAdd = new Robot();
             toAdd = (Robot) toAdd.init(curr);
             this.RobotArr[i]=toAdd;
-            if(i==1)
+            if(i%3==1)
             {
                 this.RobotArr[i].setPic("blackWidoew.png");
             }
-            else if(i==2)
+            else if(i%3==2)
             {
                 this.RobotArr[i].setPic("captainAmerica.png");
             }

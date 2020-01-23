@@ -63,13 +63,13 @@ public class MyGameGUI extends Thread{
 
         //Opens the scenario selection window
         JFrame f2=new JFrame();
-        Scenario =-1;
-        while (Scenario < 0 || Scenario > 23) {
+        Scenario =-3;
+        while (Scenario < -2 || Scenario > 23) {
             String pKey = JOptionPane.showInputDialog(f2, "Enter Scenario");
             try {
                 Scenario = Integer.parseInt(pKey);
             } catch (Exception e1) {
-                Scenario = -1;
+                Scenario = -3;
             }
         }
 
@@ -310,23 +310,23 @@ public class MyGameGUI extends Thread{
 
                 autoMove(); //set the next using every Robot path
             }
-            System.out.println(this.movesArr[Scenario]);
-            System.out.println(numOfMoves);
-            if (numOfMoves < this.movesArr[Scenario]) {
-                if (tomove%2 ==0 ) {
+//            System.out.println(this.movesArr[Scenario]);
+//            System.out.println(numOfMoves);
+//            if (numOfMoves < this.movesArr[Scenario]) {
+                if (tomove%1 ==0 ) {
                     this.game.move(); // make the move in the server
                     numOfMoves++;
                 }
                 tomove++;
-            }
+//            }
             timePassed = System.currentTimeMillis() - timeNow;
 //----------- show every sleeptime ms -----------------------------
 
-            if (calSleep() < 0.001) {
-                sleepTime = 10;
+            if (calSleep() < 0.0015) {
+                sleepTime = 70;
                 System.out.println("aa");
             }
-            else sleepTime = 60;
+            else sleepTime = 105;
             try {
                     sleep(Math.abs(sleepTime-timePassed));
             } catch (InterruptedException e) {
@@ -637,20 +637,20 @@ public class MyGameGUI extends Thread{
             //get from the user ID for filtering the data from the server
             String allCustomersQuery = "SELECT * FROM Logs WHERE UserID =" + intID + " ORDER BY levelID , score;";
             ResultSet resultSet = statement.executeQuery(allCustomersQuery);
-            while(resultSet.next())
-            {
+            while(resultSet.next()) {
                 allTheGamesInServer++;
-                currLevel=resultSet.getInt("levelID");
-                movesInLevel=resultSet.getInt("moves");
-                scoreInLevel=resultSet.getInt("score");
-                //if the score Meets conditions and bigger or equal to the best score that save And the amount of move is less than or equal
-                if(expectedScore[currLevel]<=scoreInLevel && score.get(currLevel) <= scoreInLevel && movesInLevel<= expectedMoves[currLevel])
-                {
-                    //Update the result and the amount of moves and best score
-                    score.remove(currLevel);
-                    moves.remove(currLevel);
-                    score.add(currLevel,scoreInLevel);
-                    moves.add(currLevel,movesInLevel);
+                currLevel = resultSet.getInt("levelID");
+                if (currLevel >= 0) {
+                    movesInLevel = resultSet.getInt("moves");
+                    scoreInLevel = resultSet.getInt("score");
+                    //if the score Meets conditions and bigger or equal to the best score that save And the amount of move is less than or equal
+                    if (expectedScore[currLevel] <= scoreInLevel && score.get(currLevel) <= scoreInLevel && movesInLevel <= expectedMoves[currLevel]) {
+                        //Update the result and the amount of moves and best score
+                        score.remove(currLevel);
+                        moves.remove(currLevel);
+                        score.add(currLevel, scoreInLevel);
+                        moves.add(currLevel, movesInLevel);
+                    }
                 }
             }
             /*--------------global grades----------------*/
@@ -706,7 +706,36 @@ public class MyGameGUI extends Thread{
         }
     }
 
+    public static String getKML(int id, int level) {
+        String ans = null;
+        String allCustomersQuery = "SELECT * FROM Users where userID="+id+";";
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection =
+                    DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+            if(resultSet!=null && resultSet.next()) {
+                ans = resultSet.getString("kml_"+level);
+            }
+        }
+        catch (SQLException sqle) {
+            System.out.println("SQLException: " + sqle.getMessage());
+            System.out.println("Vendor Error: " + sqle.getErrorCode());
+        }
+
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return ans;
+    }
+
     public static void main(String[] args) {
+        String kml = getKML(313525792,0);
+        System.out.println("***** KML file example: ******");
+        System.out.println(kml);
+
+        //login to DB
         String ID="";
         int intNumberID=0;
         ID=JOptionPane.showInputDialog(null,"please enter your ID number: ");
@@ -719,6 +748,9 @@ public class MyGameGUI extends Thread{
         }
         Game_Server.login(intNumberID);
 
+        //start new game
         MyGameGUI games = new MyGameGUI();
+
+
     }
 }

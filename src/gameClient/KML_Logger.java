@@ -112,11 +112,11 @@ public class KML_Logger {
             }
             else {
                 StdDraw.saveToKML=true;
-                System.out.println("save to kml");
                 kml.marshal(new File("KmlGAME.kml"));
-                Path p = Paths.get("KmlRun.kml");
-                String toDB = Files.readString(p, StandardCharsets.US_ASCII);
-                myGameGUI.getGame().sendKML(toDB);
+                System.out.println("save to kml");
+                Path p = Paths.get("KmlGAME.kml");
+                String toDataBase = Files.readString(p, StandardCharsets.US_ASCII);
+                myGameGUI.getGame().sendKML(toDataBase);
                 System.out.println("Create");
             }
         }
