@@ -104,7 +104,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/GameServer_v0.32.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/mysql-connector-java-5.1.47.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -113,7 +113,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/mysql-connector-java-5.1.47.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/GameServer_v0.33.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

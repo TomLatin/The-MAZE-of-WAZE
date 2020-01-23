@@ -50,6 +50,7 @@ public class MyGameAlgo {
                         fruitToDest = currFruit.getLocation().distance2D(this.graphGame.getNode(currE.getDest()).getLocation()); //dist from fruit to dest
 
                         if(srcToFruit + fruitToDest - currEdge < EPSILON){ // is on the edge
+                            currE.setInfo(currFruit.getWeight()+"");
                             if (currFruit.getTag() == 1 && currE.getSrc() < currE.getDest()) { // for example: 4->5 with type 1
                                 toReturn.add(currE);
                             }
@@ -336,49 +337,37 @@ public class MyGameAlgo {
             }
         }
 
-        if (this.gameGUI.getGameRobot().RobotArr.length==1){
+        if (this.gameGUI.getGameRobot().RobotArr.length==1){             //only 1 robot
             Robot only1 = this.gameGUI.getGameRobot().RobotArr[0];
-//
-//            double W, currW;
-//            int nof = only1.robotFruit.size();
-//            for (int i = 0; i< nof && only1.robotFruit.size()>2; i++) {
-//                W = TSP(only1.robotFruit).getLast().getWeight();
-//                Fruit toRemove = null;
-//                for (Fruit currF : only1.robotFruit) {
-//                    LinkedList<Fruit> noCurr = new LinkedList<>();
-//                    noCurr.addAll(only1.robotFruit);
-//                    noCurr.remove(currF);
-//                    currW = TSP(noCurr).getLast().getWeight();
-//                    if (currW < W) {
-//                        W = currW;
-//                        toRemove = currF;
-//                    }
-//                }
-//                LinkedList<Fruit> tor = new LinkedList<>();
-//                tor.add(toRemove);
-//               // if (this.ga.shortestPathDist(only1.getSrc(),findFruitsEdge(tor).getFirst().getSrc())<0.05)
-//                    only1.robotFruit.remove(toRemove);
-//            }
-
-
             LinkedList<node_data> toAdd = new LinkedList<node_data>();
             LinkedList<edge_data> toSP = findFruitsEdge(only1.robotFruit);
-            double ppp = Double.MAX_VALUE, curr;
-            edge_data neer = null;
-            for(edge_data toFind :toSP){
-                curr = this.ga.shortestPathDist(only1.getSrc(),toFind.getSrc());
-                if (curr<ppp){
-                    ppp = curr;
-                    neer = toFind;
+            double maxDegree = Double.MAX_VALUE, currW, currdist, currDegree, wb , wf;
+            edge_data win = null;
+            for (int i = 0; i < toSP.size(); i++) {
+                edge_data toFind = toSP.get(i);
+                currdist = this.ga.shortestPathDist(only1.getSrc(),toFind.getSrc());
+                currW = only1.robotFruit.get(i).getWeight(); // + (1/(only1.getSpeed()));
+//                LinkedList<edge_data> toSPcc = findFruitsEdge(only1.robotFruit);
+//                if (toSPcc.size()>1) {
+//                    wb = TSPedge(toSPcc).getLast().getWeight();
+//                    toSPcc.remove(toFind);
+//                    wf = TSPedge(toSPcc).getLast().getWeight();
+//                }
+                currDegree = ((currdist)); //  currW/     *(wb-wf)
+                if (currDegree < maxDegree){
+                    maxDegree = currDegree;
+                    win = toFind;
                 }
             }
-            this.gameGUI.firstOfRobots[0] = neer;
-            toAdd.addAll(this.ga.shortestPath(only1.getSrc(),neer.getSrc()));
-            toAdd.add(this.graphGame.getNode(neer.getDest()));
+            this.gameGUI.firstOfRobots[0] = win;
+            toAdd.addAll(this.ga.shortestPath(only1.getSrc(),win.getSrc()));
+            toAdd.add(this.graphGame.getNode(win.getDest()));
             toAdd.removeFirst();
             only1.setPath(toAdd);
         }
-        else {
+
+
+        else {                                                     // more then 1 robot
             int q = 0;
             for (Robot currR : this.gameGUI.getGameRobot().RobotArr) {
                 LinkedList<node_data> toAdd = new LinkedList<node_data>();

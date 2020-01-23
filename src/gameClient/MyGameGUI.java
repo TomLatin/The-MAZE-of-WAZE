@@ -47,6 +47,9 @@ public class MyGameGUI extends Thread{
     public static final String jdbcUserPassword="OOP2020student";
 
 
+    private int numOfMoves;
+    private int[] movesArr = {290,580,10000,580,10000,500,10000,10000,10000,580,10000,580,10000,580,10000,10000,290,10000,10000,580,290,10000,10000,111111111};
+    private int Scenario;
 
     /**
      * The default constructor
@@ -55,12 +58,12 @@ public class MyGameGUI extends Thread{
         //initialize
         isManual=false;
         isAuto=false;
-
+        numOfMoves=0;
         welcomWindow();//just open the window
 
         //Opens the scenario selection window
         JFrame f2=new JFrame();
-        int Scenario =-1;
+        Scenario =-1;
         while (Scenario < 0 || Scenario > 23) {
             String pKey = JOptionPane.showInputDialog(f2, "Enter Scenario");
             try {
@@ -270,6 +273,7 @@ public class MyGameGUI extends Thread{
      */
     public void run(){
         int score=0, moves =0;
+        long timeNow = System.currentTimeMillis(), timePassed = System.currentTimeMillis();
         while (this.game.isRunning()){
 
 //----------- statistics -----------------------------
@@ -306,23 +310,31 @@ public class MyGameGUI extends Thread{
 
                 autoMove(); //set the next using every Robot path
             }
-            if (tomove%2 ==0 ) {
-                this.game.move(); // make the move in the server
+            System.out.println(this.movesArr[Scenario]);
+            System.out.println(numOfMoves);
+            if (numOfMoves < this.movesArr[Scenario]) {
+                if (tomove%2 ==0 ) {
+                    this.game.move(); // make the move in the server
+                    numOfMoves++;
+                }
+                tomove++;
             }
-            tomove++;
-            updateRobot(); //just draw
+            timePassed = System.currentTimeMillis() - timeNow;
+//----------- show every sleeptime ms -----------------------------
 
-//----------- show every 10 ms -----------------------------
-            StdDraw.show();
-            if (calSleep() < 0.001) {
+            if (calSleep() < 0.0015) {
                 sleepTime = 10;
                 System.out.println("aa");
             }
-            else sleepTime = 50;
+            else sleepTime = 55;
             try {
-                    sleep(sleepTime);
+                    sleep(Math.abs(100-timePassed));
             } catch (InterruptedException e) {
             }
+
+            timeNow = System.currentTimeMillis();
+            updateRobot(); //just draw
+            StdDraw.show();
         }
 
 //---------------- Game Over ----------------
@@ -468,6 +480,8 @@ public class MyGameGUI extends Thread{
         //Placing the fruits on the board
         for (Fruit curr : this.gameFruits.fruitsArr){
             StdDraw.picture(curr.getLocation().x(),curr.getLocation().y(),curr.getPic(),0.0008,0.0008);
+            StdDraw.setPenColor(Color.BLACK);
+            StdDraw.text(curr.getLocation().x(),curr.getLocation().y(),""+(int)curr.getWeight());
         }
     }
 
