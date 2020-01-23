@@ -322,11 +322,11 @@ public class MyGameGUI extends Thread{
             timePassed = System.currentTimeMillis() - timeNow;
 //----------- show every sleeptime ms -----------------------------
 
-            if (calSleep() < 0.0015) {
-                sleepTime = 70;
+            if (calSleep() < 0.001) {
+                sleepTime = 10;
                 System.out.println("aa");
             }
-            else sleepTime = 105;
+            else sleepTime = 60;
             try {
                     sleep(Math.abs(sleepTime-timePassed));
             } catch (InterruptedException e) {
@@ -344,6 +344,10 @@ public class MyGameGUI extends Thread{
         JOptionPane.showMessageDialog(f,"The Game is OVER!\n Score: "+score+"  Moves: "+moves);
     }
 
+    /**
+     * this method find the distance between the robot that is closest to his first fruit to the fruit for calculate the sleep time
+     * @return the smalest distance between the robot and the neerest fruit
+     */
     public double calSleep (){
         double toReturn = Double.MAX_VALUE;
         double curr;
@@ -366,6 +370,11 @@ public class MyGameGUI extends Thread{
         return toReturn;
     }
 
+    /**
+     * this method find a fruit on a given edge by the location
+     * @param thisEdge the edge we get to find fruit
+     * @return the fruit we find
+     */
     public Fruit findFruitOnEdge (edge_data thisEdge){
         double currEdge, srcToFruit, fruitToDest;
         node_data start = this.dg.getNode(thisEdge.getSrc());
@@ -731,9 +740,6 @@ public class MyGameGUI extends Thread{
     }
 
     public static void main(String[] args) {
-        String kml = getKML(313525792,0);
-        System.out.println("***** KML file example: ******");
-        System.out.println(kml);
 
         //login to DB
         String ID="";
