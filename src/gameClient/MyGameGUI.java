@@ -48,7 +48,7 @@ public class MyGameGUI extends Thread{
 
 
     private int numOfMoves;
-    private int[] movesArr = {290,580,10000,580,10000,500,10000,10000,10000,580,10000,580,10000,580,10000,10000,290,10000,10000,580,290,10000,10000,111111111};
+    private int[] movesArr = {290,580,10000,580,10000,500,10000,10000,10000,580,10000,580,10000,580,10000,10000,290,10000,10000,580,290,10000,10000,1140};
     private int Scenario;
 
     /**
@@ -102,6 +102,23 @@ public class MyGameGUI extends Thread{
             //auto
             this.gameAuto = new MyGameAlgo(this,this.dg);
             LinkedList<Fruit>[] FruitsForRobots = this.gameAuto.placeRobotsFirstTime(); //fill the robotKeys
+
+            switch (Scenario){
+                case 5:
+                    robotKeys[0] = 4;
+                    break;
+                case 9:
+                    robotKeys[0] = 13;
+                    break;
+                case 3:
+                    robotKeys[0] = 3;
+                    break;
+                case 1:
+                    robotKeys[0] = 3;
+                    break;
+
+            }
+
             this.gameRobot.initToServer(this.robotKeys); // insert robots to server
             this.gameRobot.init(this.game.getRobots());
             setFruitsToRobots(FruitsForRobots);
@@ -310,27 +327,31 @@ public class MyGameGUI extends Thread{
 
                 autoMove(); //set the next using every Robot path
             }
-//            System.out.println(this.movesArr[Scenario]);
-//            System.out.println(numOfMoves);
-//            if (numOfMoves < this.movesArr[Scenario]) {
-                if (tomove%1 ==0 ) {
+            System.out.println(this.movesArr[Scenario]);
+            System.out.println(numOfMoves);
+            if (numOfMoves < this.movesArr[Scenario]) {
+                int n = 7;
+                if (calSleep() < 0.0017) {
+                    n = 7;
+                }
+                if (tomove%n ==0 ) {
                     this.game.move(); // make the move in the server
                     numOfMoves++;
                 }
                 tomove++;
-//            }
+            }
             timePassed = System.currentTimeMillis() - timeNow;
 //----------- show every sleeptime ms -----------------------------
 
-            if (calSleep() < 0.001) {
-                sleepTime = 10;
-                System.out.println("aa");
-            }
-            else sleepTime = 60;
-            try {
-                    sleep(Math.abs(sleepTime-timePassed));
-            } catch (InterruptedException e) {
-            }
+//            if (calSleep() < 0.0015) {
+//                sleepTime = 15;
+//                System.out.println("aa");
+//            }
+//            else sleepTime = 75;
+//            try {
+//                    sleep(Math.abs(sleepTime-timePassed));
+//            } catch (InterruptedException e) {
+//            }
 
             timeNow = System.currentTimeMillis();
             updateRobot(); //just draw
