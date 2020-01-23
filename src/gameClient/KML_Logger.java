@@ -17,6 +17,10 @@ import utils.StdDraw;
 
 import javax.swing.*;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -110,6 +114,10 @@ public class KML_Logger {
                 StdDraw.saveToKML=true;
                 System.out.println("save to kml");
                 kml.marshal(new File("KmlGAME.kml"));
+                Path p = Paths.get("KmlRun.kml");
+                String toDB = Files.readString(p, StandardCharsets.US_ASCII);
+                myGameGUI.getGame().sendKML(toDB);
+                System.out.println("Create");
             }
         }
         catch (Exception e)

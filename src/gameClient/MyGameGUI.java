@@ -16,7 +16,10 @@ import utils.Range;
 import utils.StdDraw;
 import javax.swing.*;
 import java.awt.*;
+import java.sql.*;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedList;
 
 
@@ -38,6 +41,10 @@ public class MyGameGUI extends Thread{
     public static int sleepTime=30;
     private final Double EPSILON = 0.0000001;
     public edge_data[] firstOfRobots;
+    //for information from the DB
+    public static final String jdbcUrl="jdbc:mysql://db-mysql-ams3-67328-do-user-4468260-0.db.ondigitalocean.com:25060/oop?useUnicode=yes&characterEncoding=UTF-8&useSSL=false";
+    public static final String jdbcUser="student";
+    public static final String jdbcUserPassword="OOP2020student";
 
 
 
@@ -100,6 +107,7 @@ public class MyGameGUI extends Thread{
 
         //to start game for KML
         KML_Logger.myGameGUI=this;
+        StdDraw.GUI=this;
 
         updateRobot(); //just draw robots
 
@@ -298,19 +306,19 @@ public class MyGameGUI extends Thread{
 
                 autoMove(); //set the next using every Robot path
             }
-//            if (tomove%2 ==0 ) {
+            if (tomove%2 ==0 ) {
                 this.game.move(); // make the move in the server
-//            }
-//            tomove++;
+            }
+            tomove++;
             updateRobot(); //just draw
 
 //----------- show every 10 ms -----------------------------
             StdDraw.show();
-            if (calSleep() < 0.0015) {
-                sleepTime = 60;
+            if (calSleep() < 0.001) {
+                sleepTime = 10;
                 System.out.println("aa");
             }
-            else sleepTime = 140;
+            else sleepTime = 50;
             try {
                     sleep(sleepTime);
             } catch (InterruptedException e) {
@@ -580,6 +588,108 @@ public class MyGameGUI extends Thread{
 
     public int[] getPrevOfRobots(){
         return this.prevOfRobots;
+    }
+
+    public void MyScore(){
+        StdDraw.clear();
+        ArrayList<Integer> score=new ArrayList<>();
+        ArrayList<Integer> moves=new ArrayList<>();
+        int [] expectedScore={145,450,0,720,0,570,0,0,0,510,0,1050,0,310,0,0,235,0,0,250,200,0,0,1000};
+        int [] expectedMoves={290,580,0,580,0,500,0,0,0,580,0,580,0,580,0,0,290,0,0,580,290,0,0,1140};
+        int allTheGamesInServer=0,movesInLevel=0,scoreInLevel=0 ,currLevel=0;
+        //the global grades
+        int [] moreGood=new int [24];
+        Hashtable<Integer,Integer> best=new Hashtable<>();
+
+        //initialize and create all the ArrayLists
+        for (int i = 0; i <24 ; i++) {
+            score.add(i,0);
+            moves.add(i,0);
+        }
+        //get the id from the user to the
+        JFrame getId=new JFrame();
+        String id=JOptionPane.showInputDialog(getId,"Please enter ID number ");
+        int intID=Integer.parseInt(id);
+        StdDraw.setCanvasSize(1024,512);
+        StdDraw.setYscale(-51,50);
+        StdDraw.setXscale(-51,50);
+        StdDraw.setFont(new Font(null,Font.BOLD,15));
+        try {
+            //conection to DB
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection =
+                    DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+            Statement statement = connection.createStatement();
+            //get from the user ID for filtering the data from the server
+            String allCustomersQuery = "SELECT * FROM Logs WHERE UserID =" + intID + " ORDER BY levelID , score;";
+            ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+            while(resultSet.next())
+            {
+                allTheGamesInServer++;
+                currLevel=resultSet.getInt("levelID");
+                movesInLevel=resultSet.getInt("moves");
+                scoreInLevel=resultSet.getInt("score");
+                //if the score Meets conditions and bigger or equal to the best score that save And the amount of move is less than or equal
+                if(expectedScore[currLevel]<=scoreInLevel && score.get(currLevel) <= scoreInLevel && movesInLevel<= expectedMoves[currLevel])
+                {
+                    //Update the result and the amount of moves and best score
+                    score.remove(currLevel);
+                    moves.remove(currLevel);
+                    score.add(currLevel,scoreInLevel);
+                    moves.add(currLevel,movesInLevel);
+                }
+            }
+            /*--------------global grades----------------*/
+            for (int i = 0; i <24 ; i++) {
+                String allCustomersQuerySeconse = "SELECT * FROM oop.Logs where levelID = "+i+" and score > "+score.get(i)+" and moves <= "+expectedMoves[i]+";";
+                ResultSet resultSetSeconde = statement.executeQuery(allCustomersQuerySeconse);
+                while (resultSetSeconde.next())
+                {
+                    if(!best.containsKey(resultSetSeconde.getInt("userID")))
+                    {
+                        best.put(resultSetSeconde.getInt("userID"),resultSetSeconde.getInt("score"));
+                    }
+                }
+                moreGood[i]=best.size();
+                best.clear();
+
+            }
+
+            /*--------------print----------------*/
+            Font font = new Font("Calibri", Font.BOLD, 16);
+            StdDraw.setPenColor(Color.BLACK);
+            StdDraw.setPenRadius(0.05);
+            StdDraw.text(-40,46,"Level ");
+            StdDraw.text(-20,46,"The Best score ");
+            StdDraw.text(0,46,"The Best amount to moves ");
+            StdDraw.text(25,46,"Your place in relation to others ");
+            int d=1;
+            for (int i = 0; i <24 ; i++) {
+                if(moreGood[i]!=0)
+                {
+                  StdDraw.text(-40,46-(d+1)*7,""+i);
+                  StdDraw.text(-20,46-(d+1)*7,""+score.get(i));
+                  StdDraw.text(0,46-(d+1)*7,""+moves.get(i));
+                  StdDraw.text(25,46-(d+1)*7,""+moreGood[i]);
+                  d++;
+                }
+            }
+
+            StdDraw.text(-30,-45,"The amount of games in the server is "+allTheGamesInServer+"\n");
+            StdDraw.text(0,-45,"Your level is "+currLevel);
+            StdDraw.show();
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }
+        catch (SQLException sqle) {
+            System.out.println("SQLException: " + sqle.getMessage());
+            System.out.println("Vendor Error: " + sqle.getErrorCode());
+        }
+
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
