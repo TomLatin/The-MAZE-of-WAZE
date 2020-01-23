@@ -34,7 +34,7 @@ public class KML_Logger {
    public static MyGameGUI myGameGUI; //to start game for KML
 
     /**
-     * the function take thr information of object and convert him to kml syncs
+     * the function take the information of object and convert him to kml syncs
      * @throws ParseException
      * @throws InterruptedException
      */
