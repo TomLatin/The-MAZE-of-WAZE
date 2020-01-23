@@ -637,6 +637,12 @@ public class MyGameGUI extends Thread{
         return this.prevOfRobots;
     }
 
+    /**
+     *This function spills all the data from a database and allows me to print it in a table.
+     * The data it prints:
+     * How many games we played on the server, current stage and best result at that stage.
+     * It also prints our location relative to the class for each of the stages
+     */
     public void MyScore(){
         StdDraw.clear();
         ArrayList<Integer> score=new ArrayList<>();
@@ -724,7 +730,9 @@ public class MyGameGUI extends Thread{
 
             StdDraw.text(-30,-45,"The amount of games in the server is "+allTheGamesInServer+"\n");
             StdDraw.text(0,-45,"Your level is "+currLevel);
+
             StdDraw.show();
+
             resultSet.close();
             statement.close();
             connection.close();
@@ -739,6 +747,11 @@ public class MyGameGUI extends Thread{
         }
     }
 
+    /**
+     * @param id of the player that play in the game
+     * @param level
+     * @return String that represent the KML of the level
+     */
     public static String getKML(int id, int level) {
         String ans = null;
         String allCustomersQuery = "SELECT * FROM Users where userID="+id+";";
