@@ -346,16 +346,6 @@ public class MyGameGUI extends Thread{
             timePassed = System.currentTimeMillis() - timeNow;
 //----------- show every sleeptime ms -----------------------------
 
-//            if (calSleep() < 0.0015) {
-//                sleepTime = 15;
-//                System.out.println("aa");
-//            }
-//            else sleepTime = 75;
-//            try {
-//                    sleep(Math.abs(sleepTime-timePassed));
-//            } catch (InterruptedException e) {
-//            }
-
             timeNow = System.currentTimeMillis();
             updateRobot(); //just draw
             StdDraw.show();
