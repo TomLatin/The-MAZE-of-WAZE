@@ -1,7 +1,7 @@
 ![New](https://user-images.githubusercontent.com/57855070/72677249-0f5c2a00-3aa3-11ea-9093-3e35b6520854.png)
 
 This project is the construction of one game with two modes of automatic play and manual play.
-The game board is built from a graph based on the follwing project:
+The game board is built from a graph based on the following project:
 
 https://github.com/TomLatin/Object-Oriented-Project-2
 
